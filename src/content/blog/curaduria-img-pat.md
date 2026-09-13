@@ -6,12 +6,15 @@ author: "Corporación Cultura y Desarrollo"
 authorSlug: "corporacion-cultura-y-desarrollo"
 authorImage: "/images/ccd-auth.svg"
 featured: false
-image: "/images/SnJ-puri-logo-pat.png"
 category:
   - "Patrimonio"
   - "Opinión"
 tags: ["San Juan en Purificación", "Decreto 1911 de 2011 Tolima", "Diseño de identidad visual", "Dimitri Guzmán", "Patrimonio Cultural Inmaterial Tolima", "Curaduría de diseño gráfico público", "Matachín"]
 ---
+<figure class="article-inline-image">
+	<img src="/images/SnJ-puri-logo-pat.png" alt="Identidad Visual San Juan en Purificación 2012 / Declaratoria patrimonio Cultural Inmaterial"/>
+	<figcaption>Convocatoria abierta para nuevas voces, ideas y reflexiones sobre cultura y territorio.</figcaption>
+</figure>
 
 # Curaduría de Imagen Patrimonial: Análisis del caso San Juan en Purificación (Tolima)
 
