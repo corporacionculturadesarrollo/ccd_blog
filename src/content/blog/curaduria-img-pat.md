@@ -13,7 +13,7 @@ tags: ["San Juan en Purificación", "Decreto 1911 de 2011 Tolima", "Diseño de i
 ---
 <figure class="article-inline-image">
 	<img src="/images/SnJ-puri-logo-pat.png" alt="Identidad Visual San Juan en Purificación 2012 / Declaratoria patrimonio Cultural Inmaterial"/>
-	<figcaption>Identidad Visual San Juan en Purificación 2012 / Declaratoria patrimonio Cultural Inmaterial</figcaption>
+	<figcaption>Identidad Visual San Juan en Purificación 2016 / Declaratoria patrimonio Cultural Inmaterial</figcaption>
 </figure>
 
 # Curaduría de Imagen Patrimonial: Análisis del caso San Juan en Purificación (Tolima)
