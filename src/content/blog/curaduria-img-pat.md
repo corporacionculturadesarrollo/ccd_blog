@@ -1,0 +1,91 @@
+---
+title: "Curaduría de Imagen Patrimonial: Análisis del caso San Juan en Purificación (Tolima)"
+description: "Cómo la abstracción geométrica y la curaduría visual transforman un decreto patrimonial en un escudo de memoria colectiva."
+pubDate: "2026-09-13"
+author: "Corporación Cultura y Desarrollo"
+authorSlug: "corporacion-cultura-y-desarrollo"
+authorImage: "/images/ccd-auth.svg"
+featured: false
+image: "/images/SnJ-puri-logo-pat.png"
+category:
+  - "Patrimonio"
+  - "Opinión"
+tags: ["San Juan en Purificación", "Decreto 1911 de 2011 Tolima", "Diseño de identidad visual", "Dimitri Guzmán", "Patrimonio Cultural Inmaterial Tolima", "Curaduría de diseño gráfico público", "Matachín"]
+---
+
+# Curaduría de Imagen Patrimonial: Análisis del caso San Juan en Purificación (Tolima)
+
+El diseño de la identidad visual para manifestaciones inscritas en el Patrimonio Cultural Inmaterial (PCI) no responde a las lógicas del mercadeo territorial o el *branding* corporativo. Desde una perspectiva de curaduría de diseño, la imagen opera como un **dispositivo de mediación**, un articulador formal entre un marco jurídico estático y una manifestación comunitaria viva, transitoria y predominantemente oral.
+
+Aquí se documentan variables estructurales resueltas en el logotipo oficial de las festividades del **San Juan en Purificación**, comisionado por la **Corporación Cultura y Desarrollo** tras la expedición del **Decreto 1911 de diciembre de 2011** por la Gobernación del Tolima.
+
+---
+
+### 1. El encargo institucional como problema curatorial
+La curaduría de diseño exige evaluar el origen del encargo. La marca no nace de una libre interpretación estética, sino de la necesidad de documentar visualmente el ingreso de la festividad a la Lista Representativa de Patrimonio Cultural Inmaterial (LRPCI) del ámbito departamental. 
+
+El proceso de postulación —coordinado por la **Corporación Cultura y Desarrollo**— obligó al **Equipo de Diseño** a resolver una tensión de gobernanza visual: **¿cómo normativizar el folclor sin higienizarlo?** El diseño debía satisfacer dos audiencias con intereses opuestos:
+*   **El vector institucional:** El comité técnico evaluador del Ministerio de Cultura o la Gobernación, que exige rigor legal, simetría y codificación formal del estatus de protección.
+*   **El vector portador:** El habitante de la *Villa de las Palmas* que vive la fiesta desde la informalidad de la calle, el tablado, las alboradas y el río.
+
+---
+
+### 2. Desglose analítico de la propuesta visual
+
+A través de una metodología de abstracción geométrica y reduccionismo formal, la pieza soluciona las exigencias del Plan Especial de Salvaguardia (PES) mediante tres ejes de representación:
+
+*   **El Matachín como núcleo de identidad (Criterio de Representatividad):** El matachín constituye el elemento central del sincretismo y la memoria colectiva en Purificación. La estrategia curatorial de la imagen radica en **eludir la ilustración literal o el realismo figurativo**, lo cual habría banalizado o saturado el isotipo. Se ejecuta una síntesis formal en la corona roja superior: trazos geométricos angulares, asimétricos y puntiagudos que indexan la morfología de las máscaras de cuero o calabazo tradicionales. El uso del color rojo no actúa como mero adorno; codifica la energía kinésica de la danza, la herencia mestiza y la noción de resistencia popular.
+*   **El soporte hídrico (Criterio de Vigencia y Contextualización):** El criterio técnico de vigencia exige evaluar el dinamismo anual de la tradición. En Purificación, el eje aglutinador de la memoria colectiva es el **río Magdalena** a través de su ritual anual: la *balsada sanjuanera*. El diseño sitúa el bloque azul en la zona inferior de la composición, no como un fondo pasivo, sino como el cimiento estructural. Las líneas curvas inferiores representan formalmente la dinámica física del agua en movimiento. Es el agua la que sostiene la estructura simbólica y física de la celebración.
+*   **Responsabilidad cromática (Criterio de Inclusión y Equidad):** La paleta se restringe estrictamente a los **colores primarios (amarillo, azul y rojo)**, correspondientes a los vectores de la identidad nacional colombiana y con correspondencia directa en la heráldica municipal. 
+    *   *Amarillo:* Indexa las condiciones bioclimáticas del suroriente del Tolima (la *Villa de las Palmas*) y la herencia agraria de la región.
+    *   *Azul:* Codifica el recurso hídrico como eje logístico y de transporte de la tradición.
+    *   *Rojo:* Representa el tejido social portador de la manifestación.
+    Esta estandarización cromática cumple una función técnica objetiva: simplifica la reproducción de la marca en soportes de baja resolución o técnicas artesanales de impresión local, garantizando la equidad en el uso público de la imagen.
+
+---
+
+### 3. Matriz de tensión y contraste tipográfico
+
+El balance de poder dentro del diseño se resuelve mediante una fractura tipográfica deliberada que jerarquiza las tres dimensiones del hecho patrimonial:
+
+| Elemento | Tipografía / Estilo | Intención Curatorial | Dimensión del Hecho |
+| :--- | :--- | :--- | :--- |
+| **"San Juan"** | Fuente gestual, orgánica, manual, color amarillo. | Documentar la oralidad, la vibración del tiple, el quejido de las cuerdas y la informalidad festiva de la calle. | **La Fiesta Viva** / El Pueblo |
+| **"Purificación"** | Fuente geométrica, recta, sólida, caja alta, color blanco. | Proveer estabilidad, simetría y peso visual en el eje central del logotipo. | **El Territorio** / El Municipio |
+| **"Patrimonio Cultural Inmaterial"** | Fuente lineal institucional, sans-serif, recta, caja alta, color blanco. | Certificar la vigencia del acto administrativo y el marco legal del departamento. | **El Decreto** / El Estado |
+
+---
+
+### Conclusión
+La identidad visual desarrollada para la declaratoria, se consolida como un documento gráfico de salvaguardia. Su rigor técnico y curatorial radica en la renuncia al ornamento decorativo accesorio; cada trazo, color y familia tipográfica responde directamente a una necesidad de indexar los valores históricos sancionados en el **Decreto 1911 de 2011**. El diseño cumple así con el principio de coherencia, responsabilidad objetiva y memoria material del sector cultural público.
+
+### Nota Curatorial de Autor
+*"La marca diseñada por Dimitri Guzmán actúa como un dispositivo de memoria material. Su valor como pieza de diseño público radica en la renuncia deliberada al ornamento accesorio o al realismo figurativo. Cada elemento presente en el plano geométrico se comporta como un vector de indexación que justifica, valida y comunica visualmente los siete criterios técnicos de salvaguardia exigidos por la política pública de patrimonio inmaterial en Colombia."*
+
+---
+
+## Ficha Técnica de Registro y Curaduría de Imagen
+
+*   **Título de la Obra:** Logotipo Oficial de las Festividades de San Juan en Purificación, Tolima.
+*   **Diseño y Concepto Artístico:** Guzmán, Dimitri.
+*   **Encargo Institucional:** Corporación Cultura y Desarrollo.
+*   **Entidades Promotoras del Registro:** Corporación Cultura y Desarrollo / Periódico *El Nuevo Día* / Innovar.
+*   **Acto Administrativo Indexado:** Decreto Número 1911 (29 de diciembre de 2011), Gobernación del Tolima.
+*   **Estatus Patrimonial:** Patrimonio Cultural Inmaterial (PCI) del Departamento del Tolima.
+*   **Tipología de la Pieza:** Identidad visual institucional y marca de salvaguardia cultural.
+
+### Especificaciones Técnicas del Diseño
+*   **Sustrato de Aplicación Originario:** Vectorial digital.
+*   **Paleta Cromática (Vectores Primarios):** Rojo (Fuerza kinésica, máscara del matachín), Amarillo (Luminosidad, clima, tradición agraria), Azul (Soporte hídrico, río Magdalena).
+*   **Arquitectura Tipográfica:** Familia Gestual (para "San Juan") y Familia Geométrica (para "Purificación" y "Patrimonio Cultural Inmaterial").
+
+---
+
+## Referencias Bibliográficas y Fuentes Documentales
+
+*   **Asamblea Constituyente de Colombia.** (1991). *Constitución Política de Colombia*. Artículos 7 y 8. Bogotá, D.C.
+*   **Congreso de la República de Colombia.** (1997). *Ley 397 de 1997: Ley General de Cultura*. Modificada por la *Ley 1185 de 2008*. Bogotá, D.C.
+*   **Gobernación del Tolima.** (2011, 29 de diciembre). *Decreto Número 1911 de 2011: Por el cual se declaran las Fiestas de San Juan en el municipio de Purificación como Patrimonio Cultural Inmaterial del Departamento del Tolima*. Ibagué.
+*   **Ministerio de Cultura de Colombia.** (2009). *Decreto 2941 de 2009: Por el cual se reglamenta el Patrimonio Cultural Inmaterial*. Bogotá, D.C.
+*   **Redacción Cultural.** (2012, 10 de enero). San Juan en 'Puri' es patrimonio inmaterial. *El Nuevo Día*.
+*   **Corporación Cultura y Desarrollo.** (2011). *Expediente Técnico de Postulación: Las Festividades de San Juan en Purificación ante la Lista Representativa de Patrimonio Cultural Inmaterial (LRPCI)*. Archivo de Gestión Institucional. Ibagué, Tolima.
