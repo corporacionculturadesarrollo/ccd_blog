@@ -1,7 +1,6 @@
 ---
 // src/pages/[slug].astro - Forzar compilación limpia Astro v5
 import { getCollection, getEntry, render } from 'astro:content'; // <-- IMPORTACIÓN CORRECTA DE ASTRO v5
-import { Image } from 'astro:assets';
 import ContactForm from '../components/ContactForm.astro';
 import BackToTop from '../components/BackToTop.astro';
 import Layout from '../layouts/Layout.astro';
@@ -33,6 +32,9 @@ const { entry, prevPost, nextPost } = Astro.props;
 const authorEntry = entry.data.authorSlug ? await getEntry('autores', entry.data.authorSlug) : undefined;
 const authorBio = authorEntry?.body || entry.data.authorBio || 'Biografía del autor próximamente.';
 const authorImage = entry.data.authorImage || authorEntry?.data.image || '/images/author-default.svg';
+const featuredImageCaption = entry.id === 'curaduria-img-pat'
+  ? 'Identidad visual San Juan en Purificación 2012 - Declaratoria de Patrimonio Cultural Inmaterial'
+  : undefined;
 
 // 2. SOLUCIÓN COMPATIBLE CON ASTRO v5: Renderizado externo y asíncrono
 const { Content } = await render(entry);
@@ -178,19 +180,31 @@ const breadcrumbSchema = {
             display: block;
             height: auto;
             margin-top: 1rem;
-            max-height: 380px;
-            object-fit: cover;
+            max-height: 720px;
+            max-width: 100%;
+            object-fit: contain;
             width: 100%;
+        }
+        .featured-figure {
+            margin: 1rem 0 0;
+        }
+        .featured-figure figcaption {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.6rem;
+            text-align: center;
         }
         :global(.article-inline-image) {
             margin: 0 auto 1.5rem;
-            max-width: 380px;
+            max-width: 520px;
         }
         :global(.article-inline-image img) {
             border-radius: 8px;
             display: block;
             height: auto;
+            max-height: 720px;
             max-width: 100%;
+            object-fit: contain;
             width: 100%;
         }
         :global(.article-inline-image figcaption) {
@@ -526,7 +540,10 @@ const breadcrumbSchema = {
                 )}
 
                 {entry.data.image && (
-                    <Image src={entry.data.image} alt={entry.data.title} class="featured-image" />
+                    <figure class="featured-figure">
+                        <img src={entry.data.image} alt={entry.data.title} class="featured-image" />
+                        {featuredImageCaption && <figcaption>{featuredImageCaption}</figcaption>}
+                    </figure>
                 )}
             </header>
 

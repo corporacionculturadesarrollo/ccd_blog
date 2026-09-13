@@ -31,8 +31,9 @@ const sortedPosts = posts
   .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
-const featuredPosts = sortedPosts.filter((post) => post.data.featured).slice(0, 3);
-const regularPosts = sortedPosts.filter((post) => !post.data.featured);
+const latestPost = sortedPosts[0];
+const featuredPosts = sortedPosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 3);
+const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && !post.data.featured);
 ---
 
 <Layout
@@ -82,6 +83,42 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
                 </div>
             ) : (
                 <>
+                    {latestPost && (
+                        <section class="featured-section latest-section" aria-labelledby="latest-heading">
+                            <div class="featured-header">
+                                <h2 id="latest-heading">Artículo más reciente</h2>
+                                <p>Lo último publicado en el blog para abrir la portada con contenido reciente.</p>
+                            </div>
+                            <div class="featured-grid">
+                                <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
+                                    <span class="featured-badge">Reciente</span>
+                                    <div class="featured-meta">
+                                        <span class="featured-author-line">
+                                            <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
+                                                <img class="post-author-avatar" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                            </button>
+                                            <span>Por {latestPost.data.author}</span>
+                                        </span>
+                                        <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)}</time>
+                                    </div>
+                                    <h3>
+                                        <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
+                                    </h3>
+                                    <p>{latestPost.data.description}</p>
+                                    <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
+                                    <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
+                                        <div class="author-modal-heading">
+                                            <img class="author-modal-image" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                            <h2>{latestPost.data.author}</h2>
+                                        </div>
+                                        <p>{authorBioBySlug.get(latestPost.data.authorSlug ?? '') ?? latestPost.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                        <button class="author-modal-close" type="button">Cerrar</button>
+                                    </dialog>
+                                </article>
+                            </div>
+                        </section>
+                    )}
+
                     {featuredPosts.length > 0 && (
                         <section class="featured-section" aria-labelledby="featured-heading">
                             <div class="featured-header">
