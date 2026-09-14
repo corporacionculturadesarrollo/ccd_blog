@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate } from '../../lib/formatDate';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))].sort((a, b) => b - a);
+const monthName = new Intl.DateTimeFormat('es-CO', { month: 'long' });
+---
+
+<Layout title="Archivo | Blog Cultura y Desarrollo" description="Archivo anual de artículos del Blog de Cultura y Desarrollo.">
+  <div class="blog-container archive-page">
+    <header class="page-heading">
+      <p class="eyebrow">Memoria editorial</p>
+      <h1>Archivo</h1>
+      <p>Explora las publicaciones por año.</p>
+    </header>
+    <div class="year-grid">
+      {years.map((year) => (
+        <section class="year-group">
+          <a class="year-card" href={`/archivo/${year}/`}><strong>{year}</strong><span>{posts.filter((post) => post.data.pubDate.getFullYear() === year).length} publicaciones</span></a>
+          <div class="month-list">
+            {[...new Set(posts.filter((post) => post.data.pubDate.getFullYear() === year).map((post) => post.data.pubDate.getMonth()))].sort((a, b) => b - a).map((month) => {
+              const count = posts.filter((post) => post.data.pubDate.getFullYear() === year && post.data.pubDate.getMonth() === month).length;
+              return <a href={`/archivo/${year}/${String(month + 1).padStart(2, '0')}/`}>{monthName.format(new Date(year, month, 1))} <span>{count}</span></a>;
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+    {posts.length === 0 && <p class="blog-empty-state">Todavía no hay publicaciones en el archivo.</p>}
+  </div>
+</Layout>

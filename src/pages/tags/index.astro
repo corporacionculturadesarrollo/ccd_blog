@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { slugify } from '../../lib/slugify';
+
+const posts = await getCollection('blog');
+const tags = [...new Map(posts.flatMap((post) => post.data.tags).map((tag) => [slugify(tag), tag]))].sort(([, a], [, b]) => a.localeCompare(b, 'es'));
+---
+
+<Layout title="Etiquetas | Blog Cultura y Desarrollo" description="Explora las etiquetas del blog.">
+  <div class="blog-container archive-page">
+    <header class="page-heading">
+      <p class="eyebrow">Descubrimiento</p>
+      <h1>Etiquetas</h1>
+      <p>Explora conceptos y temas transversales.</p>
+    </header>
+    {tags.length > 0 ? (
+      <div class="tag-cloud">
+        {tags.map(([slug, label]) => <a class="tag-item" href={`/tags/${slug}/`}>#{label}</a>)}
+      </div>
+    ) : <p class="blog-empty-state">Todavía no hay etiquetas.</p>}
+  </div>
+</Layout>

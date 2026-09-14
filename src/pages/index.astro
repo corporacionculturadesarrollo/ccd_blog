@@ -5,6 +5,7 @@ import BackToTop from '../components/BackToTop.astro';
 import Layout from '../layouts/Layout.astro';
 import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
+import { HOME_PAGE_SIZE } from '../lib/pagination';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
@@ -30,10 +31,12 @@ const sortedPosts = posts
   }))
   .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 
+const pagePosts = sortedPosts.slice(0, HOME_PAGE_SIZE);
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
-const latestPost = sortedPosts[0];
-const featuredPosts = sortedPosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 3);
-const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && !post.data.featured);
+const latestPost = pagePosts[0];
+const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 3);
+const regularPosts = pagePosts.filter((post) => post.id !== latestPost?.id && !post.data.featured);
+const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
 ---
 
 <Layout
@@ -54,7 +57,7 @@ const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && 
         </header>
 
         <div class="blog-search-wrap" aria-label="Buscar artículos del blog">
-            <form id="blog-search-form" class="blog-search-controls" role="search" aria-label="Buscar artículos">
+            <form id="blog-search-form" class="blog-search-controls" role="search" aria-label="Buscar artículos" data-index-url={`${import.meta.env.BASE_URL}search-index.json`} data-base-url={import.meta.env.BASE_URL}>
                 <input
                     id="blog-search-input"
                     class="blog-search-input"
@@ -72,8 +75,9 @@ const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && 
                 </select>
             </form>
             <p id="blog-search-count" class="blog-search-count" aria-live="polite">
-                {sortedPosts.length} artículo{sortedPosts.length === 1 ? '' : 's'}
+                {sortedPosts.length} artículo{sortedPosts.length === 1 ? '' : 's'} · página 1 de {pageCount}
             </p>
+            <div id="global-search-results" class="global-search-results" hidden aria-live="polite"></div>
         </div>
 
         <main>
@@ -198,6 +202,15 @@ const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && 
                             </li>
                         ))}
                     </ul>
+                    {pageCount > 1 && (
+                        <nav class="pagination-container archive-pagination" aria-label="Paginación de artículos">
+                            <span aria-hidden="true"></span>
+                            <a class="pagination-btn next" href="/pagina/2/">
+                                <span class="label">Más antiguos →</span>
+                                <span class="title">Página 2</span>
+                            </a>
+                        </nav>
+                    )}
                 </>
             )}
         </main>
@@ -211,6 +224,42 @@ const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && 
         const posts = Array.from(document.querySelectorAll('.post-item, .featured-card'));
         const emptyState = document.getElementById('blog-empty-state');
         const countEl = document.getElementById('blog-search-count');
+        const globalResults = document.getElementById('global-search-results');
+        const searchIndexUrl = searchForm?.dataset.indexUrl || '/search-index.json';
+        const siteBaseUrl = searchForm?.dataset.baseUrl || '/';
+        let globalIndex = null;
+
+        const loadGlobalIndex = async () => {
+            if (globalIndex) return globalIndex;
+            const response = await fetch(searchIndexUrl);
+            if (!response.ok) throw new Error('No se pudo cargar el índice de búsqueda.');
+            globalIndex = (await response.json()).items || [];
+            return globalIndex;
+        };
+
+        const renderGlobalResults = (query) => {
+            if (!globalResults) return;
+            const matches = globalIndex.filter((item) => item.text.toLowerCase().includes(query));
+            globalResults.replaceChildren();
+            if (!query || matches.length === 0) {
+                globalResults.hidden = true;
+                return;
+            }
+            const heading = document.createElement('strong');
+            heading.textContent = `Resultados en todo el archivo (${matches.length})`;
+            globalResults.append(heading);
+            const list = document.createElement('ul');
+            matches.slice(0, 8).forEach((item) => {
+                const li = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = `${siteBaseUrl.replace(/\/$/, '')}${item.url}`;
+                link.textContent = item.title;
+                li.append(link);
+                list.append(li);
+            });
+            globalResults.append(list);
+            globalResults.hidden = false;
+        };
 
         const applyFilters = () => {
             const query = (searchInput?.value || '').trim().toLowerCase();
@@ -232,6 +281,8 @@ const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id && 
                 const baseLabel = `${posts.length} ${label}`;
                 countEl.textContent = query || selectedAuthor ? `${visibleCount} ${label} coincidentes` : baseLabel;
             }
+            if (query) loadGlobalIndex().then(() => renderGlobalResults(query)).catch(() => {});
+            else if (globalResults) globalResults.hidden = true;
         };
 
         searchInput?.addEventListener('input', applyFilters);

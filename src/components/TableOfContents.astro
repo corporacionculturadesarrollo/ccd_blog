@@ -1,0 +1,59 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+const { headings = [] } = Astro.props as { headings?: Heading[] };
+const visibleHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+{visibleHeadings.length > 0 && (
+  <aside class="toc" aria-label="Índice del artículo">
+    <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-panel">
+      <span aria-hidden="true">☰</span>
+      <span>Índice</span>
+    </button>
+    <div class="toc-panel" id="toc-panel" hidden>
+      <div class="toc-panel-header">
+        <h2 id="toc-title">En este artículo</h2>
+        <button class="toc-close" type="button" aria-label="Cerrar índice">×</button>
+      </div>
+      <a class="toc-top-link" href="#top">↑ Inicio del artículo</a>
+      <ol aria-labelledby="toc-title">
+        {visibleHeadings.map((heading) => (
+          <li class:list={{ 'toc-subitem': heading.depth === 3 }}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </aside>
+)}
+
+<script>
+  const toc = document.querySelector<HTMLElement>('.toc');
+  const toggle = toc?.querySelector<HTMLButtonElement>('.toc-toggle');
+  const close = toc?.querySelector<HTMLButtonElement>('.toc-close');
+  const panel = toc?.querySelector<HTMLElement>('.toc-panel');
+
+  if (toc && toggle && close && panel) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      if (open) close.focus();
+      else toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => setOpen(panel.hidden));
+    close.addEventListener('click', () => setOpen(false));
+    panel.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) setOpen(false);
+    });
+    document.addEventListener('click', (event) => {
+      if (!panel.hidden && !toc.contains(event.target as Node)) setOpen(false);
+    });
+  }
+</script>

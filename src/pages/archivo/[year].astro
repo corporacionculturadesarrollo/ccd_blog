@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate } from '../../lib/formatDate';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))];
+  return years.map((year) => ({ params: { year: String(year) }, props: { posts: posts.filter((post) => post.data.pubDate.getFullYear() === year).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) } }));
+}
+
+const { year } = Astro.params;
+const { posts } = Astro.props;
+const monthName = new Intl.DateTimeFormat('es-CO', { month: 'long' });
+const months = [...new Set(posts.map((post) => post.data.pubDate.getMonth()))].sort((a, b) => b - a);
+---
+
+<Layout title={`Archivo ${year} | Blog Cultura y Desarrollo`} description={`Artículos publicados en ${year}.`}>
+  <div class="blog-container archive-page">
+    <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Archivo', href: '/archivo/' }, { label: year ?? 'Año' }]} />
+    <header class="page-heading">
+      <p class="eyebrow">Archivo anual</p>
+      <h1>{year}</h1>
+      <p>{posts.length} publicaciones de este año.</p>
+    </header>
+    <div class="month-list archive-months">
+      {months.map((month) => <a href={`/archivo/${year}/${String(month + 1).padStart(2, '0')}/`}>{monthName.format(new Date(Number(year), month, 1))} <span>{posts.filter((post) => post.data.pubDate.getMonth() === month).length}</span></a>)}
+    </div>
+  </div>
+</Layout>

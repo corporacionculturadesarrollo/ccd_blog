@@ -6,6 +6,8 @@ import BackToTop from '../components/BackToTop.astro';
 import Layout from '../layouts/Layout.astro';
 import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
@@ -37,7 +39,7 @@ const featuredImageCaption = entry.id === 'curaduria-img-pat'
   : undefined;
 
 // 2. SOLUCIÓN COMPATIBLE CON ASTRO v5: Renderizado externo y asíncrono
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 // 3. Algoritmo de artículos relacionados libre de colapsos
 const allPosts = await getCollection('blog');
@@ -54,6 +56,12 @@ const relatedPosts = allPosts
   .sort((a, b) => b.score - a.score)
   .slice(0, 2)
   .map(item => item.post);
+const fallbackRelated = allPosts
+  .filter((post) => post.id !== entry.id && !relatedPosts.some((related) => related.id === post.id))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+const finalRelatedPosts = [...relatedPosts, ...fallbackRelated].slice(0, 3);
+const readingMinutes = Math.max(1, Math.ceil((entry.body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
 const articleUrl = new URL(`/${entry.id}/`, Astro.site ?? Astro.url).href;
 const articleSchema = {
@@ -115,7 +123,7 @@ const breadcrumbSchema = {
         }
         .category-badge {
             background-color: var(--color-primary);
-            color: #ffffff;
+            color: var(--color-on-primary);
             padding: 0.3rem 0.8rem;
             border-radius: 4px;
             font-size: 0.85rem;
@@ -130,7 +138,7 @@ const breadcrumbSchema = {
         }
         .meta-info {
             align-items: center;
-            color: #718096;
+            color: var(--color-muted);
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
@@ -147,7 +155,7 @@ const breadcrumbSchema = {
             object-fit: cover;
         }
         .meta-divider {
-            color: #a0a8b5;
+            color: var(--color-muted);
         }
         .article-content {
             margin-top: 2rem;
@@ -189,7 +197,7 @@ const breadcrumbSchema = {
             margin: 1rem 0 0;
         }
         .featured-figure figcaption {
-            color: #718096;
+            color: var(--color-muted);
             font-size: 0.9rem;
             margin-top: 0.6rem;
             text-align: center;
@@ -208,7 +216,7 @@ const breadcrumbSchema = {
             width: 100%;
         }
         :global(.article-inline-image figcaption) {
-            color: #718096;
+            color: var(--color-muted);
             font-size: 0.9rem;
             margin-top: 0.5rem;
             text-align: center;
@@ -231,7 +239,7 @@ const breadcrumbSchema = {
             object-fit: contain;
         }
         :global(.article-video figcaption) {
-            color: #718096;
+            color: var(--color-muted);
             font-size: 0.9rem;
             margin-top: 0.5rem;
             text-align: center;
@@ -275,7 +283,7 @@ const breadcrumbSchema = {
         :global(.article-post-share button:focus-visible) {
             background: var(--color-secondary);
             border-color: var(--color-secondary);
-            color: #ffffff;
+            color: var(--color-on-primary);
         }
         :global(.article-post-share svg) {
             fill: currentColor;
@@ -283,7 +291,7 @@ const breadcrumbSchema = {
             width: 1.25rem;
         }
         :global(.article-post-share-status) {
-            color: #718096;
+            color: var(--color-muted);
             flex-basis: 100%;
             font-size: 0.8rem;
             min-height: 1.2em;
@@ -318,11 +326,11 @@ const breadcrumbSchema = {
         }
         .pagination-btn:hover, .history-btn:hover {
             border-color: var(--color-secondary);
-            background: #ffffff;
+            background: var(--color-bg);
         }
         .pagination-btn .label, .history-btn .label {
             font-size: 0.8rem;
-            color: #718096;
+            color: var(--color-muted);
             text-transform: uppercase;
             font-weight: 600;
             margin-bottom: 0.25rem;
@@ -494,7 +502,7 @@ const breadcrumbSchema = {
             background: var(--color-primary);
             border: 0;
             border-radius: 4px;
-            color: #ffffff;
+            color: var(--color-on-primary);
             cursor: pointer;
             margin-top: 1rem;
             padding: 0.6rem 1rem;
@@ -507,6 +515,7 @@ const breadcrumbSchema = {
         <div id="current-post-data" data-id={entry.id} data-title={entry.data.title} style="display:none;"></div>
 
         <article>
+            <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Archivo', href: '/archivo/' }, { label: entry.data.title }]} />
             <header class="article-header">
                 <span class="category-badge">
                     {entry.data.category.map((category, index) => (
@@ -523,10 +532,12 @@ const breadcrumbSchema = {
                         <button class="author-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`} title={`Abrir biografía de ${entry.data.author}`}>
                             <img src={authorImage} alt={`Foto de ${entry.data.author}`} width="44" height="44" />
                         </button>
-                        <span>Por <strong>{entry.data.author}</strong></span>
+                        <span>Por <a href={`/autores/${entry.data.authorSlug ?? slugify(entry.data.author)}/`}><strong>{entry.data.author}</strong></a></span>
                     </span>
                     <span class="meta-divider" aria-hidden="true">•</span>
                     <time>{formatDate(entry.data.pubDate)}</time>
+                    <span class="meta-divider" aria-hidden="true">•</span>
+                    <span>{readingMinutes} min de lectura</span>
                 </div>
 
                 {entry.data.tags && entry.data.tags.length > 0 && (
@@ -547,8 +558,11 @@ const breadcrumbSchema = {
                 )}
             </header>
 
-            <div class="article-content">
+            <div class="article-layout">
+                <TableOfContents headings={headings} />
+                <div class="article-content">
                 <Content />
+                </div>
             </div>
 
             <p class="article-comment-cta">
@@ -612,11 +626,11 @@ const breadcrumbSchema = {
         </nav>
 
         <!-- RECOMENDACIONES -->
-        {relatedPosts.length > 0 && (
+        {finalRelatedPosts.length > 0 && (
             <section class="related-section">
                 <h2 style="color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem;">Artículos relacionados</h2>
                 <div class="related-grid">
-                    {relatedPosts.map(post => (
+                    {finalRelatedPosts.map(post => (
                         <div class="related-card">
                             <h3><a href={`/${post.id}/`}>{post.data.title}</a></h3>
                             <p>{post.data.description}</p>

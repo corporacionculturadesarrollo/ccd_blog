@@ -27,10 +27,12 @@ const { title, description, type = 'website', author, publishedDate } = Astro.pr
 			author={author}
 			publishedDate={publishedDate}
 		/>
+		<link rel="manifest" href="/manifest.webmanifest" />
 		<slot name="head" />
 	</head>
 	<body id="top">
+		<a class="skip-link" href="#main-content">Saltar al contenido</a>
 		<BlogNavbar />
-		<slot />
+		<main id="main-content"><slot /></main>
 	</body>
 </html>

@@ -4,19 +4,33 @@ const { contactHref = '/#contacto' } = Astro.props;
 ---
 <nav class="blog-navbar">
   <div class="navbar-container">
-    <!-- Enlace de regreso al portal institucional -->
-    <a href="https://culturaydesarrollo.org" class="navbar-brand">
+    <!-- El logotipo enlaza al portal institucional -->
+    <a href="https://culturaydesarrollo.org" class="navbar-brand" aria-label="Cultura y Desarrollo">
       <img src="/images/logo.svg" alt="Cultura y Desarrollo" />
-      ← <span>Cultura y Desarrollo</span>
     </a>
     
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="sr-only">Abrir menú</span>
+      <span aria-hidden="true" class="menu-icon">☰</span>
+    </button>
+
     <!-- Enlaces directos y simplificados -->
-<ul class="navbar-links">
-  <li><a href="https://blog.culturaydesarrollo.org">Inicio Blog</a></li>
+<ul class="navbar-links" id="primary-navigation">
+  <li><a href="https://blog.culturaydesarrollo.org">Inicio</a></li>
+  <li><a href="/categorias/">Categorías</a></li>
+  <li><a href="/tags/">Etiquetas</a></li>
+  <li><a href="/archivo/">Archivo</a></li>
+  <li><a href="/autores/">Autores</a></li>
   <li>
     <a href={contactHref} class="nav-btn">
       Contacto
     </a>
+  </li>
+  <li><button class="theme-toggle" type="button" aria-pressed="false">Tema</button></li>
+  <li class="text-size-controls" aria-label="Tamaño de texto">
+    <button type="button" data-text-size="smaller" aria-label="Reducir tamaño de texto">A−</button>
+    <button type="button" data-text-size="reset" aria-label="Restablecer tamaño de texto">A</button>
+    <button type="button" data-text-size="larger" aria-label="Aumentar tamaño de texto">A+</button>
   </li>
 </ul>
   </div>
@@ -30,7 +44,7 @@ const { contactHref = '/#contacto' } = Astro.props;
     left: 0;
     width: 100%;
     height: 65px;
-    background-color: #ffffff;
+    background-color: var(--color-bg, #ffffff);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     border-bottom: 1px solid var(--color-border, #e4d7cf);
     z-index: 1000;
@@ -67,29 +81,48 @@ const { contactHref = '/#contacto' } = Astro.props;
     transform-origin: left center;
   }
 
-  .navbar-brand span {
-    color: var(--color-primary, #24130f);
-    font-weight: 700;
-    margin-left: 0.25rem;
-  }
-
-  .navbar-brand:hover span {
-    color: var(--color-secondary, #9a5f3f);
-  }
-
   .navbar-links {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    justify-content: flex-end;
+    gap: 0.7rem;
     margin: 0;
     padding: 0;
   }
 
+  .menu-toggle {
+    background: transparent;
+    border: 1px solid var(--color-border, #e4d7cf);
+    border-radius: 0.4rem;
+    color: var(--color-primary, #24130f);
+    cursor: pointer;
+    display: none;
+    font-size: 1.35rem;
+    line-height: 1;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .menu-toggle:focus-visible,
+  .navbar-links a:focus-visible,
+  .navbar-links button:focus-visible {
+    outline: 3px solid var(--color-secondary, #9a5f3f);
+    outline-offset: 3px;
+  }
+
+  .sr-only {
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+    clip: rect(0, 0, 0, 0);
+  }
+
   .navbar-links a {
     color: var(--color-text, #3f302b);
-    font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 600;
     text-decoration: none;
     transition: color 0.2s ease;
   }
@@ -101,26 +134,37 @@ const { contactHref = '/#contacto' } = Astro.props;
   /* Botón de Contacto */
   .navbar-links .nav-btn {
     background-color: var(--color-primary, #24130f);
-    color: #ffffff;
-    padding: 0.4rem 1rem;
+    color: var(--color-on-primary, #ffffff);
+    padding: 0.28rem 0.65rem;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     transition: background-color 0.2s ease;
+  }
+
+  .theme-toggle {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.45rem;
+  }
+
+  .text-size-controls {
+    gap: 0.1rem;
+  }
+
+  .text-size-controls button {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.18rem 0.3rem;
   }
 
   .navbar-links .nav-btn:hover {
     background-color: var(--color-secondary, #9a5f3f);
-    color: #ffffff;
+    color: var(--color-on-primary, #ffffff);
     text-decoration: none;
   }
 
   @media (max-width: 560px) {
     .navbar-container {
       padding: 0 1rem;
-    }
-
-    .navbar-brand span {
-      display: none;
     }
 
     .navbar-brand img {
@@ -131,12 +175,90 @@ const { contactHref = '/#contacto' } = Astro.props;
       transform-origin: left center;
     }
 
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      margin-right: 0.5rem;
+    }
+
     .navbar-links {
-      gap: 0.75rem;
+      background: var(--color-bg, #ffffff);
+      border-bottom: 1px solid var(--color-border, #e4d7cf);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.2rem;
+      left: 0;
+      padding: 0.75rem 1rem 1rem;
+      position: absolute;
+      right: 0;
+      top: 65px;
+    }
+
+    .navbar-links[data-open='true'] {
+      display: flex;
     }
 
     .navbar-links a {
+      display: block;
       font-size: 0.85rem;
+      padding: 0.6rem 0.25rem;
+    }
+
+    .navbar-links .nav-btn {
+      text-align: center;
     }
   }
 </style>
+<script is:inline>
+  const menuButton = document.querySelector('.menu-toggle');
+  const navigation = document.querySelector('#primary-navigation');
+  menuButton?.addEventListener('click', () => {
+    const isOpen = navigation?.getAttribute('data-open') === 'true';
+    navigation?.setAttribute('data-open', String(!isOpen));
+    menuButton.setAttribute('aria-expanded', String(!isOpen));
+    const label = menuButton.querySelector('.sr-only');
+    if (label) label.textContent = isOpen ? 'Abrir menú' : 'Cerrar menú';
+  });
+  navigation?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      navigation.removeAttribute('data-open');
+      menuButton?.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  const themeButton = document.querySelector('.theme-toggle');
+  const root = document.documentElement;
+  const storedTheme = localStorage.getItem('ccd-theme');
+  if (storedTheme === 'dark' || storedTheme === 'light') root.dataset.theme = storedTheme;
+  const syncThemeButton = () => {
+    const dark = root.dataset.theme === 'dark';
+    themeButton?.setAttribute('aria-pressed', String(dark));
+    if (themeButton) themeButton.textContent = dark ? 'Claro' : 'Oscuro';
+  };
+  syncThemeButton();
+  themeButton?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem('ccd-theme', next);
+    syncThemeButton();
+  });
+  const textRoot = document.documentElement;
+  const storedTextSize = localStorage.getItem('ccd-text-size');
+  if (storedTextSize === 'larger' || storedTextSize === 'smaller') textRoot.dataset.textSize = storedTextSize;
+  document.querySelectorAll('[data-text-size]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const value = button.getAttribute('data-text-size');
+      if (value === 'reset') {
+        delete textRoot.dataset.textSize;
+        localStorage.removeItem('ccd-text-size');
+      } else if (value) {
+        textRoot.dataset.textSize = value;
+        localStorage.setItem('ccd-text-size', value);
+      }
+    });
+  });
+</script>

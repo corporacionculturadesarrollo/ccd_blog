@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro';
+import { formatDate } from '../../../../lib/formatDate';
+import { MONTH_PAGE_SIZE } from '../../../../lib/pagination';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const groups = new Map<string, typeof posts>();
+  for (const post of posts) {
+    const key = `${post.data.pubDate.getFullYear()}-${String(post.data.pubDate.getMonth() + 1).padStart(2, '0')}`;
+    groups.set(key, [...(groups.get(key) ?? []), post]);
+  }
+  return [...groups.entries()].flatMap(([key, grouped]) => {
+    const [year, month] = key.split('-');
+    const sorted = grouped.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    const pageCount = Math.ceil(sorted.length / MONTH_PAGE_SIZE);
+    return Array.from({ length: Math.max(pageCount - 1, 0) }, (_, index) => {
+      const page = index + 2;
+      return { params: { year, month, page: String(page) }, props: { posts: sorted.slice((page - 1) * MONTH_PAGE_SIZE, page * MONTH_PAGE_SIZE), year, month, page, pageCount, total: sorted.length } };
+    });
+  });
+}
+
+const { posts, year, month, page, pageCount, total } = Astro.props;
+const monthLabel = new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' }).format(new Date(Number(year), Number(month) - 1, 1));
+---
+
+<Layout title={`${monthLabel} · Página ${page} | Archivo`} description={`Página ${page} del archivo de ${monthLabel}.`}>
+  <div class="blog-container archive-page">
+    <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Archivo', href: '/archivo/' }, { label: year, href: `/archivo/${year}/` }, { label: monthLabel }]} />
+    <header class="page-heading"><p class="eyebrow">Archivo mensual</p><h1>{monthLabel}</h1><p>Página {page} de {pageCount} · {total} publicaciones.</p></header>
+    <ul class="posts-list">
+      {posts.map((post) => <li class="post-item"><time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time><h2><a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a></h2><p class="post-description">{post.data.description}</p></li>)}
+    </ul>
+    <nav class="pagination-container archive-pagination" aria-label="Paginación mensual">
+      <a class="pagination-btn prev" href={page === 2 ? `/archivo/${year}/${month}/` : `/archivo/${year}/${month}/${page - 1}/`}><span class="label">← Más recientes</span><span class="title">Página {page - 1}</span></a>
+      {page < pageCount ? <a class="pagination-btn next" href={`/archivo/${year}/${month}/${page + 1}/`}><span class="label">Más antiguos →</span><span class="title">Página {page + 1}</span></a> : <span aria-hidden="true"></span>}
+    </nav>
+  </div>
+</Layout>

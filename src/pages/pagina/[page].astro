@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { formatDate } from '../../lib/formatDate';
+import { HOME_PAGE_SIZE } from '../../lib/pagination';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const pageCount = Math.ceil(posts.length / HOME_PAGE_SIZE);
+  return Array.from({ length: Math.max(pageCount - 1, 0) }, (_, index) => {
+    const page = index + 2;
+    return { params: { page: String(page) }, props: { posts: posts.slice((page - 1) * HOME_PAGE_SIZE, page * HOME_PAGE_SIZE), page, pageCount } };
+  });
+}
+
+const { posts, page, pageCount } = Astro.props;
+const previousHref = page === 2 ? '/' : `/pagina/${page - 1}/`;
+const nextHref = page < pageCount ? `/pagina/${page + 1}/` : undefined;
+---
+
+<Layout title={`Página ${page} · Blog Cultura y Desarrollo`} description="Archivo editorial paginado del Blog de Cultura y Desarrollo.">
+  <div class="blog-container archive-page">
+    <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: `Página ${page}` }]} />
+    <header class="page-heading">
+      <p class="eyebrow">Archivo editorial</p>
+      <h1>Página {page}</h1>
+      <p>Artículos {((page - 1) * HOME_PAGE_SIZE) + 1}–{Math.min(page * HOME_PAGE_SIZE, pageCount * HOME_PAGE_SIZE)} del archivo.</p>
+    </header>
+    {posts.length > 0 ? (
+      <ul class="posts-list">
+        {posts.map((post) => (
+          <li class="post-item">
+            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <h2><a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a></h2>
+            <p class="post-description">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : <p class="blog-empty-state">No hay artículos en esta página.</p>}
+    <nav class="pagination-container archive-pagination" aria-label="Paginación de artículos">
+      <a class="pagination-btn prev" href={previousHref}><span class="label">← Más recientes</span><span class="title">Página {page - 1}</span></a>
+      {nextHref ? <a class="pagination-btn next" href={nextHref}><span class="label">Más antiguos →</span><span class="title">Página {page + 1}</span></a> : <span aria-hidden="true"></span>}
+    </nav>
+  </div>
+</Layout>

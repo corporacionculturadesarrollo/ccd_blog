@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { formatDate } from '../../lib/formatDate';
+
+export async function getStaticPaths() {
+  const authors = await getCollection('autores');
+  const posts = await getCollection('blog');
+  return authors.map((author) => ({
+    params: { slug: author.data.slug ?? author.id },
+    props: { author, posts: posts.filter((post) => post.data.authorSlug === author.id || post.data.author === author.data.name).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) },
+  }));
+}
+
+const { author, posts } = Astro.props;
+const { Content } = await render(author);
+---
+
+<Layout title={`${author.data.name} | Blog Cultura y Desarrollo`} description={`Artículos de ${author.data.name}.`}>
+  <div class="blog-container archive-page">
+    <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Autores', href: '/autores/' }, { label: author.data.name }]} />
+    <header class="author-profile">
+      <img src={author.data.image} alt="" width="112" height="112" />
+      <div>
+        <p class="eyebrow">Autoría</p>
+        <h1>{author.data.name}</h1>
+      </div>
+    </header>
+    <div class="author-bio"><Content /></div>
+    <h2 class="section-title">Artículos de {author.data.name}</h2>
+    {posts.length > 0 ? (
+      <ul class="posts-list">
+        {posts.map((post) => (
+          <li class="post-item">
+            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <h3><a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a></h3>
+            <p class="post-description">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : <p class="blog-empty-state">Este autor todavía no tiene publicaciones asociadas.</p>}
+  </div>
+</Layout>
