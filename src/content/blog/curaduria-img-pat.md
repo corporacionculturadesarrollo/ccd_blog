@@ -16,8 +16,6 @@ tags: ["San Juan en Purificación", "Decreto 1911 de 2011 Tolima", "Diseño de i
 	<figcaption>Identidad Visual San Juan en Purificación 2016 / Declaratoria patrimonio Cultural Inmaterial</figcaption>
 </figure>
 
-# Curaduría de Imagen Patrimonial: Análisis del caso San Juan en Purificación (Tolima)
-
 El diseño de la identidad visual para manifestaciones inscritas en el Patrimonio Cultural Inmaterial (PCI) no responde a las lógicas del mercadeo territorial o el *branding* corporativo. Desde una perspectiva de curaduría de diseño, la imagen opera como un **dispositivo de mediación**, un articulador formal entre un marco jurídico estático y una manifestación comunitaria viva, transitoria y predominantemente oral.
 
 Aquí se documentan variables estructurales resueltas en el logotipo oficial de las festividades del **San Juan en Purificación**, comisionado por la **Corporación Cultura y Desarrollo** tras la expedición del **Decreto 1911 de diciembre de 2011** por la Gobernación del Tolima.
