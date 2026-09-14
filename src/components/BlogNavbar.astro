@@ -271,6 +271,7 @@ const { contactHref = '/#contacto' } = Astro.props;
     root.dataset.theme = next;
     localStorage.setItem('ccd-theme', next);
     syncThemeButton();
+    closeMenu();
   });
   const textRoot = document.documentElement;
   const storedTextSize = localStorage.getItem('ccd-text-size');
