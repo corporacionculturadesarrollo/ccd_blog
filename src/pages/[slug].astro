@@ -174,6 +174,58 @@ const breadcrumbSchema = {
             margin-top: 2rem;
             font-size: 1.1rem;
         }
+        .article-disclaimer {
+            margin: 2rem 0 1.5rem;
+            text-align: right;
+        }
+        .article-disclaimer-trigger {
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+            color: var(--color-primary);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            padding: 0.55rem 0.9rem;
+            text-transform: uppercase;
+        }
+        .article-disclaimer-trigger:hover,
+        .article-disclaimer-trigger:focus-visible {
+            background: var(--color-bg-alt);
+            border-color: var(--color-secondary);
+            text-decoration: none;
+        }
+        .disclaimer-modal {
+            border: 0;
+            border-radius: 10px;
+            box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
+            color: var(--color-text);
+            max-width: 620px;
+            padding: 2rem;
+            width: calc(100% - 2rem);
+        }
+        .disclaimer-modal::backdrop {
+            background: rgba(36, 19, 15, 0.45);
+        }
+        .disclaimer-modal h2 {
+            color: var(--color-primary);
+            margin: 0 0 0.9rem;
+        }
+        .disclaimer-modal p {
+            line-height: 1.7;
+            margin: 0;
+        }
+        .disclaimer-modal-close {
+            background: var(--color-primary);
+            border: 0;
+            border-radius: 4px;
+            color: var(--color-on-primary);
+            cursor: pointer;
+            margin-top: 1rem;
+            padding: 0.7rem 1rem;
+        }
         .tag-list {
             display: flex;
             flex-wrap: wrap;
@@ -613,6 +665,12 @@ const breadcrumbSchema = {
                 </div>
             </div>
 
+            <div class="article-disclaimer">
+                <button class="article-disclaimer-trigger" type="button" data-disclaimer-modal="disclaimer-modal">
+                    Descargo de Responsabilidad
+                </button>
+            </div>
+
             <p class="article-comment-cta">
                 <a href="#contacto">Comenta este artículo...</a>
             </p>
@@ -642,6 +700,17 @@ const breadcrumbSchema = {
             </div>
             <p>{authorBio}</p>
             <button class="author-modal-close" type="button">Cerrar</button>
+        </dialog>
+
+        <dialog class="disclaimer-modal" id="disclaimer-modal">
+            <h2>Descargo de Responsabilidad</h2>
+            <p>
+                El contenido publicado en este artículo corresponde a la opinión personal del autor y no constituye, ni debe interpretarse como, una posición oficial, representativa o institucional de Cultura y Desarrollo. Cultura y Desarrollo no asume responsabilidad por los criterios, interpretaciones, juicios o afirmaciones formulados por el autor en el desarrollo de esta publicación.
+            </p>
+            <p style="margin-top: 0.9rem;">
+                El autor es responsable de la veracidad, pertinencia, alcance y consecuencias jurídicas, éticas o reputacionales de lo expresado en este texto, así como de la información o análisis que aquí se presenta.
+            </p>
+            <button class="disclaimer-modal-close" type="button">Cerrar</button>
         </dialog>
 
         <!-- COMPONENTE: HISTORIAL ANTERIORMENTE CONSULTADO -->
@@ -853,6 +922,15 @@ const breadcrumbSchema = {
         authorModalClose?.addEventListener('click', () => authorModal?.close());
         authorModal?.addEventListener('click', (event) => {
             if (event.target === authorModal) authorModal.close();
+        });
+
+        const disclaimerTrigger = document.querySelector('[data-disclaimer-modal]');
+        const disclaimerModal = document.getElementById('disclaimer-modal');
+        const disclaimerModalClose = disclaimerModal?.querySelector('.disclaimer-modal-close');
+        disclaimerTrigger?.addEventListener('click', () => disclaimerModal?.showModal());
+        disclaimerModalClose?.addEventListener('click', () => disclaimerModal?.close());
+        disclaimerModal?.addEventListener('click', (event) => {
+            if (event.target === disclaimerModal) disclaimerModal.close();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
