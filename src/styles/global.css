@@ -354,9 +354,8 @@ a:hover {
 
 .latest-card-image {
   border-radius: 6px;
-  height: 100%;
-  min-height: 190px;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   width: 100%;
 }
 
@@ -524,9 +523,8 @@ a:hover {
 
 .older-post-image {
   border-radius: 6px;
-  height: 100%;
-  min-height: 190px;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   width: 100%;
 }
 
@@ -725,7 +723,7 @@ a:hover {
   .older-post-image {
     height: auto;
     margin-bottom: 1rem;
-    max-height: 240px;
+    max-height: none;
   }
 
   .post-item:not(.post-item-with-image) .older-post-image {
@@ -737,8 +735,8 @@ a:hover {
     display: block;
     height: auto;
     margin-bottom: 1rem;
-    max-height: 220px;
-    object-fit: cover;
+    max-height: none;
+    object-fit: contain;
     width: 100%;
   }
 
@@ -749,7 +747,7 @@ a:hover {
   .latest-card-image {
     height: auto;
     margin-bottom: 1rem;
-    max-height: 240px;
+    max-height: none;
   }
 
   .post-meta-inline {
