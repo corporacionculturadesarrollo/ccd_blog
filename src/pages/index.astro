@@ -102,6 +102,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                     )}
                                     <div class="latest-card-content">
                                         <span class="featured-badge">Reciente</span>
+                                        <h3>
+                                            <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
+                                        </h3>
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
                                                 <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
@@ -112,9 +115,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                             </span>
                                             <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)} · {latestPost.readingMinutes} min de lectura</time>
                                         </div>
-                                        <h3>
-                                            <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
-                                        </h3>
                                         <p>{latestPost.data.description}</p>
                                         <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
@@ -141,6 +141,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 {featuredPosts.map(post => (
                                     <article class="featured-card" data-search={post.searchText} data-author={post.data.author}>
                                         <span class="featured-badge">Destacado</span>
+                                        <h3>
+                                            <a href={`/${post.id}/`}>{post.data.title}</a>
+                                        </h3>
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
                                                 <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
@@ -151,9 +154,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                             </span>
                                             <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                         </div>
-                                        <h3>
-                                            <a href={`/${post.id}/`}>{post.data.title}</a>
-                                        </h3>
                                         <p>{post.data.description}</p>
                                         <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${post.id}`}>
@@ -185,6 +185,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                     <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
                                 )}
                                 <div class="older-post-content">
+                                <h2>
+                                    <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
+                                </h2>
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
                                         <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
@@ -203,10 +206,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                     ))}
                                 </span>
-                                
-                                <h2>
-                                    <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
-                                </h2>
                                 
                                 <p class="post-description">{post.data.description}</p>
                                 
