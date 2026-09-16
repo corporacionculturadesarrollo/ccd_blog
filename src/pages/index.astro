@@ -171,9 +171,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                     <div id="blog-empty-state" class="blog-empty-state" hidden>
                         <p>No se encontraron artículos que coincidan con tu búsqueda.</p>
                     </div>
-                    <ul class="posts-list">
-                        {regularPosts.map(post => (
-                            <li class="post-item" data-search={post.searchText} data-author={post.data.author}>
+                    {regularPosts.length > 0 && (
+                        <section class="older-posts-section" aria-labelledby="older-posts-heading">
+                            <div class="featured-header">
+                                <h2 id="older-posts-heading">Artículos anteriores</h2>
+                            </div>
+                            <ul class="posts-list">
+                                {regularPosts.map(post => (
+                                    <li class="post-item" data-search={post.searchText} data-author={post.data.author}>
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
                                         <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
@@ -207,9 +212,11 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                     <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
                                     <button class="author-modal-close" type="button">Cerrar</button>
                                 </dialog>
-                            </li>
-                        ))}
-                    </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
                     {pageCount > 1 && (
                         <nav class="pagination-container archive-pagination" aria-label="Paginación de artículos">
                             <span aria-hidden="true"></span>
