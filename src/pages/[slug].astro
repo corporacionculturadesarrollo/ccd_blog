@@ -34,6 +34,7 @@ const { entry, prevPost, nextPost } = Astro.props;
 const authorEntry = entry.data.authorSlug ? await getEntry('autores', entry.data.authorSlug) : undefined;
 const authorBio = authorEntry?.body || entry.data.authorBio || 'Biografía del autor próximamente.';
 const authorImage = entry.data.authorImage || authorEntry?.data.image || '/images/author-default.svg';
+const hasInlineFeaturedImage = Boolean(entry.data.image && entry.body?.includes(entry.data.image));
 const featuredImageCaption = entry.id === 'curaduria-img-pat'
   ? 'Identidad visual San Juan en Purificación 2012 - Declaratoria de Patrimonio Cultural Inmaterial'
   : undefined;
@@ -454,18 +455,26 @@ const breadcrumbSchema = {
             gap: 0.15rem;
             padding: 0;
         }
-        .author-trigger::after {
-            color: var(--color-secondary);
-            content: 'ver bio';
-            font-size: 0.62rem;
-            font-weight: 700;
-        }
         .author-trigger:hover,
         .author-trigger:focus-visible {
             background: transparent;
         }
-        .author-trigger:hover::after,
-        .author-trigger:focus-visible::after {
+
+        .author-bio-trigger {
+            background: transparent;
+            border: 0;
+            color: var(--color-secondary);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        .author-bio-trigger:hover,
+        .author-bio-trigger:focus-visible {
+            background: transparent;
             text-decoration: underline;
         }
         .author-trigger img {
@@ -539,6 +548,7 @@ const breadcrumbSchema = {
                             <img src={authorImage} alt={`Foto de ${entry.data.author}`} width="44" height="44" />
                         </button>
                         <span>Por <a href={`/autores/${entry.data.authorSlug ?? slugify(entry.data.author)}/`}><strong>{entry.data.author}</strong></a></span>
+                        <button class="author-bio-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`} title={`Abrir biografía de ${entry.data.author}`}>ver bio</button>
                     </span>
                     <span class="meta-divider" aria-hidden="true">•</span>
                     <time>{formatDate(entry.data.pubDate)}</time>
@@ -556,7 +566,7 @@ const breadcrumbSchema = {
                     </div>
                 )}
 
-                {entry.data.image && entry.data.showImageInArticle && (
+                {entry.data.image && entry.data.showImageInArticle && !hasInlineFeaturedImage && (
                     <figure class="featured-figure">
                         <img src={entry.data.image} alt={entry.data.title} class="featured-image" />
                         {featuredImageCaption && <figcaption>{featuredImageCaption}</figcaption>}

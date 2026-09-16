@@ -491,6 +491,9 @@ a:hover {
 }
 
 .posts-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
@@ -500,9 +503,31 @@ a:hover {
   background: var(--color-bg-alt);
   border-left: 5px solid var(--color-secondary);
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   padding: 2rem;
   box-shadow: var(--shadow-soft);
+}
+
+.post-item:first-child {
+  grid-column: 1 / -1;
+}
+
+.post-item-with-image {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(180px, 32%) 1fr;
+}
+
+.older-post-image {
+  border-radius: 6px;
+  height: 100%;
+  min-height: 190px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.older-post-content {
+  min-width: 0;
 }
 
 .post-meta-inline {
@@ -577,11 +602,15 @@ a:hover {
   padding: 0;
 }
 
-.author-trigger::after {
+.author-bio-trigger {
+  background: transparent;
+  border: 0;
   color: var(--color-secondary);
-  content: 'ver bio';
+  cursor: pointer;
+  font: inherit;
   font-size: 0.62rem;
   font-weight: 700;
+  padding: 0;
   white-space: nowrap;
 }
 
@@ -590,8 +619,9 @@ a:hover {
   background: transparent;
 }
 
-.author-trigger:hover::after,
-.author-trigger:focus-visible::after {
+.author-bio-trigger:hover,
+.author-bio-trigger:focus-visible {
+  background: transparent;
   text-decoration: underline;
 }
 
@@ -670,6 +700,24 @@ a:hover {
 
   .post-item {
     padding: 1.2rem;
+  }
+
+  .posts-list {
+    grid-template-columns: 1fr;
+  }
+
+  .post-item:first-child {
+    grid-column: auto;
+  }
+
+  .post-item-with-image {
+    display: block;
+  }
+
+  .older-post-image {
+    height: auto;
+    margin-bottom: 1rem;
+    max-height: 240px;
   }
 
   .latest-card:has(.latest-card-image) {

@@ -108,6 +108,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                                     <img class="post-author-avatar" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {latestPost.data.author}</span>
+                                                <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>ver bio</button>
                                             </span>
                                             <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)} · {latestPost.readingMinutes} min de lectura</time>
                                         </div>
@@ -146,6 +147,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                                     <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {post.data.author}</span>
+                                                    <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
                                             </span>
                                             <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                         </div>
@@ -177,14 +179,19 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <h2 id="older-posts-heading">Artículos anteriores</h2>
                             </div>
                             <ul class="posts-list">
-                                {regularPosts.map(post => (
-                                    <li class="post-item" data-search={post.searchText} data-author={post.data.author}>
+                                {regularPosts.map((post, index) => (
+                                    <li class:list={['post-item', { 'post-item-with-image': index === 0 && post.data.image }]} data-search={post.searchText} data-author={post.data.author}>
+                                {index === 0 && post.data.image && (
+                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                )}
+                                <div class="older-post-content">
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
                                         <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
                                             <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                         </button>
                                         <span>Por {post.data.author}</span>
+                                        <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
                                     </span>
                                     <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                 </div>
@@ -212,6 +219,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                     <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
                                     <button class="author-modal-close" type="button">Cerrar</button>
                                 </dialog>
+                                </div>
                                     </li>
                                 ))}
                             </ul>
