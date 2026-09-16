@@ -141,8 +141,8 @@ const breadcrumbSchema = {
             align-items: center;
             color: var(--color-muted);
             display: flex;
-            flex-wrap: nowrap;
-            gap: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.75rem;
             font-size: 0.9rem;
             justify-content: flex-start;
             margin-bottom: 1.25rem;
@@ -160,6 +160,12 @@ const breadcrumbSchema = {
         .meta-author img {
             border-radius: 50%;
             object-fit: cover;
+        }
+        .meta-details {
+            align-items: center;
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .meta-divider {
             color: var(--color-muted);
@@ -522,6 +528,31 @@ const breadcrumbSchema = {
             margin-top: 1rem;
             padding: 0.6rem 1rem;
         }
+
+        @media (max-width: 560px) {
+            .meta-info {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.35rem;
+            }
+
+            .meta-author {
+                display: inline-flex;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+            }
+
+            .meta-details {
+                display: inline-flex;
+                flex-wrap: nowrap;
+                gap: 0.45rem;
+                white-space: nowrap;
+            }
+
+            .meta-divider {
+                display: none;
+            }
+        }
     </style>
  </Fragment>
 
@@ -550,10 +581,11 @@ const breadcrumbSchema = {
                         <span>Por <a href={`/autores/${entry.data.authorSlug ?? slugify(entry.data.author)}/`}><strong>{entry.data.author}</strong></a></span>
                         <button class="author-bio-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`} title={`Abrir biografía de ${entry.data.author}`}>ver bio</button>
                     </span>
-                    <span class="meta-divider" aria-hidden="true">•</span>
-                    <time>{formatDate(entry.data.pubDate)}</time>
-                    <span class="meta-divider" aria-hidden="true">•</span>
-                    <span>{readingMinutes} min de lectura</span>
+                    <span class="meta-details">
+                        <time>{formatDate(entry.data.pubDate)}</time>
+                        <span class="meta-divider" aria-hidden="true">•</span>
+                        <span>{readingMinutes} min de lectura</span>
+                    </span>
                 </div>
 
                 {entry.data.tags && entry.data.tags.length > 0 && (
