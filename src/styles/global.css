@@ -364,6 +364,10 @@ a:hover {
   min-width: 0;
 }
 
+.mobile-post-image {
+  display: none;
+}
+
 :root[data-theme='dark'] .featured-card,
 :root[data-theme='dark'] .post-item {
   background: var(--color-surface-strong);
@@ -524,6 +528,10 @@ a:hover {
   min-height: 190px;
   object-fit: cover;
   width: 100%;
+}
+
+.post-item:not(.post-item-with-image) .older-post-image {
+  display: none;
 }
 
 .older-post-content {
@@ -718,6 +726,20 @@ a:hover {
     height: auto;
     margin-bottom: 1rem;
     max-height: 240px;
+  }
+
+  .post-item:not(.post-item-with-image) .older-post-image {
+    display: block;
+  }
+
+  .mobile-post-image {
+    border-radius: 6px;
+    display: block;
+    height: auto;
+    margin-bottom: 1rem;
+    max-height: 220px;
+    object-fit: cover;
+    width: 100%;
   }
 
   .latest-card:has(.latest-card-image) {

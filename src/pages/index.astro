@@ -140,6 +140,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <div class="featured-grid">
                                 {featuredPosts.map(post => (
                                     <article class="featured-card" data-search={post.searchText} data-author={post.data.author}>
+                                        {post.data.image && (
+                                            <img class="featured-card-image mobile-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                        )}
                                         <span class="featured-badge">Destacado</span>
                                         <h3>
                                             <a href={`/${post.id}/`}>{post.data.title}</a>
@@ -181,7 +184,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <ul class="posts-list">
                                 {regularPosts.map((post, index) => (
                                     <li class:list={['post-item', { 'post-item-with-image': index === 0 && post.data.image }]} data-search={post.searchText} data-author={post.data.author}>
-                                {index === 0 && post.data.image && (
+                                {post.data.image && (
                                     <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
                                 )}
                                 <div class="older-post-content">
