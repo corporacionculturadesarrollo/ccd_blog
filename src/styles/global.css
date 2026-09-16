@@ -750,8 +750,26 @@ a:hover {
     max-height: none;
   }
 
+  .featured-meta,
   .post-meta-inline {
     align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .featured-author-line,
+  .post-author-line {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .post-date {
+    display: block;
+    line-height: 1.4;
   }
 
   .toc { right: 0.75rem; top: 76px; }
