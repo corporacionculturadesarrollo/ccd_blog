@@ -283,6 +283,10 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                 if (match) visibleCount += 1;
             });
 
+            document.querySelectorAll('.featured-section').forEach((section) => {
+                section.hidden = !section.querySelector('.featured-card:not([hidden])');
+            });
+
             if (emptyState) emptyState.hidden = visibleCount !== 0;
             if (countEl) {
                 const label = visibleCount === 1 ? 'artículo' : 'artículos';
