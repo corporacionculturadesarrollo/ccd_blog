@@ -12,10 +12,13 @@ const posts = await getCollection('blog');
 const authors = await getCollection('autores');
 const authorBioBySlug = new Map(authors.map((author) => [author.id, author.body || 'Biografía del autor próximamente.']));
 
+const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
+
 // 2. Sort the articles by publication date (most recent first)
 const sortedPosts = posts
   .map((post) => ({
     ...post,
+        readingMinutes: getReadingMinutes(post.body),
     searchText: [
       post.data.title,
       post.data.description,
@@ -94,29 +97,34 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             </div>
                             <div class="featured-grid">
                                 <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
-                                    <span class="featured-badge">Reciente</span>
-                                    <div class="featured-meta">
-                                        <span class="featured-author-line">
-                                            <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
-                                                <img class="post-author-avatar" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
-                                            </button>
-                                            <span>Por {latestPost.data.author}</span>
-                                        </span>
-                                        <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)}</time>
-                                    </div>
-                                    <h3>
-                                        <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
-                                    </h3>
-                                    <p>{latestPost.data.description}</p>
-                                    <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
-                                    <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
-                                        <div class="author-modal-heading">
-                                            <img class="author-modal-image" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
-                                            <h2>{latestPost.data.author}</h2>
+                                    {latestPost.data.image && (
+                                        <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
+                                    )}
+                                    <div class="latest-card-content">
+                                        <span class="featured-badge">Reciente</span>
+                                        <div class="featured-meta">
+                                            <span class="featured-author-line">
+                                                <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
+                                                    <img class="post-author-avatar" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                </button>
+                                                <span>Por {latestPost.data.author}</span>
+                                            </span>
+                                            <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)} · {latestPost.readingMinutes} min de lectura</time>
                                         </div>
-                                        <p>{authorBioBySlug.get(latestPost.data.authorSlug ?? '') ?? latestPost.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
-                                        <button class="author-modal-close" type="button">Cerrar</button>
-                                    </dialog>
+                                        <h3>
+                                            <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
+                                        </h3>
+                                        <p>{latestPost.data.description}</p>
+                                        <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
+                                        <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
+                                            <div class="author-modal-heading">
+                                                <img class="author-modal-image" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                                <h2>{latestPost.data.author}</h2>
+                                            </div>
+                                            <p>{authorBioBySlug.get(latestPost.data.authorSlug ?? '') ?? latestPost.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                            <button class="author-modal-close" type="button">Cerrar</button>
+                                        </dialog>
+                                    </div>
                                 </article>
                             </div>
                         </section>
@@ -139,7 +147,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                                 </button>
                                                 <span>Por {post.data.author}</span>
                                             </span>
-                                            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                                            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                         </div>
                                         <h3>
                                             <a href={`/${post.id}/`}>{post.data.title}</a>
@@ -173,7 +181,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </button>
                                         <span>Por {post.data.author}</span>
                                     </span>
-                                    <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                                    <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                 </div>
                                 <span class="post-category-list">
                                     {post.data.category.map((category, index) => (

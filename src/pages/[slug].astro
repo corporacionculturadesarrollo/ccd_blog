@@ -140,15 +140,21 @@ const breadcrumbSchema = {
             align-items: center;
             color: var(--color-muted);
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 0.75rem;
             font-size: 0.9rem;
+            justify-content: flex-start;
             margin-bottom: 1.25rem;
         }
         .meta-author {
             align-items: center;
             display: inline-flex;
-            gap: 0.6rem;
+            flex-shrink: 0;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .meta-author > span {
+            white-space: nowrap;
         }
         .meta-author img {
             border-radius: 50%;
@@ -550,7 +556,7 @@ const breadcrumbSchema = {
                     </div>
                 )}
 
-                {entry.data.image && (
+                {entry.data.image && entry.data.showImageInArticle && (
                     <figure class="featured-figure">
                         <img src={entry.data.image} alt={entry.data.title} class="featured-image" />
                         {featuredImageCaption && <figcaption>{featuredImageCaption}</figcaption>}

@@ -8,6 +8,7 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     image: z.string().optional(),
+    showImageInArticle: z.boolean().default(true),
     author: z.string(),
     authorSlug: z.string().optional(),
     authorImage: z.string().default('/images/author-default.svg'),
