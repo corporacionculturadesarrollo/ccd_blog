@@ -309,17 +309,7 @@ a:hover {
 }
 
 :root[data-theme='dark'] .home-banner {
-  filter: brightness(0.46) saturate(0.78) contrast(1.08);
-}
-
-:root[data-theme='dark'] .blog-header::after {
-  background:
-    linear-gradient(112deg, rgba(8, 12, 22, 0.7) 0%, rgba(8, 12, 22, 0.22) 42%, rgba(8, 12, 22, 0.56) 100%),
-    radial-gradient(ellipse at 22% 18%, rgba(186, 211, 255, 0.16), transparent 48%);
-  content: '';
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
+  filter: brightness(0.48);
 }
 
 .featured-section {
