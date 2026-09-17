@@ -115,6 +115,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                             </span>
                                             <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)} · {latestPost.readingMinutes} min de lectura</time>
                                         </div>
+                                        <span class="post-category-list">
+                                            {latestPost.data.category.map((category, index) => (
+                                                <span>
+                                                    {index > 0 && <span aria-hidden="true"> / </span>}
+                                                    <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                </span>
+                                            ))}
+                                        </span>
                                         <p>{latestPost.data.description}</p>
                                         <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
@@ -157,6 +165,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                             </span>
                                             <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
                                         </div>
+                                        <span class="post-category-list">
+                                            {post.data.category.map((category, index) => (
+                                                <span>
+                                                    {index > 0 && <span aria-hidden="true"> / </span>}
+                                                    <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                </span>
+                                            ))}
+                                        </span>
                                         <p>{post.data.description}</p>
                                         <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${post.id}`}>
@@ -204,7 +220,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <span class="post-category-list">
                                     {post.data.category.map((category, index) => (
                                         <span>
-                                            {index > 0 && <span aria-hidden="true">/</span>}
+                                            {index > 0 && <span aria-hidden="true"> / </span>}
                                             <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
                                         </span>
                                     ))}
