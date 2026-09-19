@@ -11,7 +11,14 @@ import { getPostImage } from '../lib/postImage';
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
 const authors = await getCollection('autores');
-const authorBioBySlug = new Map(authors.map((author) => [author.id, author.body || 'Biografía del autor próximamente.']));
+const authorBioBySlug = new Map(
+  authors.flatMap((author) => [
+    [author.id, author.body],
+    [author.data.slug, author.body],
+  ]),
+);
+const getAuthorBio = (post: (typeof posts)[number]) =>
+  authorBioBySlug.get(post.data.authorSlug ?? '') || post.data.authorBio || 'Biografía del autor próximamente.';
 
 const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
@@ -135,7 +142,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                                 <img class="author-modal-image" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{latestPost.data.author}</h2>
                                             </div>
-                                            <p>{authorBioBySlug.get(latestPost.data.authorSlug ?? '') ?? latestPost.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                            <p>{getAuthorBio(latestPost)}</p>
                                             <button class="author-modal-close" type="button">Cerrar</button>
                                         </dialog>
                                     </div>
@@ -185,7 +192,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                                 <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{post.data.author}</h2>
                                             </div>
-                                            <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                            <p>{getAuthorBio(post)}</p>
                                             <button class="author-modal-close" type="button">Cerrar</button>
                                         </dialog>
                                     </article>
@@ -239,7 +246,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                         <h2>{post.data.author}</h2>
                                     </div>
-                                    <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                    <p>{getAuthorBio(post)}</p>
                                     <button class="author-modal-close" type="button">Cerrar</button>
                                 </dialog>
                                 </div>
