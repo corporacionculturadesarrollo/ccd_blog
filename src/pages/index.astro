@@ -15,10 +15,14 @@ const authorBioBySlug = new Map(
   authors.flatMap((author) => [
     [author.id, author.body],
     [author.data.slug, author.body],
+    [author.data.name, author.body],
   ]),
 );
 const getAuthorBio = (post: (typeof posts)[number]) =>
-  authorBioBySlug.get(post.data.authorSlug ?? '') || post.data.authorBio || 'Biografía del autor próximamente.';
+  authorBioBySlug.get(post.data.authorSlug ?? '') ||
+  authorBioBySlug.get(post.data.author) ||
+  post.data.authorBio ||
+  'Biografía del autor próximamente.';
 
 const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
