@@ -3,6 +3,7 @@ name: Desplegar Blog Astro
 on:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 permissions:
   contents: read
