@@ -349,7 +349,7 @@ a:hover {
 .latest-card:has(.latest-card-image) {
   display: grid;
   gap: 1.25rem;
-  grid-template-columns: minmax(180px, 32%) 1fr;
+  grid-template-columns: minmax(240px, 38%) 1fr;
 }
 
 .latest-card-image {

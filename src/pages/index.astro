@@ -105,7 +105,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                     {latestPost && (
                         <section class="featured-section latest-section" aria-labelledby="latest-heading">
                             <div class="featured-header">
-                                <h2 id="latest-heading">Artículo más reciente</h2>
+                                <h2 id="latest-heading">Artículo destacado</h2>
                             </div>
                             <div class="featured-grid">
                                 <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
@@ -113,7 +113,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
                                     )}
                                     <div class="latest-card-content">
-                                        <span class="featured-badge">Reciente</span>
+                                        <span class="featured-badge">Destacado · más reciente</span>
                                         <h3>
                                             <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
                                         </h3>
