@@ -6,6 +6,7 @@ import Layout from '../layouts/Layout.astro';
 import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import { HOME_PAGE_SIZE } from '../lib/pagination';
+import { getPostImage } from '../lib/postImage';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
@@ -18,6 +19,10 @@ const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(
 const sortedPosts = posts
   .map((post) => ({
     ...post,
+    data: {
+      ...post.data,
+      image: getPostImage(post),
+    },
         readingMinutes: getReadingMinutes(post.body),
     searchText: [
       post.data.title,
