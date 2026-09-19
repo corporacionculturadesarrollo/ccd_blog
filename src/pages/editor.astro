@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MdxLocalEditor from '../components/MdxLocalEditor';
+---
+
+<Layout
+  title="Editor MDX local | Cultura y Desarrollo"
+  description="Editor local para crear y mantener artículos y plantillas MDX."
+>
+  <div class="blog-container editor-page">
+    <header class="editor-page-header">
+      <p class="eyebrow">Herramienta editorial</p>
+      <h1>Editor MDX local</h1>
+      <p>Crea artículos y plantillas con una vista visual. Nada se envía al servidor: los cambios quedan en este navegador hasta que descargues el archivo.</p>
+    </header>
+    <MdxLocalEditor client:load />
+  </div>
+</Layout>
