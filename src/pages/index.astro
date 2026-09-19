@@ -161,7 +161,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 {featuredPosts.map(post => (
                                     <article class="featured-card" data-search={post.searchText} data-author={post.data.author}>
                                         {post.data.image && (
-                                            <img class="featured-card-image mobile-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                            <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
                                         )}
                                         <span class="featured-badge">Destacado</span>
                                         <h3>
