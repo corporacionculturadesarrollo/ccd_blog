@@ -364,15 +364,8 @@ a:hover {
 }
 
 .featured-card-compact .featured-badge {
-  margin-bottom: 0;
-}
-
-.featured-card-compact .featured-meta,
-.featured-card-compact .post-category-list,
-.featured-card-compact p,
-.featured-card-compact .read-more,
-.featured-card-compact dialog {
-  display: none;
+  display: inline-block;
+  margin-bottom: 0.2rem;
 }
 
 .featured-card-compact h3 {
@@ -385,9 +378,27 @@ a:hover {
   text-decoration: none;
 }
 
-.featured-card-compact .featured-badge {
-  display: inline-block;
-  margin-bottom: 0.2rem;
+.featured-card-compact .featured-meta,
+.featured-card-compact .post-category-list,
+.featured-card-compact p,
+.featured-card-compact .read-more,
+.featured-card-compact dialog {
+  display: block;
+}
+
+.featured-card-compact .featured-meta {
+  margin-top: 0.25rem;
+}
+
+.featured-card-compact .featured-meta .featured-author-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.featured-card-compact .post-category-list,
+.featured-card-compact p {
+  margin-top: 0.4rem;
 }
 
 .latest-card:has(.latest-card-image) {
