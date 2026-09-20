@@ -347,15 +347,21 @@ a:hover {
 }
 
 .featured-card-compact {
-  align-items: center;
+  align-items: start;
   display: grid;
   gap: 0.75rem;
   grid-column: 1 / -1;
   grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
 }
 
+.featured-card-compact > :not(.featured-card-image) {
+  grid-column: 2;
+  width: 100%;
+}
+
 .featured-card-compact .featured-card-image {
   aspect-ratio: 16 / 9;
+  grid-column: 1;
   height: 110px;
   margin-bottom: 0;
   object-fit: cover;
