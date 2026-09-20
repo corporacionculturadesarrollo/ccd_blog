@@ -844,13 +844,17 @@ const breadcrumbSchema = {
             return link;
         };
 
-        const copyPostAndOpenInstagram = async () => {
+        const copyPostAndOpenSocial = async (platform, url) => {
+            let copied = false;
             try {
                 await navigator.clipboard.writeText(sharePageUrl);
+                copied = true;
             } catch {
-                // Instagram no ofrece un enlace web para publicar directamente.
             }
-            window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+            window.open(url, '_blank', 'noopener,noreferrer');
+            statusElement.textContent = copied
+                ? `Enlace copiado. Pégalo en ${platform} para publicar.`
+                : `Abre ${platform} y pega manualmente el enlace del post.`;
         };
 
         const sharePostWithDevice = async (statusElement) => {
@@ -882,12 +886,15 @@ const breadcrumbSchema = {
             statusElement.className = 'article-post-share-status';
             statusElement.setAttribute('role', 'status');
 
-            const instagramButton = document.createElement('button');
-            instagramButton.type = 'button';
-            instagramButton.append(createIcon('instagram'));
-            instagramButton.title = 'Instagram';
-            instagramButton.setAttribute('aria-label', 'Compartir post en Instagram');
-            instagramButton.addEventListener('click', copyPostAndOpenInstagram);
+            const createCopyAndOpenButton = (label, iconName, platform, url) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.append(createIcon(iconName));
+                button.title = `${label} (copiar enlace)`;
+                button.setAttribute('aria-label', `${label}: copiar enlace y abrir`);
+                button.addEventListener('click', () => copyPostAndOpenSocial(platform, url));
+                return button;
+            };
 
             const moreButton = document.createElement('button');
             moreButton.type = 'button';
@@ -899,8 +906,8 @@ const breadcrumbSchema = {
             postShare.append(
                 shareLabel,
                 createShareLink('LinkedIn', 'linkedin', `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`),
-                instagramButton,
-                createShareLink('TikTok', 'tiktok', `https://www.tiktok.com/share?url=${encodedUrl}`),
+                createCopyAndOpenButton('Instagram', 'instagram', 'Instagram', 'https://www.instagram.com/'),
+                createCopyAndOpenButton('TikTok', 'tiktok', 'TikTok', 'https://www.tiktok.com/'),
                 createShareLink('Telegram', 'telegram', `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(sharePageTitle)}`),
                 createShareLink('WhatsApp', 'whatsapp', `https://wa.me/?text=${encodedText}`),
                 createShareLink('Facebook', 'facebook', `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`),
