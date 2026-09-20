@@ -176,10 +176,14 @@ const breadcrumbSchema = {
             font-size: 1.1rem;
         }
         .article-disclaimer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: flex-end;
             margin: 2rem 0 1.5rem;
-            text-align: right;
         }
-        .article-disclaimer-trigger {
+        .article-disclaimer-trigger,
+        .article-rights-trigger {
             background: transparent;
             border: 1px solid var(--color-border);
             border-radius: 999px;
@@ -193,12 +197,15 @@ const breadcrumbSchema = {
             text-transform: uppercase;
         }
         .article-disclaimer-trigger:hover,
-        .article-disclaimer-trigger:focus-visible {
+        .article-disclaimer-trigger:focus-visible,
+        .article-rights-trigger:hover,
+        .article-rights-trigger:focus-visible {
             background: var(--color-bg-alt);
             border-color: var(--color-secondary);
             text-decoration: none;
         }
-        .disclaimer-modal {
+        .disclaimer-modal,
+        .rights-modal {
             border: 0;
             border-radius: 10px;
             box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
@@ -207,18 +214,22 @@ const breadcrumbSchema = {
             padding: 2rem;
             width: calc(100% - 2rem);
         }
-        .disclaimer-modal::backdrop {
+        .disclaimer-modal::backdrop,
+        .rights-modal::backdrop {
             background: rgba(36, 19, 15, 0.45);
         }
-        .disclaimer-modal h2 {
+        .disclaimer-modal h2,
+        .rights-modal h2 {
             color: var(--color-primary);
             margin: 0 0 0.9rem;
         }
-        .disclaimer-modal p {
+        .disclaimer-modal p,
+        .rights-modal p {
             line-height: 1.7;
             margin: 0;
         }
-        .disclaimer-modal-close {
+        .disclaimer-modal-close,
+        .rights-modal-close {
             background: var(--color-primary);
             border: 0;
             border-radius: 4px;
@@ -670,6 +681,9 @@ const breadcrumbSchema = {
                 <button class="article-disclaimer-trigger" type="button" data-disclaimer-modal="disclaimer-modal">
                     Descargo de Responsabilidad
                 </button>
+                <button class="article-rights-trigger" type="button" data-rights-modal="rights-modal">
+                    Derechos de autor
+                </button>
             </div>
 
             <p class="article-comment-cta">
@@ -712,6 +726,17 @@ const breadcrumbSchema = {
                 El autor es responsable de la veracidad, pertinencia, alcance y consecuencias jurídicas, éticas o reputacionales de lo expresado en este texto, así como de la información o análisis que aquí se presenta.
             </p>
             <button class="disclaimer-modal-close" type="button">Cerrar</button>
+        </dialog>
+
+        <dialog class="rights-modal" id="rights-modal">
+            <h2>Derechos de autor</h2>
+            <p>
+                Este sitio y sus contenidos, incluyendo textos, imágenes, audio, video e ilustraciones, están protegidos por derechos de autor. Queda prohibida su reproducción, modificación, distribución o uso comercial sin autorización previa y sin la debida atribución a sus autores.
+            </p>
+            <p style="margin-top: 0.9rem;">
+                Solo se permite su uso con fines educativos e intelectuales, siempre que se cite la fuente correspondiente. Todos los derechos reservados.
+            </p>
+            <button class="rights-modal-close" type="button">Cerrar</button>
         </dialog>
 
         <!-- COMPONENTE: HISTORIAL ANTERIORMENTE CONSULTADO -->
@@ -951,6 +976,15 @@ const breadcrumbSchema = {
         disclaimerModalClose?.addEventListener('click', () => disclaimerModal?.close());
         disclaimerModal?.addEventListener('click', (event) => {
             if (event.target === disclaimerModal) disclaimerModal.close();
+        });
+
+        const rightsTrigger = document.querySelector('[data-rights-modal]');
+        const rightsModal = document.getElementById('rights-modal');
+        const rightsModalClose = rightsModal?.querySelector('.rights-modal-close');
+        rightsTrigger?.addEventListener('click', () => rightsModal?.showModal());
+        rightsModalClose?.addEventListener('click', () => rightsModal?.close());
+        rightsModal?.addEventListener('click', (event) => {
+            if (event.target === rightsModal) rightsModal.close();
         });
 
         document.addEventListener('DOMContentLoaded', () => {

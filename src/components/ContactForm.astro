@@ -4,6 +4,8 @@ const messageHeader = postAuthor && postDate
   ? `Referencia: ${postTitle} · ${postAuthor} · ${postDate}`
   : '';
 const isGeneralContact = postTitle === 'Consulta general del blog';
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
 ---
 
 <section class="contact-section" id="contacto" aria-labelledby="contact-title">
@@ -15,7 +17,7 @@ const isGeneralContact = postTitle === 'Consulta general del blog';
     <span>Mensaje enviado correctamente.</span>
   </div>
 
-  <form class="contact-form" action="https://formspree.io/f/mkoearok" method="POST" novalidate>
+  <form id="contact-form" class="contact-form" action={formAction || undefined} method="POST" novalidate>
     <input type="hidden" name="_subject" value={`Mensaje sobre: ${postTitle}`} />
     <input type="hidden" name="article" value={postTitle} />
     {messageHeader && <input type="hidden" name="article_context" value={messageHeader} data-base={messageHeader} />}
@@ -285,6 +287,7 @@ const isGeneralContact = postTitle === 'Consulta general del blog';
   }
 </style>
 
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 <script>
   const form = document.querySelector('form.contact-form');
   if (form && form instanceof HTMLFormElement) {
@@ -391,51 +394,32 @@ const isGeneralContact = postTitle === 'Consulta general del blog';
       input.addEventListener('blur', () => validateField(input));
     });
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const honeypotValue = honeypot ? honeypot.value.trim() : '';
-      if (honeypotValue) {
-        showStatus('El formulario no pudo enviarse. Inténtalo de nuevo.');
-        return;
-      }
-
-      let isValid = true;
-      inputs.forEach((input) => {
-        if (!validateField(input)) isValid = false;
-      });
-
-      if (!isValid) {
-        showStatus('Completa todos los campos correctamente antes de enviar el mensaje.');
-        return;
-      }
-
-      if (submitButton) submitButton.disabled = true;
-      showStatus('Enviando mensaje...');
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json'
-          },
-          body: new FormData(form)
-        });
-
-        if (!response.ok) {
-          throw new Error('No se pudo enviar el mensaje.');
+    if (!form.action || form.action === window.location.href) {
+      showStatus('El servicio de correo no está configurado. Contacta al administrador para habilitar los mensajes.');
+    } else {
+      form.addEventListener('submit', (event) => {
+        const honeypotValue = honeypot ? honeypot.value.trim() : '';
+        if (honeypotValue) {
+          event.preventDefault();
+          showStatus('El formulario no pudo enviarse. Inténtalo de nuevo.');
+          return;
         }
 
-        resetFormState();
-        goToTop();
-        setTimeout(() => {
-          showSuccessToast();
-        }, 250);
-      } catch (error) {
-        if (submitButton) submitButton.disabled = false;
-        showStatus('No se pudo enviar el mensaje. Inténtalo de nuevo.');
-      }
-    });
+        let isValid = true;
+        inputs.forEach((input) => {
+          if (!validateField(input)) isValid = false;
+        });
+
+        if (!isValid) {
+          event.preventDefault();
+          showStatus('Completa todos los campos correctamente antes de enviar el mensaje.');
+        }
+      });
+
+      const formspreeFormId = `${formspreeId || 'mkoearok'}`;
+      window.formspree = window.formspree || function () { (window.formspree.q = window.formspree.q || []).push(arguments); };
+      window.formspree('initForm', { formElement: '#contact-form', formId: formspreeFormId });
+    }
 
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
