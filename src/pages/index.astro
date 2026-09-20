@@ -7,7 +7,7 @@ import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import { HOME_PAGE_SIZE } from '../lib/pagination';
 import { getPostImage } from '../lib/postImage';
-import { resolveAuthor } from '../lib/author';
+import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
@@ -16,6 +16,13 @@ const getAuthorBio = (post: (typeof posts)[number]) =>
   resolveAuthor(authors, post.data.authorSlug, post.data.author)?.body ||
   post.data.authorBio ||
   'Biografía del autor próximamente.';
+
+const getAuthorImage = (post: (typeof posts)[number]) =>
+  resolveAuthorImage(authors, {
+    authorSlug: post.data.authorSlug,
+    author: post.data.author,
+    authorImage: post.data.authorImage,
+  });
 
 const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
@@ -117,7 +124,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
                                                 <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
-                                                    <img class="post-author-avatar" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                    <img class="post-author-avatar" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {latestPost.data.author}</span>
                                                 <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>ver bio</button>
@@ -136,7 +143,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
                                             <div class="author-modal-heading">
-                                                <img class="author-modal-image" src={latestPost.data.authorImage} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                                <img class="author-modal-image" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{latestPost.data.author}</h2>
                                             </div>
                                             <p>{getAuthorBio(latestPost)}</p>
@@ -167,7 +174,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
                                                 <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                                    <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                    <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {post.data.author}</span>
                                                     <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
@@ -186,7 +193,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${post.id}`}>
                                             <div class="author-modal-heading">
-                                                <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                                <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{post.data.author}</h2>
                                             </div>
                                             <p>{getAuthorBio(post)}</p>
@@ -219,7 +226,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
                                         <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                            <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                            <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                         </button>
                                         <span>Por {post.data.author}</span>
                                         <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
@@ -240,7 +247,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
                                 <dialog class="author-modal" id={`author-modal-${post.id}`}>
                                     <div class="author-modal-heading">
-                                        <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                        <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                         <h2>{post.data.author}</h2>
                                     </div>
                                     <p>{getAuthorBio(post)}</p>

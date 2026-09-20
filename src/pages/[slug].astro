@@ -8,7 +8,7 @@ import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TableOfContents from '../components/TableOfContents.astro';
-import { resolveAuthor } from '../lib/author';
+import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
@@ -35,7 +35,11 @@ const { entry, prevPost, nextPost } = Astro.props;
 const authors = await getCollection('autores');
 const authorEntry = resolveAuthor(authors, entry.data.authorSlug, entry.data.author);
 const authorBio = authorEntry?.body || entry.data.authorBio || 'Biografía del autor próximamente.';
-const authorImage = authorEntry?.data.image || entry.data.authorImage || '/images/author-default.svg';
+const authorImage = resolveAuthorImage(authors, {
+  authorSlug: entry.data.authorSlug,
+  author: entry.data.author,
+  authorImage: entry.data.authorImage,
+});
 const hasInlineFeaturedImage = Boolean(entry.data.image && entry.body?.includes(entry.data.image));
 const featuredImageCaption = entry.id === 'curaduria-img-pat'
   ? 'Identidad visual San Juan en Purificación 2012 - Declaratoria de Patrimonio Cultural Inmaterial'
@@ -919,10 +923,22 @@ const breadcrumbSchema = {
             );
         }
 
-        const authorTrigger = document.querySelector('[data-author-modal]');
+        const authorTriggers = document.querySelectorAll('[data-author-modal]');
         const authorModal = document.getElementById('author-modal');
         const authorModalClose = authorModal?.querySelector('.author-modal-close');
-        authorTrigger?.addEventListener('click', () => authorModal?.showModal());
+
+        authorTriggers.forEach((trigger) => {
+            trigger.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (!authorModal) return;
+                if (authorModal.open) {
+                    authorModal.close();
+                    return;
+                }
+                authorModal.showModal();
+            });
+        });
+
         authorModalClose?.addEventListener('click', () => authorModal?.close());
         authorModal?.addEventListener('click', (event) => {
             if (event.target === authorModal) authorModal.close();
