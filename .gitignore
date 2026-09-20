@@ -1,0 +1,8 @@
+node_modules
+.astro/data-store.json
+.astro/dev.json
+.astro/dev.log
+.astro/settings.json
+dist/*
+!dist/.gitkeep
+docs/*

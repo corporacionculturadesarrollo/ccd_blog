@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://blog.culturaydesarrollo.org/sitemap.xml
