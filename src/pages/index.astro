@@ -149,14 +149,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                         <p>{latestPost.data.description}</p>
                                         <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
-                                        <dialog class="author-modal" id={`author-modal-${latestPost.id}`}>
+                                        <div class="author-modal" id={`author-modal-${latestPost.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
                                             <div class="author-modal-heading">
                                                 <img class="author-modal-image" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{latestPost.data.author}</h2>
                                             </div>
                                             <p>{getAuthorBio(latestPost)}</p>
                                             <button class="author-modal-close" type="button">Cerrar</button>
-                                        </dialog>
+                                        </div>
                                     </div>
                                 </article>
                             </div>
@@ -253,14 +253,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
-                                <dialog class="author-modal" id={`author-modal-${post.id}`}>
+                                <div class="author-modal" id={`author-modal-${post.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
                                     <div class="author-modal-heading">
                                         <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                         <h2>{post.data.author}</h2>
                                     </div>
                                     <p>{getAuthorBio(post)}</p>
                                     <button class="author-modal-close" type="button">Cerrar</button>
-                                </dialog>
+                                </div>
                                 </div>
                                     </li>
                                 ))}
@@ -361,41 +361,61 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             applyFilters();
         });
 
+        document.querySelectorAll('.author-modal').forEach((modal) => {
+            modal.hidden = true;
+            modal.setAttribute('aria-hidden', 'true');
+        });
+
         document.querySelectorAll('[data-author-modal]').forEach((trigger) => {
+            if (trigger.dataset.authorModalBound === 'true') return;
+            trigger.dataset.authorModalBound = 'true';
+
             const modal = document.getElementById(trigger.dataset.authorModal);
             const closeButton = modal?.querySelector('.author-modal-close');
             if (!modal || !closeButton) return;
 
+            const closeModal = () => {
+                modal.hidden = true;
+                modal.setAttribute('aria-hidden', 'true');
+            };
+
+            const openModal = () => {
+                document.querySelectorAll('.author-modal').forEach((otherModal) => {
+                    if (otherModal !== modal) {
+                        otherModal.hidden = true;
+                        otherModal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+                modal.hidden = false;
+                modal.setAttribute('aria-hidden', 'false');
+            };
+
             trigger.addEventListener('click', (event) => {
                 event.preventDefault();
-                document.querySelectorAll('.author-modal[open]').forEach((openModal) => {
-                    if (openModal !== modal) openModal.close();
-                });
-                if (modal.open) {
-                    modal.close();
+                event.stopPropagation();
+                if (modal.hidden) {
+                    openModal();
                     return;
                 }
-                modal.showModal();
+                closeModal();
             });
 
             closeButton.addEventListener('click', (event) => {
                 event.preventDefault();
-                modal.close();
+                closeModal();
             });
 
             modal.addEventListener('click', (event) => {
-                if (event.target === modal) modal.close();
-            });
-
-            modal.addEventListener('cancel', (event) => {
-                event.preventDefault();
-                modal.close();
+                if (event.target === modal) closeModal();
             });
         });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                document.querySelectorAll('.author-modal[open]').forEach((openModal) => openModal.close());
+                document.querySelectorAll('.author-modal').forEach((modal) => {
+                    modal.hidden = true;
+                    modal.setAttribute('aria-hidden', 'true');
+                });
             }
         });
     </script>

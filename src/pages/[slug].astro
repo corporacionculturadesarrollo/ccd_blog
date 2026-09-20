@@ -750,14 +750,14 @@ const breadcrumbSchema = {
             <div class="article-post-share" id="post-share" aria-label="Compartir post"></div>
         </article>
 
-        <dialog class="author-modal" id="author-modal">
+        <div class="author-modal" id="author-modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
             <div class="author-modal-heading">
                 <img class="author-modal-image" src={authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
                 <h2>{entry.data.author}</h2>
             </div>
             <p>{authorBio}</p>
             <button class="author-modal-close" type="button">Cerrar</button>
-        </dialog>
+        </div>
 
         <dialog class="disclaimer-modal" id="disclaimer-modal">
             <h2>Descargo de Responsabilidad</h2>
@@ -994,21 +994,35 @@ const breadcrumbSchema = {
         const authorModal = document.getElementById('author-modal');
         const authorModalClose = authorModal?.querySelector('.author-modal-close');
 
+        if (authorModal) {
+            authorModal.hidden = true;
+            authorModal.setAttribute('aria-hidden', 'true');
+        }
+
         authorTriggers.forEach((trigger) => {
             trigger.addEventListener('click', (event) => {
                 event.preventDefault();
                 if (!authorModal) return;
-                if (authorModal.open) {
-                    authorModal.close();
+                if (authorModal.hidden) {
+                    authorModal.hidden = false;
+                    authorModal.setAttribute('aria-hidden', 'false');
                     return;
                 }
-                authorModal.showModal();
+                authorModal.hidden = true;
+                authorModal.setAttribute('aria-hidden', 'true');
             });
         });
 
-        authorModalClose?.addEventListener('click', () => authorModal?.close());
+        authorModalClose?.addEventListener('click', () => {
+            if (!authorModal) return;
+            authorModal.hidden = true;
+            authorModal.setAttribute('aria-hidden', 'true');
+        });
         authorModal?.addEventListener('click', (event) => {
-            if (event.target === authorModal) authorModal.close();
+            if (event.target === authorModal) {
+                authorModal.hidden = true;
+                authorModal.setAttribute('aria-hidden', 'true');
+            }
         });
 
         const disclaimerTrigger = document.querySelector('[data-disclaimer-modal]');
