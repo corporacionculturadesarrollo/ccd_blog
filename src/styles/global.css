@@ -334,7 +334,7 @@ a:hover {
 .featured-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .featured-card {
@@ -347,46 +347,43 @@ a:hover {
 }
 
 .featured-card-compact {
-  align-items: stretch;
+  align-items: start;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.9rem 1rem;
   grid-column: 1 / -1;
-  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   position: relative;
 }
 
-.featured-card-compact > :not(.featured-card-image):not(.featured-badge) {
-  grid-column: 2;
+.featured-card-compact .featured-card-heading {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+  text-align: left;
+  width: 100%;
+}
+
+.featured-card-compact .featured-card-main {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+}
+
+.featured-card-compact .featured-card-summary {
+  display: grid;
+  gap: 0.75rem;
   min-width: 0;
-  width: 100%;
-}
-
-.featured-card-compact .featured-card-image {
-  align-self: center;
-  aspect-ratio: 4 / 3;
-  grid-column: 1;
-  grid-row: 1 / span 999;
-  height: 100%;
-  max-height: 180px;
-  margin-bottom: 0;
-  min-height: 140px;
-  object-fit: cover;
-  object-position: center;
-  width: 100%;
+  text-align: left;
 }
 
 .featured-card-compact .featured-badge {
   display: inline-block;
-  left: 0.75rem;
+  left: auto;
   margin-bottom: 0;
-  position: absolute;
-  top: 0.75rem;
-  z-index: 1;
-}
-
-.featured-card-compact .featured-badge {
-  display: inline-block;
-  margin-bottom: 0.2rem;
+  position: static;
+  top: auto;
+  z-index: auto;
 }
 
 .featured-card-compact h3 {
@@ -395,7 +392,7 @@ a:hover {
 
 .featured-card-compact h3 a {
   color: var(--color-primary);
-  font-size: 1rem;
+  font-size: 1.15rem;
   text-decoration: none;
 }
 
@@ -408,35 +405,77 @@ a:hover {
 }
 
 .featured-card-compact .featured-meta {
-  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .featured-card-compact .featured-meta .featured-author-line {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .featured-card-compact .post-category-list,
 .featured-card-compact p {
-  margin-top: 0.4rem;
+  margin-top: 0;
 }
 
-.latest-card:has(.latest-card-image) {
+.featured-card-compact .featured-card-image {
+  align-self: stretch;
+  aspect-ratio: 4 / 3;
+  height: 100%;
+  margin-bottom: 0;
+  min-height: 140px;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+.latest-card {
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: minmax(240px, 38%) 1fr;
+  gap: 0.9rem;
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr;
+}
+
+.latest-card-header {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+  text-align: left;
+}
+
+.latest-card-body {
+  align-items: start;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.latest-card .featured-badge {
+  display: inline-flex;
+  margin-bottom: 0;
 }
 
 .latest-card-image {
   border-radius: 6px;
-  height: auto;
-  object-fit: contain;
+  height: 220px;
+  object-fit: cover;
   width: 100%;
 }
 
 .latest-card-content {
+  display: grid;
+  gap: 0.75rem;
   min-width: 0;
+  text-align: left;
 }
 
 .featured-card-image {
@@ -960,10 +999,44 @@ a:hover {
   padding: 0.65rem 1rem;
 }
 
+@media (max-width: 980px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 560px) {
   .blog-container {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-card-compact {
+    display: block;
+    grid-template-columns: 1fr;
+  }
+
+  .featured-card-compact > :not(.featured-card-image):not(.featured-badge) {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .featured-card-compact .featured-card-image {
+    display: block;
+    grid-column: 1;
+    grid-row: auto;
+    height: 220px;
+    margin-bottom: 0.75rem;
+    max-height: 220px;
+  }
+
+  .featured-card-compact h3 a {
+    font-size: 1.05rem;
+    line-height: 1.3;
   }
 
   .meta-info {

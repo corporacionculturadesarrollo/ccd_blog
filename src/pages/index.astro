@@ -58,7 +58,7 @@ const sortedPosts = posts
 const pagePosts = sortedPosts.slice(0, HOME_PAGE_SIZE);
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
 const latestPost = pagePosts[0] ?? null;
-const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 3);
+const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 4);
 const regularPosts = pagePosts.filter((post) => {
   if (post.id === latestPost?.id) return false;
   if (!post.data.featured) return true;
@@ -122,10 +122,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             </div>
                             <div class="featured-grid">
                                 <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
-                                    {latestPost.data.image && (
-                                        <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
-                                    )}
-                                    <div class="latest-card-content">
+                                    <div class="latest-card-header">
+                                        <span class="featured-badge">Reciente</span>
                                         <h3>
                                             <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
                                         </h3>
@@ -139,24 +137,31 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                             </span>
                                             <time class="post-date" datetime={latestPost.data.pubDate.toISOString()}>{formatDate(latestPost.data.pubDate)} · {latestPost.readingMinutes} min de lectura</time>
                                         </div>
-                                        <span class="post-category-list">
-                                            {latestPost.data.category.map((category, index) => (
-                                                <span>
-                                                    {index > 0 && <span aria-hidden="true"> / </span>}
-                                                    <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
-                                                </span>
-                                            ))}
-                                        </span>
-                                        <p>{latestPost.data.description}</p>
-                                        <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
-                                        <div class="author-modal" id={`author-modal-${latestPost.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
-                                            <div class="author-modal-heading">
-                                                <img class="author-modal-image" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
-                                                <h2>{latestPost.data.author}</h2>
-                                            </div>
-                                            <p>{getAuthorBio(latestPost)}</p>
-                                            <button class="author-modal-close" type="button">Cerrar</button>
+                                    </div>
+                                    <div class="latest-card-body">
+                                        {latestPost.data.image && (
+                                            <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
+                                        )}
+                                        <div class="latest-card-content">
+                                            <span class="post-category-list">
+                                                {latestPost.data.category.map((category, index) => (
+                                                    <span>
+                                                        {index > 0 && <span aria-hidden="true"> / </span>}
+                                                        <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                    </span>
+                                                ))}
+                                            </span>
+                                            <p>{latestPost.data.description}</p>
+                                            <a href={`/${latestPost.id}/`} class="read-more">Leer artículo →</a>
                                         </div>
+                                    </div>
+                                    <div class="author-modal" id={`author-modal-${latestPost.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
+                                        <div class="author-modal-heading">
+                                            <img class="author-modal-image" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                            <h2>{latestPost.data.author}</h2>
+                                        </div>
+                                        <p>{getAuthorBio(latestPost)}</p>
+                                        <button class="author-modal-close" type="button">Cerrar</button>
                                     </div>
                                 </article>
                             </div>
@@ -172,33 +177,77 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <div class="featured-grid">
                                 {featuredPosts.map((post, index) => (
                                     <article class:list={['featured-card', { 'featured-card-compact': index === 0 }]} data-search={post.searchText} data-author={post.data.author}>
-                                        {post.data.image && (
-                                            <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                        {index === 0 ? (
+                                            <>
+                                                <div class="featured-card-heading">
+                                                    <span class="featured-badge">Destacado</span>
+                                                    <h3>
+                                                        <a href={`/${post.id}/`}>{post.data.title}</a>
+                                                    </h3>
+                                                    <div class="featured-meta">
+                                                        <span class="featured-author-line">
+                                                            <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                                                <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                            </button>
+                                                            <span>Por {post.data.author}</span>
+                                                            <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
+                                                        </span>
+                                                        <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
+                                                    </div>
+                                                    <span class="post-category-list">
+                                                        {post.data.category.map((category, index) => (
+                                                            <span>
+                                                                {index > 0 && <span aria-hidden="true"> / </span>}
+                                                                <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                            </span>
+                                                        ))}
+                                                    </span>
+                                                </div>
+                                                <div class="featured-card-main">
+                                                    {post.data.image && (
+                                                        <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                                    )}
+                                                    <div class="featured-card-summary">
+                                                        <p>{post.data.description}</p>
+                                                        <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div class="featured-card-heading">
+                                                    <span class="featured-badge">Destacado</span>
+                                                    <h3>
+                                                        <a href={`/${post.id}/`}>{post.data.title}</a>
+                                                    </h3>
+                                                    <div class="featured-meta">
+                                                        <span class="featured-author-line">
+                                                            <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                                                <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                            </button>
+                                                            <span>Por {post.data.author}</span>
+                                                            <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
+                                                        </span>
+                                                        <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
+                                                    </div>
+                                                    <span class="post-category-list">
+                                                        {post.data.category.map((category, index) => (
+                                                            <span>
+                                                                {index > 0 && <span aria-hidden="true"> / </span>}
+                                                                <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                            </span>
+                                                        ))}
+                                                    </span>
+                                                </div>
+                                                {post.data.image && (
+                                                    <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                                )}
+                                                <div class="featured-card-summary">
+                                                    <p>{post.data.description}</p>
+                                                    <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
+                                                </div>
+                                            </>
                                         )}
-                                        <span class="featured-badge">Destacado</span>
-                                        <h3>
-                                            <a href={`/${post.id}/`}>{post.data.title}</a>
-                                        </h3>
-                                        <div class="featured-meta">
-                                            <span class="featured-author-line">
-                                                <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                                    <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
-                                                </button>
-                                                <span>Por {post.data.author}</span>
-                                                    <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
-                                            </span>
-                                            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
-                                        </div>
-                                        <span class="post-category-list">
-                                            {post.data.category.map((category, index) => (
-                                                <span>
-                                                    {index > 0 && <span aria-hidden="true"> / </span>}
-                                                    <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
-                                                </span>
-                                            ))}
-                                        </span>
-                                        <p>{post.data.description}</p>
-                                        <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${post.id}`}>
                                             <div class="author-modal-heading">
                                                 <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
