@@ -10,5 +10,6 @@ export default new Map([
 ["src/content/blog/mito-del-sereno.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fmito-del-sereno.mdx&astroContentModuleFlag=true")],
 ["src/content/blog/primer-post.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fprimer-post.mdx&astroContentModuleFlag=true")],
 ["src/content/blog/proximos_anuncios.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fproximos_anuncios.mdx&astroContentModuleFlag=true")],
+["src/content/blog/socrat-ia-la-may-utica-med-ia-da.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fsocrat-ia-la-may-utica-med-ia-da.mdx&astroContentModuleFlag=true")],
 ["src/content/blog/toque-de-cacho-por-las-trochas-de-la-memoria.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Ftoque-de-cacho-por-las-trochas-de-la-memoria.mdx&astroContentModuleFlag=true")]]);
 		
