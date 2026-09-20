@@ -3,13 +3,14 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { formatDate } from '../../lib/formatDate';
+import { postBelongsToAuthor } from '../../lib/author';
 
 export async function getStaticPaths() {
   const authors = await getCollection('autores');
   const posts = await getCollection('blog');
   return authors.map((author) => ({
     params: { slug: author.data.slug ?? author.id },
-    props: { author, posts: posts.filter((post) => post.data.authorSlug === author.id || post.data.author === author.data.name).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) },
+    props: { author, posts: posts.filter((post) => postBelongsToAuthor(post, author)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) },
   }));
 }
 

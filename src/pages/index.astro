@@ -7,20 +7,13 @@ import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import { HOME_PAGE_SIZE } from '../lib/pagination';
 import { getPostImage } from '../lib/postImage';
+import { resolveAuthor } from '../lib/author';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
 const authors = await getCollection('autores');
-const authorBioBySlug = new Map(
-  authors.flatMap((author) => [
-    [author.id, author.body],
-    [author.data.slug, author.body],
-    [author.data.name, author.body],
-  ]),
-);
 const getAuthorBio = (post: (typeof posts)[number]) =>
-  authorBioBySlug.get(post.data.authorSlug ?? '') ||
-  authorBioBySlug.get(post.data.author) ||
+  resolveAuthor(authors, post.data.authorSlug, post.data.author)?.body ||
   post.data.authorBio ||
   'Biografía del autor próximamente.';
 

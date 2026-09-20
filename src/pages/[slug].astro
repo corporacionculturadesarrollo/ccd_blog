@@ -1,6 +1,6 @@
 ---
 // src/pages/[slug].astro - Forzar compilación limpia Astro v5
-import { getCollection, getEntry, render } from 'astro:content'; // <-- IMPORTACIÓN CORRECTA DE ASTRO v5
+import { getCollection, render } from 'astro:content';
 import ContactForm from '../components/ContactForm.astro';
 import BackToTop from '../components/BackToTop.astro';
 import Layout from '../layouts/Layout.astro';
@@ -8,6 +8,7 @@ import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import { resolveAuthor } from '../lib/author';
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
@@ -31,9 +32,10 @@ export async function getStaticPaths() {
 
 const { entry, prevPost, nextPost } = Astro.props;
 
-const authorEntry = entry.data.authorSlug ? await getEntry('autores', entry.data.authorSlug) : undefined;
+const authors = await getCollection('autores');
+const authorEntry = resolveAuthor(authors, entry.data.authorSlug, entry.data.author);
 const authorBio = authorEntry?.body || entry.data.authorBio || 'Biografía del autor próximamente.';
-const authorImage = entry.data.authorImage || authorEntry?.data.image || '/images/author-default.svg';
+const authorImage = authorEntry?.data.image || entry.data.authorImage || '/images/author-default.svg';
 const hasInlineFeaturedImage = Boolean(entry.data.image && entry.body?.includes(entry.data.image));
 const featuredImageCaption = entry.id === 'curaduria-img-pat'
   ? 'Identidad visual San Juan en Purificación 2012 - Declaratoria de Patrimonio Cultural Inmaterial'
