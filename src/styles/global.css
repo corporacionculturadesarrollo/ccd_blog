@@ -836,7 +836,7 @@ a:hover {
   align-items: center;
   background: transparent;
   border: 0;
-  cursor: pointer;
+  cursor: default;
   display: inline-flex;
   flex-direction: row;
   gap: 0.35rem;

@@ -665,7 +665,7 @@ const breadcrumbSchema = {
                 
                 <div class="meta-info">
                     <span class="meta-author">
-                        <button class="author-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`} title={`Abrir biografía de ${entry.data.author}`}>
+                        <button class="author-trigger" type="button" aria-label={`Foto de ${entry.data.author}`} title={entry.data.author}>
                             <img src={authorImage} alt={`Foto de ${entry.data.author}`} width="44" height="44" />
                         </button>
                         <span>Por <a href={`/autores/${entry.data.authorSlug ?? slugify(entry.data.author)}/`}><strong>{entry.data.author}</strong></a></span>

@@ -131,7 +131,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </h3>
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
-                                                <button class="author-trigger" type="button" data-author-modal={`author-modal-${latestPost.id}`} aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
+                                                <button class="author-trigger" type="button" aria-label={`Ver biografía de ${latestPost.data.author}`} title={`Abrir biografía de ${latestPost.data.author}`}>
                                                     <img class="post-author-avatar" src={getAuthorImage(latestPost)} alt={`Foto de ${latestPost.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {latestPost.data.author}</span>
@@ -181,7 +181,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </h3>
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
-                                                <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                                <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
                                                     <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {post.data.author}</span>
@@ -233,7 +233,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 </h2>
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
-                                        <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                        <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
                                             <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                         </button>
                                         <span>Por {post.data.author}</span>
@@ -366,11 +366,37 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             const closeButton = modal?.querySelector('.author-modal-close');
             if (!modal || !closeButton) return;
 
-            trigger.addEventListener('click', () => modal.showModal());
-            closeButton.addEventListener('click', () => modal.close());
+            trigger.addEventListener('click', (event) => {
+                event.preventDefault();
+                document.querySelectorAll('.author-modal[open]').forEach((openModal) => {
+                    if (openModal !== modal) openModal.close();
+                });
+                if (modal.open) {
+                    modal.close();
+                    return;
+                }
+                modal.showModal();
+            });
+
+            closeButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                modal.close();
+            });
+
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) modal.close();
             });
+
+            modal.addEventListener('cancel', (event) => {
+                event.preventDefault();
+                modal.close();
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.author-modal[open]').forEach((openModal) => openModal.close());
+            }
         });
     </script>
 </Layout>
