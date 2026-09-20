@@ -1,5 +1,5 @@
 {
-	"pid": 12664,
+	"pid": 14212,
 	"port": 4321,
 	"url": "http://localhost:4321",
 	"urls": {
@@ -8,13 +8,15 @@
 		],
 		"network": [
 			"http://172.27.96.1:4321/",
+			"http://172.21.224.1:4321/",
 			"http://192.168.1.11:4321/"
 		],
 		"networkInterfaceNames": [
 			"vEthernet (Default Switch)",
+			"vEthernet (WSL)",
 			"Wi-Fi"
 		]
 	},
 	"background": false,
-	"startedAt": "2026-09-20T14:35:44.850Z"
+	"startedAt": "2026-09-20T18:28:15.510Z"
 }

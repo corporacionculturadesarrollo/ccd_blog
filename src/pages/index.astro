@@ -26,7 +26,12 @@ const getAuthorImage = (post: (typeof posts)[number]) =>
 
 const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
-// 2. Sort the articles by publication date (most recent first)
+const getPostSortTimestamp = (post: (typeof posts)[number]) => {
+  const createdAt = post.data.createdAt ? new Date(post.data.createdAt).getTime() : null;
+  return createdAt ?? new Date(post.data.pubDate).getTime();
+};
+
+// 2. Sort the articles by the blog-entry date, with pubDate as fallback
 const sortedPosts = posts
   .map((post) => ({
     ...post,
@@ -34,7 +39,7 @@ const sortedPosts = posts
       ...post.data,
       image: getPostImage(post),
     },
-        readingMinutes: getReadingMinutes(post.body),
+    readingMinutes: getReadingMinutes(post.body),
     searchText: [
       post.data.title,
       post.data.description,
@@ -48,13 +53,17 @@ const sortedPosts = posts
       .replace(/\s+/g, ' ')
       .trim(),
   }))
-  .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+  .sort((a, b) => getPostSortTimestamp(b) - getPostSortTimestamp(a));
 
 const pagePosts = sortedPosts.slice(0, HOME_PAGE_SIZE);
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
-const latestPost = pagePosts[0];
+const latestPost = pagePosts[0] ?? null;
 const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 3);
-const regularPosts = pagePosts.filter((post) => post.id !== latestPost?.id && !post.data.featured);
+const regularPosts = pagePosts.filter((post) => {
+  if (post.id === latestPost?.id) return false;
+  if (!post.data.featured) return true;
+  return !featuredPosts.some((featuredPost) => featuredPost.id === post.id);
+});
 const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
 ---
 
@@ -109,7 +118,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                     {latestPost && (
                         <section class="featured-section latest-section" aria-labelledby="latest-heading">
                             <div class="featured-header">
-                                <h2 id="latest-heading">Artículo destacado</h2>
+                                <h2 id="latest-heading">Artículo reciente</h2>
                             </div>
                             <div class="featured-grid">
                                 <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
@@ -117,7 +126,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
                                     )}
                                     <div class="latest-card-content">
-                                        <span class="featured-badge">Destacado · más reciente</span>
                                         <h3>
                                             <a href={`/${latestPost.id}/`}>{latestPost.data.title}</a>
                                         </h3>
@@ -162,8 +170,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <p>Temas estratégicos, convocatorias y contenidos de mayor relevancia editorial.</p>
                             </div>
                             <div class="featured-grid">
-                                {featuredPosts.map(post => (
-                                    <article class="featured-card" data-search={post.searchText} data-author={post.data.author}>
+                                {featuredPosts.map((post, index) => (
+                                    <article class:list={['featured-card', { 'featured-card-compact': index === 0 }]} data-search={post.searchText} data-author={post.data.author}>
                                         {post.data.image && (
                                             <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
                                         )}

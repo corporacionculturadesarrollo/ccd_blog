@@ -346,6 +346,22 @@ a:hover {
   padding: 1.2rem 1.1rem;
 }
 
+.featured-card-compact {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 150px minmax(0, 1fr);
+}
+
+.featured-card-compact .featured-card-image {
+  height: 90px;
+  margin-bottom: 0;
+}
+
+.featured-card-compact .featured-badge {
+  margin-bottom: 0;
+}
+
 .latest-card:has(.latest-card-image) {
   display: grid;
   gap: 1.25rem;
