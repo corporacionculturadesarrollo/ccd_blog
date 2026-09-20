@@ -354,12 +354,39 @@ a:hover {
 }
 
 .featured-card-compact .featured-card-image {
+  aspect-ratio: 16 / 9;
   height: 90px;
   margin-bottom: 0;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
 }
 
 .featured-card-compact .featured-badge {
   margin-bottom: 0;
+}
+
+.featured-card-compact .featured-meta,
+.featured-card-compact .post-category-list,
+.featured-card-compact p,
+.featured-card-compact .read-more,
+.featured-card-compact dialog {
+  display: none;
+}
+
+.featured-card-compact h3 {
+  margin: 0;
+}
+
+.featured-card-compact h3 a {
+  color: var(--color-primary);
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.featured-card-compact .featured-badge {
+  display: inline-block;
+  margin-bottom: 0.2rem;
 }
 
 .latest-card:has(.latest-card-image) {
@@ -380,11 +407,13 @@ a:hover {
 }
 
 .featured-card-image {
+  aspect-ratio: 16 / 9;
   border-radius: 6px;
   display: block;
   height: 180px;
   margin-bottom: 1rem;
   object-fit: cover;
+  object-position: center;
   width: 100%;
 }
 
