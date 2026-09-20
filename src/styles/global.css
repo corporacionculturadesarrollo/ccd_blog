@@ -350,12 +350,13 @@ a:hover {
   align-items: center;
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
 }
 
 .featured-card-compact .featured-card-image {
   aspect-ratio: 16 / 9;
-  height: 90px;
+  height: 110px;
   margin-bottom: 0;
   object-fit: cover;
   object-position: center;
