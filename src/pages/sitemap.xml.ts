@@ -4,21 +4,22 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = async ({ site }) => {
   const baseUrl = site ?? new URL('https://blog.culturaydesarrollo.org');
   const posts = await getCollection('blog');
-  const categories = [...new Set(posts.flatMap((post) => post.data.category))];
-  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  const typedPosts = posts as Array<{ data: { category: string[]; tags: string[]; pubDate: Date; } }>; 
+  const categories = [...new Set(typedPosts.flatMap((post) => post.data.category))] as string[];
+  const tags = [...new Set(typedPosts.flatMap((post) => post.data.tags))] as string[];
   const paths = [
     '',
-    ...posts.map((post) => `/${post.id}/`),
+    ...posts.map((post: (typeof posts)[number]) => `/${post.id}/`),
     '/categorias/',
     '/tags/',
     '/autores/',
     '/archivo/',
-    ...posts.flatMap((post) => [
+    ...posts.flatMap((post: (typeof posts)[number]) => [
       `/archivo/${post.data.pubDate.getFullYear()}/`,
       `/archivo/${post.data.pubDate.getFullYear()}/${String(post.data.pubDate.getMonth() + 1).padStart(2, '0')}/`,
     ]),
-    ...categories.map((category) => `/categorias/${category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`),
-    ...tags.map((tag) => `/tags/${tag.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`),
+    ...categories.map((category: string) => `/categorias/${category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`),
+    ...tags.map((tag: string) => `/tags/${tag.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`),
   ];
   const urls = [...new Set(paths)]
     .map((path) => new URL(path, baseUrl).href)

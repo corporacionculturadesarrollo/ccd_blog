@@ -28,12 +28,12 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
     </div>
 
     <label for="contact-name">Nombre</label>
-    <input id="contact-name" name="name" type="text" autocomplete="name" required minlength="2" aria-describedby="contact-name-help contact-name-error" />
+    <input id="contact-name" name="name" type="text" autocomplete="off" required minlength="2" aria-describedby="contact-name-help contact-name-error" />
     <small id="contact-name-help" class="field-help">Escribe tu nombre o la organización que representas.</small>
     <small id="contact-name-error" class="field-error" aria-live="polite"></small>
 
     <label for="contact-email">Correo electrónico</label>
-    <input id="contact-email" name="email" type="email" autocomplete="email" required aria-describedby="contact-email-help contact-email-error" />
+    <input id="contact-email" name="email" type="email" autocomplete="off" required aria-describedby="contact-email-help contact-email-error" />
     <small id="contact-email-help" class="field-help">Usaremos este correo solo para responder tu mensaje.</small>
     <small id="contact-email-error" class="field-error" aria-live="polite"></small>
 
@@ -43,7 +43,7 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
         Referencia: {postTitle} · {postAuthor} · {postDate}
       </small>
     )}
-    <textarea id="contact-message" name="message" rows="5" required minlength="20" aria-describedby="contact-message-help contact-message-error" placeholder="Escribe aquí tu comentario o pregunta..."></textarea>
+    <textarea id="contact-message" name="message" rows="5" required minlength="20" autocomplete="off" aria-describedby="contact-message-help contact-message-error" placeholder="Escribe aquí tu comentario o pregunta..."></textarea>
     <small id="contact-message-help" class="field-help">Escribe al menos 20 caracteres para enviar tu mensaje.</small>
     <small id="contact-message-error" class="field-error" aria-live="polite"></small>
 
@@ -352,6 +352,7 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
         status.textContent = '';
         status.classList.remove('success');
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const showStatus = (message, isSuccess = false) => {
@@ -422,7 +423,7 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
     }
 
     window.addEventListener('pageshow', (event) => {
-      if (event.persisted) {
+      if (event.persisted || event.type === 'pageshow') {
         resetFormState();
       }
     });
