@@ -298,10 +298,11 @@ const breadcrumbSchema = {
             border-radius: 8px;
             display: block;
             height: auto;
-            margin-top: 1rem;
+            margin: 1rem auto 0;
             max-height: 720px;
             max-width: 100%;
             object-fit: contain;
+            object-position: center;
             width: 100%;
         }
         .featured-figure {
@@ -316,14 +317,17 @@ const breadcrumbSchema = {
         :global(.article-inline-image) {
             margin: 0 auto 1.5rem;
             max-width: 520px;
+            text-align: center;
         }
         :global(.article-inline-image img) {
             border-radius: 8px;
             display: block;
             height: auto;
+            margin-inline: auto;
             max-height: 720px;
             max-width: 100%;
             object-fit: contain;
+            object-position: center;
             width: 100%;
         }
         :global(.article-inline-image figcaption) {
