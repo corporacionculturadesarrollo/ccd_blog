@@ -5,4 +5,12 @@ node_modules
 .astro/settings.json
 dist/*
 !dist/.gitkeep
+dist_exe/*
+build_pyinstaller/*
 docs/*
+# Generadores locales de contenido MDX, no se publican ni versionan con GitHub.
+src/pages/generador-mdx.astro
+generador-mdx.html
+open-generador-mdx.bat
+launcher.py
+build_exe.py
