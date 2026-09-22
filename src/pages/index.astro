@@ -169,96 +169,56 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                     )}
 
                     {featuredPosts.length > 0 && (
-                        <section class="featured-section" aria-labelledby="featured-heading">
+                        <section class="featured-section older-posts-section" aria-labelledby="featured-heading">
                             <div class="featured-header">
                                 <h2 id="featured-heading">Artículos destacados</h2>
                                 <p>Temas estratégicos, convocatorias y contenidos de mayor relevancia editorial.</p>
                             </div>
-                            <div class="featured-grid">
-                                {featuredPosts.map((post, index) => (
-                                    <article class:list={['featured-card', { 'featured-card-compact': index === 0 }]} data-search={post.searchText} data-author={post.data.author}>
-                                        {index === 0 ? (
-                                            <>
-                                                <div class="featured-card-heading">
-                                                    <span class="featured-badge">Destacado</span>
-                                                    <h3>
-                                                        <a href={`/${post.id}/`}>{post.data.title}</a>
-                                                    </h3>
-                                                    <div class="featured-meta">
-                                                        <span class="featured-author-line">
-                                                            <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                                                <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
-                                                            </button>
-                                                            <span>Por {post.data.author}</span>
-                                                            <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
-                                                        </span>
-                                                        <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
-                                                    </div>
-                                                    <span class="post-category-list">
-                                                        {post.data.category.map((category, index) => (
-                                                            <span>
-                                                                {index > 0 && <span aria-hidden="true"> / </span>}
-                                                                <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
-                                                            </span>
-                                                        ))}
-                                                    </span>
-                                                </div>
-                                                <div class="featured-card-main">
-                                                    {post.data.image && (
-                                                        <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                                    )}
-                                                    <div class="featured-card-summary">
-                                                        <p>{post.data.description}</p>
-                                                        <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div class="featured-card-heading">
-                                                    <span class="featured-badge">Destacado</span>
-                                                    <h3>
-                                                        <a href={`/${post.id}/`}>{post.data.title}</a>
-                                                    </h3>
-                                                    <div class="featured-meta">
-                                                        <span class="featured-author-line">
-                                                            <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                                                <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
-                                                            </button>
-                                                            <span>Por {post.data.author}</span>
-                                                            <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
-                                                        </span>
-                                                        <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
-                                                    </div>
-                                                    <span class="post-category-list">
-                                                        {post.data.category.map((category, index) => (
-                                                            <span>
-                                                                {index > 0 && <span aria-hidden="true"> / </span>}
-                                                                <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
-                                                            </span>
-                                                        ))}
-                                                    </span>
-                                                </div>
-                                                {post.data.image && (
-                                                    <img class="featured-card-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                                )}
-                                                <div class="featured-card-summary">
-                                                    <p>{post.data.description}</p>
-                                                    <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
-                                                </div>
-                                            </>
-                                        )}
-                                        <dialog class="author-modal" id={`author-modal-${post.id}`}>
-                                            <div class="author-modal-heading">
-                                                <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
-                                                <h2>{post.data.author}</h2>
-                                            </div>
-                                            <p>{getAuthorBio(post)}</p>
-                                            <button class="author-modal-close" type="button">Cerrar</button>
-                                        </dialog>
-                                    </article>
+                            <ul class="posts-list">
+                                {featuredPosts.map((post) => (
+                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
+                                {post.data.image && (
+                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                )}
+                                <div class="older-post-content">
+                                <span class="featured-badge">Destacado</span>
+                                <h2>
+                                    <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
+                                </h2>
+                                <div class="post-meta-inline">
+                                    <span class="post-author-line">
+                                        <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                            <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                        </button>
+                                        <span>Por {post.data.author}</span>
+                                        <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
+                                    </span>
+                                    <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {post.readingMinutes} min de lectura</time>
+                                </div>
+                                <span class="post-category-list">
+                                    {post.data.category.map((category, categoryIndex) => (
+                                        <span>
+                                            {categoryIndex > 0 && <span aria-hidden="true"> / </span>}
+                                            <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                        </span>
+                                    ))}
+                                </span>
+                                
+                                <p class="post-description">{post.data.description}</p>
+                                
+                                <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
+                                <div class="author-modal" id={`author-modal-${post.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
+                                    <div class="author-modal-heading">
+                                        <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                                        <h2>{post.data.author}</h2>
+                                    </div>
+                                    <p>{getAuthorBio(post)}</p>
+                                    <button class="author-modal-close" type="button">Cerrar</button>
+                                </div>
+                                </div>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         </section>
                     )}
 
@@ -271,8 +231,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <h2 id="older-posts-heading">Artículos anteriores</h2>
                             </div>
                             <ul class="posts-list">
-                                {regularPosts.map((post, index) => (
-                                    <li class:list={['post-item', { 'post-item-with-image': index === 0 && post.data.image }]} data-search={post.searchText} data-author={post.data.author}>
+                                {regularPosts.map((post) => (
+                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
                                 {post.data.image && (
                                     <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
                                 )}
@@ -351,9 +311,12 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             return globalIndex;
         };
 
-        const renderGlobalResults = (query) => {
+        const renderGlobalResults = (query, selectedAuthor = '') => {
             if (!globalResults) return;
-            const matches = globalIndex.filter((item) => item.text.toLowerCase().includes(query));
+            const matches = globalIndex.filter((item) =>
+                item.text.toLowerCase().includes(query) &&
+                (!selectedAuthor || item.author === selectedAuthor)
+            );
             globalResults.replaceChildren();
             if (!query || matches.length === 0) {
                 globalResults.hidden = true;
@@ -389,8 +352,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                 if (match) visibleCount += 1;
             });
 
-            document.querySelectorAll('.featured-section').forEach((section) => {
-                section.hidden = !section.querySelector('.featured-card:not([hidden])');
+            document.querySelectorAll('.featured-section, .older-posts-section').forEach((section) => {
+                section.hidden = !section.querySelector('.featured-card:not([hidden]), .post-item:not([hidden])');
             });
 
             if (emptyState) emptyState.hidden = visibleCount !== 0;
@@ -399,7 +362,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                 const baseLabel = `${posts.length} ${label}`;
                 countEl.textContent = query || selectedAuthor ? `${visibleCount} ${label} coincidentes` : baseLabel;
             }
-            if (query) loadGlobalIndex().then(() => renderGlobalResults(query)).catch(() => {});
+            if (query) loadGlobalIndex().then(() => renderGlobalResults(query, selectedAuthor)).catch(() => {});
             else if (globalResults) globalResults.hidden = true;
         };
 

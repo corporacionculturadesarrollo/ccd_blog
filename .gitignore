@@ -1,8 +1,5 @@
 node_modules
-.astro/data-store.json
-.astro/dev.json
-.astro/dev.log
-.astro/settings.json
+.astro/
 dist/*
 !dist/.gitkeep
 dist_exe/*
@@ -14,3 +11,7 @@ generador-mdx.html
 open-generador-mdx.bat
 launcher.py
 build_exe.py
+local-tools/
+.env
+.env.*
+!.env.example

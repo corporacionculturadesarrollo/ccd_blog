@@ -14,9 +14,9 @@ import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
   
-  // Ordenar cronológicamente (más antiguos primero)
+  // Ordenar cronológicamente (más recientes primero: prev = más reciente, next = más antiguo)
   const sortedEntries = blogEntries.sort(
-    (a, b) => a.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
   return sortedEntries.map((entry, index) => {
@@ -748,7 +748,7 @@ const breadcrumbSchema = {
                         </button>
                     ))}
                 </div>
-                <p class="rating-note" id="rating-note">Tu valoración ayuda a identificar contenidos más útiles para la comunidad.</p>
+                <p class="rating-note" id="rating-note">Tu valoración se incluye en tu mensaje, no es pública.</p>
             </section>
 
             <div class="article-post-share" id="post-share" aria-label="Compartir post"></div>
@@ -864,12 +864,18 @@ const breadcrumbSchema = {
             });
         };
 
-        const savedRating = Number(window.localStorage.getItem(storageKey) || 0);
-        if (savedRating > 0) {
-            setActiveStars(savedRating);
-            setContactRating(savedRating);
-            if (ratingNote) ratingNote.textContent = `Gracias por valorar este artículo con ${savedRating} estrella${savedRating > 1 ? 's' : ''}.`;
-        }
+        const applySavedRating = () => {
+            const saved = Number(window.localStorage.getItem(storageKey) || 0);
+            if (saved > 0) {
+                setActiveStars(saved);
+                setContactRating(saved);
+                if (ratingNote) ratingNote.textContent = `Gracias por valorar este artículo con ${saved} estrella${saved > 1 ? 's' : ''}. Se incluye en tu mensaje, no es pública.`;
+            }
+        };
+
+        applySavedRating();
+        // El formulario se resetea en window load y borraría el hidden de valoración: re-aplicar después.
+        window.addEventListener('load', applySavedRating);
 
         stars.forEach((star) => {
             star.addEventListener('click', () => {
@@ -881,7 +887,7 @@ const breadcrumbSchema = {
                     ratingSummary.textContent = `${value}/5 · gracias por tu valoración`;
                 }
                 if (ratingNote) {
-                    ratingNote.textContent = `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}.`;
+                    ratingNote.textContent = `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}. Se incluye en tu mensaje, no es pública.`;
                 }
             });
         });
