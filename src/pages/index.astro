@@ -177,9 +177,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <ul class="posts-list">
                                 {featuredPosts.map((post) => (
                                     <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
-                                {post.data.image && (
-                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                )}
                                 <div class="older-post-content">
                                 <span class="featured-badge">Destacado</span>
                                 <h2>
@@ -203,7 +200,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                     ))}
                                 </span>
-                                
+                                {post.data.image && (
+                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                )}
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
@@ -233,9 +232,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <ul class="posts-list">
                                 {regularPosts.map((post) => (
                                     <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
-                                {post.data.image && (
-                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                )}
                                 <div class="older-post-content">
                                 <h2>
                                     <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
@@ -258,7 +254,9 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                     ))}
                                 </span>
-                                
+                                {post.data.image && (
+                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                )}
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>

@@ -346,18 +346,17 @@ a:hover {
   padding: 1rem 1rem 0.9rem;
 }
 
-/* REGLA TARJETAS: marco uniforme 16/10, recorte centrado, sin huecos
-   en horizontal, vertical o cuadrado. */
+/* REGLA TARJETAS: imagen completa sin recortes, como en el artículo.
+   Sin marco fijo para no recortar; sin fondo gris para no marcar bandas. */
 .featured-card .featured-card-image,
 .featured-card-compact .featured-card-image,
 .latest-card-image,
 .older-post-image {
-  aspect-ratio: 16 / 10;
-  background: rgba(148, 163, 184, 0.08);
+  background: transparent;
   border-radius: 6px;
   display: block;
   height: auto;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   width: 100%;
 }
@@ -846,6 +845,7 @@ a:hover {
 .older-post-image {
   border-radius: 6px;
   height: auto;
+  margin-bottom: 1rem;
   width: 100%;
 }
 
