@@ -58,7 +58,7 @@ const sortedPosts = posts
 const pagePosts = sortedPosts.slice(0, HOME_PAGE_SIZE);
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
 const latestPost = pagePosts[0] ?? null;
-const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 4);
+const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 5);
 const regularPosts = pagePosts.filter((post) => {
   if (post.id === latestPost?.id) return false;
   if (!post.data.featured) return true;

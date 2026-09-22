@@ -346,10 +346,23 @@ a:hover {
   padding: 1rem 1rem 0.9rem;
 }
 
+/* REGLA TARJETAS: marco uniforme 16/10, recorte centrado, sin huecos
+   en horizontal, vertical o cuadrado. */
 .featured-card .featured-card-image,
 .featured-card-compact .featured-card-image,
 .latest-card-image,
-.older-post-image,
+.older-post-image {
+  aspect-ratio: 16 / 10;
+  background: rgba(148, 163, 184, 0.08);
+  border-radius: 6px;
+  display: block;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+/* REGLA ARTÍCULO: imagen completa sin recortes. */
 .featured-image,
 .article-inline-image img,
 .article-content img,
@@ -484,7 +497,7 @@ a:hover {
 }
 
 .latest-card-image {
-  height: 220px;
+  max-height: 320px;
 }
 
 .latest-card-content {
@@ -495,9 +508,7 @@ a:hover {
 }
 
 .featured-card-image {
-  aspect-ratio: 16 / 9;
   display: block;
-  height: 170px;
   justify-self: center;
   margin-bottom: 0.75rem;
   margin-inline: auto;
@@ -832,14 +843,9 @@ a:hover {
   gap: 1.25rem;
 }
 
-.post-item:first-child.post-item-with-image {
-  grid-template-columns: minmax(180px, 32%) 1fr;
-}
-
 .older-post-image {
   border-radius: 6px;
   height: auto;
-  object-fit: contain;
   width: 100%;
 }
 
@@ -1115,10 +1121,8 @@ a:hover {
     grid-column: auto;
   }
 
-  .post-item-with-image,
-  .post-item:first-child.post-item-with-image {
+  .post-item-with-image {
     display: block;
-    grid-template-columns: none;
   }
 
   .older-post-image {
