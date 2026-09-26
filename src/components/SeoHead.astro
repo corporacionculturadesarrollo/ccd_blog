@@ -19,9 +19,6 @@ const publishedTime = publishedDate?.toISOString();
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
 {author && <meta name="author" content={author} />}
 {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
 {type === 'article' && author && <meta property="article:author" content={author} />}

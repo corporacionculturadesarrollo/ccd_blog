@@ -1,6 +1,7 @@
 ---
 import BlogNavbar from '../components/BlogNavbar.astro';
 import SeoHead from '../components/SeoHead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -37,5 +38,6 @@ const { title, description, type = 'website', author, publishedDate } = Astro.pr
 		<a class="skip-link" href="#main-content">Saltar al contenido</a>
 		<BlogNavbar />
 		<main id="main-content"><slot /></main>
+		<SiteFooter />
 	</body>
 </html>

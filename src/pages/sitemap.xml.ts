@@ -9,6 +9,7 @@ export const GET: APIRoute = async ({ site }) => {
   const tags = [...new Set(typedPosts.flatMap((post) => post.data.tags))] as string[];
   const paths = [
     '',
+    '/acerca/',
     ...posts.map((post: (typeof posts)[number]) => `/${post.id}/`),
     '/categorias/',
     '/tags/',

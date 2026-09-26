@@ -1,0 +1,293 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'Acerca de | Blog Cultura y Desarrollo';
+const description =
+  'Qué es el blog de la Corporación Cultura y Desarrollo, quiénes somos, nuestra misión y visión, y cómo participar en este espacio de difusión, análisis y gestión cultural comunitaria.';
+
+const paths = [
+  {
+    number: '01',
+    area: 'Comunidad',
+    heading: 'Inclusión y cuidado comunitario',
+    text: 'Fortalecemos el cuidado colectivo y las diversas formas de habitar y construir comunidad.',
+  },
+  {
+    number: '02',
+    area: 'Saberes',
+    heading: 'Tejido del Sur Global',
+    text: 'Conectamos experiencias locales con redes, universidades y organizaciones que comparten una visión plural del desarrollo.',
+  },
+  {
+    number: '03',
+    area: 'Territorio',
+    heading: 'Regeneración territorial',
+    text: 'Impulsamos procesos participativos orientados al cuidado de los sistemas vitales y al fortalecimiento territorial.',
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <div class="blog-container archive-page">
+    <header class="page-heading">
+      <p class="eyebrow">Acerca de</p>
+      <h1>Un espacio para la cultura, la memoria y el territorio</h1>
+      <p>Espacio de difusión, análisis y gestión cultural comunitaria.</p>
+    </header>
+
+    <section class="about-section">
+      <h2>Qué es este blog</h2>
+      <p>
+        Un blog abierto a la diversidad. Ideas, conocimientos y reflexiones sobre
+        Cultura, Patrimonio, Territorio, Sociedad, Desarrollo y los Grandes
+        Desafíos de Colombia y América Latina.
+      </p>
+      <p>
+        Aquí conviven ensayos, crónicas, reseñas, ponencias, convocatorias y
+        resultados de los procesos que asumimos desde el territorio: textos de
+        autoras y autores invitados, además del trabajo de nuestra comunidad de
+        escritura.
+      </p>
+    </section>
+
+    <section class="about-section">
+      <h2>Quiénes somos</h2>
+      <p class="about-lead">
+        Memoria que conecta. Territorios que transforman.
+      </p>
+      <p>
+        La Corporación Cultura y Desarrollo trabaja en la promoción de la
+        cultura, la participación comunitaria y el desarrollo territorial. A
+        través de su labor, impulsa procesos culturales, educativos y de
+        incidencia que fortalecen la identidad, la creatividad y la construcción
+        colectiva de los territorios.
+      </p>
+      <p>
+        Somos una organización dedicada a fortalecer los vínculos culturales,
+        sociales, ecológicos y comunitarios de nuestros territorios. Desde
+        nuestra creación impulsamos procesos orientados al fortalecimiento
+        comunitario, la inclusión, la participación social, el cuidado
+        colectivo, la memoria histórica y el patrimonio cultural. Articulamos
+        conocimientos técnicos y científicos con saberes locales y ancestrales
+        para construir alternativas colectivas frente a los desafíos sociales,
+        culturales y ambientales.
+      </p>
+      <blockquote class="about-quote">
+        Más de tres décadas construyendo comunidad, conocimiento y territorio.
+      </blockquote>
+      <p class="about-links">
+        <a href="https://culturaydesarrollo.org" rel="noopener noreferrer">
+          Conoce la Corporación Cultura y Desarrollo →
+        </a>
+        <a href="/autores/">Autores del blog →</a>
+      </p>
+    </section>
+
+    <section class="about-section">
+      <h2>Misión y visión</h2>
+      <div class="about-cards">
+        <div class="about-card">
+          <h3>Misión</h3>
+          <p>
+            Impulsamos procesos socioculturales orientados al fortalecimiento
+            del tejido comunitario, la inclusión, la participación social y el
+            cuidado colectivo, articulando saberes territoriales y
+            conocimientos técnicos.
+          </p>
+        </div>
+        <div class="about-card">
+          <h3>Visión</h3>
+          <p>
+            Ser un referente regional en la construcción de alternativas
+            socioculturales orientadas al Buen Vivir, la regeneración
+            territorial y el fortalecimiento de los pluriversos.
+          </p>
+        </div>
+      </div>
+      <p class="about-filosofia">
+        <strong>Filosofía:</strong> Reconocemos la naturaleza como parte
+        esencial de los sistemas de vida y comprendemos el territorio como un
+        tejido vivo, donde el bienestar colectivo depende del equilibrio y la
+        reciprocidad.
+      </p>
+    </section>
+
+    <section class="about-section">
+      <h2>Nuestro trabajo</h2>
+      <p>Tres caminos para transformar: cuidado comunitario, diálogo de saberes y regeneración territorial.</p>
+      <div class="about-paths">
+        {paths.map(({ number, area, heading, text }) => (
+          <div class="about-path">
+            <p class="about-path-label">{number} · {area}</p>
+            <h3>{heading}</h3>
+            <p>{text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Equipo</h2>
+      <p>El trabajo lo hacen las personas. Equipo y colaboradores de la Corporación Cultura y Desarrollo.</p>
+      <ul class="about-team">
+        <li>Héctor Manuel Galeano Arbeláez</li>
+        <li>Tania Lucía Galeano Arbeláez</li>
+        <li>Héctor Galeano David</li>
+        <li>Juan Pablo Galeano Torres</li>
+        <li>Rafael Dimitri Guzmán Camacho</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>Qué encontrarás</h2>
+      <p>
+        Todo el contenido está organizado por
+        <a href="/categorias/">categorías</a> —entre ellas
+        <a href="/categorias/proyectos/">proyectos</a>,
+        <a href="/categorias/patrimonio/">patrimonio</a> y
+        <a href="/categorias/convocatorias/">convocatorias</a>—,
+        <a href="/tags/">etiquetas</a> y
+        <a href="/archivo/">fecha de publicación</a>, con un
+        <a href="/autores/">directorio de autoras y autores</a> donde puedes
+        seguir la producción de cada participante.
+      </p>
+    </section>
+
+    <section class="about-section">
+      <h2>Participa</h2>
+      <p>
+        El blog es un espacio abierto: publicamos
+        <a href="/categorias/convocatorias/">convocatorias</a> periódicas para
+        que envíes tus textos, y respondemos tus preguntas a través del
+        <a href="/#contacto">formulario de contacto</a>.
+      </p>
+      <p>
+        Trabajamos con comunidades, instituciones, universidades, organizaciones
+        sociales y aliados interesados en construir procesos con sentido.
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .about-section {
+    margin-bottom: 2.25rem;
+  }
+
+  .about-section h2 {
+    margin-bottom: 0.75rem;
+  }
+
+  .about-section p {
+    line-height: 1.75;
+  }
+
+  .about-lead {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+  }
+
+  .about-quote {
+    margin: 1.5rem 0;
+    padding: 0.75rem 1.25rem;
+    border-left: 4px solid var(--color-secondary);
+    background: var(--color-bg-alt);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--color-heading);
+  }
+
+  .about-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .about-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-card {
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-surface-strong);
+  }
+
+  .about-card h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-secondary);
+  }
+
+  .about-card p {
+    margin-bottom: 0;
+  }
+
+  .about-filosofia {
+    padding: 1rem 1.25rem;
+    border: 1px dashed var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-bg-alt);
+  }
+
+  .about-paths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .about-path {
+    padding: 1.25rem;
+    border-top: 3px solid var(--color-secondary);
+    background: var(--color-bg-alt);
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+
+  .about-path-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-secondary);
+  }
+
+  .about-path h3 {
+    margin-top: 0;
+    font-size: 1.05rem;
+    color: var(--color-heading);
+  }
+
+  .about-path p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-team {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .about-team li {
+    flex: 0 0 auto;
+    max-width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-surface-strong);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-heading);
+  }
+</style>
