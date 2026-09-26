@@ -929,6 +929,15 @@ a:hover {
 .carousel-slide .posts-list:has(> .post-item:nth-child(odd):last-child) > .post-item:first-child {
   grid-column: 1 / -1;
 }
+/* En móvil hay 1 tarjeta por bloque: más puntos, así que se estrechan los espacios */
+@media (max-width: 560px) {
+  .carousel-nav {
+    gap: 0.5rem;
+  }
+  .carousel-dots {
+    gap: 0.4rem;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .carousel {
     scroll-behavior: auto;
