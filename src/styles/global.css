@@ -236,6 +236,12 @@ a:hover {
   transform: translateY(0);
 }
 
+/* La pestaña «Volver arriba» cierra la página pegada al pie: si está presente,
+   el pie no lleva su separador superior (4rem) para que el botón toque su borde. */
+main:has(.back-to-top) + .site-footer {
+  margin-top: 0;
+}
+
 .blog-container {
   max-width: 850px;
   margin: 0 auto;
