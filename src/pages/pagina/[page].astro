@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { formatDate } from '../../lib/formatDate';
+import { slugify } from '../../lib/slugify';
 import { HOME_PAGE_SIZE } from '../../lib/pagination';
+import { resolveAuthor, resolveAuthorImage } from '../../lib/author';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -14,9 +16,24 @@ export async function getStaticPaths() {
   });
 }
 
+const authors = await getCollection('autores');
 const { posts, page, pageCount } = Astro.props;
 const previousHref = page === 2 ? '/' : `/pagina/${page - 1}/`;
 const nextHref = page < pageCount ? `/pagina/${page + 1}/` : undefined;
+
+const getReadingMinutes = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
+
+const getAuthorBio = (post: (typeof posts)[number]) =>
+  resolveAuthor(authors, post.data.authorSlug, post.data.author)?.body ||
+  post.data.authorBio ||
+  'Biografía del autor próximamente.';
+
+const getAuthorImage = (post: (typeof posts)[number]) =>
+  resolveAuthorImage(authors, {
+    authorSlug: post.data.authorSlug,
+    author: post.data.author,
+    authorImage: post.data.authorImage,
+  });
 ---
 
 <Layout title={`Página ${page} · Blog Cultura y Desarrollo`} description="Archivo editorial paginado del Blog de Cultura y Desarrollo.">
@@ -31,9 +48,36 @@ const nextHref = page < pageCount ? `/pagina/${page + 1}/` : undefined;
       <ul class="posts-list">
         {posts.map((post) => (
           <li class="post-item">
-            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-            <h2><a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a></h2>
-            <p class="post-description">{post.data.description}</p>
+            <div class="older-post-content">
+              <h2><a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a></h2>
+              <div class="post-meta-inline">
+                <span class="post-author-line">
+                  <button class="author-trigger" type="button" aria-label={`Ver biografía de ${post.data.author}`} title={post.data.author}>
+                    <img class="post-author-avatar" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                  </button>
+                  <span>Por {post.data.author}</span>
+                  <button class="author-bio-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>ver bio</button>
+                </span>
+                <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {getReadingMinutes(post.body)} min de lectura</time>
+              </div>
+              <span class="post-category-list">
+                {post.data.category.map((category, index) => (
+                  <span>
+                    {index > 0 && <span aria-hidden="true"> / </span>}
+                    <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                  </span>
+                ))}
+              </span>
+              <p class="post-description">{post.data.description}</p>
+              <div class="author-modal" id={`author-modal-${post.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
+                <div class="author-modal-heading">
+                  <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                  <h2>{post.data.author}</h2>
+                </div>
+                <p>{getAuthorBio(post)}</p>
+                <button class="author-modal-close" type="button">Cerrar</button>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
@@ -43,4 +87,45 @@ const nextHref = page < pageCount ? `/pagina/${page + 1}/` : undefined;
       {nextHref ? <a class="pagination-btn next" href={nextHref}><span class="label">Más antiguos →</span><span class="title">Página {page + 1}</span></a> : <span aria-hidden="true"></span>}
     </nav>
   </div>
+
+  <script>
+    const modals = Array.from(document.querySelectorAll<HTMLElement>('.author-modal'));
+
+    const closeModals = (except?: HTMLElement) => {
+      for (const modal of modals) {
+        if (modal === except) continue;
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-author-modal]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const modal = document.getElementById(trigger.dataset.authorModal ?? '');
+        if (!modal) return;
+        const opening = modal.hidden;
+        closeModals();
+        modal.hidden = !opening;
+        modal.setAttribute('aria-hidden', String(!opening));
+        if (opening) modal.querySelector<HTMLElement>('.author-modal-close')?.focus();
+      });
+    });
+
+    for (const modal of modals) {
+      modal.querySelector<HTMLElement>('.author-modal-close')?.addEventListener('click', () => {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+      });
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          modal.hidden = true;
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModals();
+    });
+  </script>
 </Layout>

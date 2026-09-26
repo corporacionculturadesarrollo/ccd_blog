@@ -35,20 +35,41 @@ const paths = [
       <p>Espacio de difusión, análisis y gestión cultural comunitaria.</p>
     </header>
 
-    <section class="about-section">
-      <h2>Qué es este blog</h2>
-      <p>
-        Un blog abierto a la diversidad. Ideas, conocimientos y reflexiones sobre
-        Cultura, Patrimonio, Territorio, Sociedad, Desarrollo y los Grandes
-        Desafíos de Colombia y América Latina.
-      </p>
-      <p>
-        Aquí conviven ensayos, crónicas, reseñas, ponencias, convocatorias y
-        resultados de los procesos que asumimos desde el territorio: textos de
-        autoras y autores invitados, además del trabajo de nuestra comunidad de
-        escritura.
-      </p>
-    </section>
+    <div class="about-intro">
+      <section class="about-section">
+        <h2>Qué es este blog</h2>
+        <p>
+          Un blog abierto a la diversidad. Ideas, conocimientos y reflexiones
+          sobre Cultura, Patrimonio, Territorio, Sociedad, Desarrollo y los
+          Grandes Desafíos de Colombia y América Latina.
+        </p>
+        <p>
+          Aquí conviven ensayos, crónicas, reseñas, ponencias, convocatorias y
+          resultados de los procesos que asumimos desde el territorio: textos de
+          autores invitados, además del trabajo de nuestra comunidad
+          de escritura.
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2>Qué encontrarás</h2>
+        <p>
+          Todo el contenido está organizado por <a href="/categorias/">categorías</a> —entre ellas <a href="/categorias/proyectos/">proyectos</a>, <a href="/categorias/patrimonio/">patrimonio</a> y <a href="/categorias/convocatorias/">convocatorias</a>—, <a href="/tags/">etiquetas</a> y <a href="/archivo/">fecha de publicación</a>, con un <a href="/autores/">directorio de autores</a> donde puedes seguir la producción de cada participante.
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2>Participa</h2>
+        <p>
+          El blog es un espacio abierto: publicamos <a href="/categorias/convocatorias/">convocatorias</a> periódicas para que envíes tus textos, y respondemos tus preguntas a través del <a href="/#contacto">formulario de contacto</a>.
+        </p>
+        <p>
+          Trabajamos con comunidades, instituciones, universidades,
+          organizaciones sociales y aliados interesados en construir procesos
+          con sentido.
+        </p>
+      </section>
+    </div>
 
     <section class="about-section">
       <h2>Quiénes somos</h2>
@@ -137,35 +158,6 @@ const paths = [
         <li>Rafael Dimitri Guzmán Camacho</li>
       </ul>
     </section>
-
-    <section class="about-section">
-      <h2>Qué encontrarás</h2>
-      <p>
-        Todo el contenido está organizado por
-        <a href="/categorias/">categorías</a> —entre ellas
-        <a href="/categorias/proyectos/">proyectos</a>,
-        <a href="/categorias/patrimonio/">patrimonio</a> y
-        <a href="/categorias/convocatorias/">convocatorias</a>—,
-        <a href="/tags/">etiquetas</a> y
-        <a href="/archivo/">fecha de publicación</a>, con un
-        <a href="/autores/">directorio de autoras y autores</a> donde puedes
-        seguir la producción de cada participante.
-      </p>
-    </section>
-
-    <section class="about-section">
-      <h2>Participa</h2>
-      <p>
-        El blog es un espacio abierto: publicamos
-        <a href="/categorias/convocatorias/">convocatorias</a> periódicas para
-        que envíes tus textos, y respondemos tus preguntas a través del
-        <a href="/#contacto">formulario de contacto</a>.
-      </p>
-      <p>
-        Trabajamos con comunidades, instituciones, universidades, organizaciones
-        sociales y aliados interesados en construir procesos con sentido.
-      </p>
-    </section>
   </div>
 </Layout>
 
@@ -180,6 +172,30 @@ const paths = [
 
   .about-section p {
     line-height: 1.75;
+  }
+
+  .about-intro {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .about-intro .about-section {
+    margin-bottom: 0;
+    padding: 1.25rem;
+    border-top: 3px solid var(--color-secondary);
+    background: var(--color-bg-alt);
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+
+  .about-intro .about-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .about-intro .about-section p:last-child {
+    margin-bottom: 0;
   }
 
   .about-lead {

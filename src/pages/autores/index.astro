@@ -3,6 +3,20 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 const authors = await getCollection('autores');
+
+function makeExcerpt(text: string, max = 140): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${lastSpace > 40 ? cut.slice(0, lastSpace) : cut}…`;
+}
+
+const items = authors.map((author) => {
+  const slug = author.data.slug ?? author.id;
+  const bio = (author.body ?? '').trim();
+  const hasBio = bio.length > 0;
+  return { author, slug, bio, hasBio, excerpt: hasBio ? makeExcerpt(bio) : '' };
+});
 ---
 
 <Layout title="Autores | Blog Cultura y Desarrollo" description="Conoce a las personas y organizaciones que publican en el blog.">
@@ -13,13 +27,170 @@ const authors = await getCollection('autores');
       <p>Personas y organizaciones que comparten conocimiento y experiencia.</p>
     </header>
     <div class="author-grid">
-      {authors.map((author) => (
-        <a class="author-card" href={`/autores/${author.data.slug ?? author.id}/`}>
-          <img src={author.data.image} alt="" width="72" height="72" loading="lazy" decoding="async" />
-          <span><strong>{author.data.name}</strong><small>Ver perfil y artículos</small></span>
-        </a>
+      {items.map(({ author, slug, hasBio, excerpt }) => (
+        <div class="author-card">
+          <a class="author-card-link" href={`/autores/${slug}/`}>
+            <img src={author.data.image} alt="" width="72" height="72" loading="lazy" decoding="async" />
+            <span>
+              <strong>{author.data.name}</strong>
+              <small>{hasBio ? excerpt : 'Ver artículos'}</small>
+            </span>
+          </a>
+          <div class="author-card-actions">
+            <a class="author-card-profile" href={`/autores/${slug}/`}>Ver artículos</a>
+            {hasBio && (
+              <button
+                class="author-bio-trigger"
+                type="button"
+                data-author-modal={`author-modal-${slug}`}
+                aria-haspopup="dialog"
+                aria-label={`Ver biografía de ${author.data.name}`}
+                title={`Abrir biografía de ${author.data.name}`}
+              >
+                Ver bio
+              </button>
+            )}
+          </div>
+        </div>
       ))}
     </div>
     {authors.length === 0 && <p class="blog-empty-state">Todavía no hay perfiles de autor.</p>}
+
+    {items.map(({ author, slug, bio, hasBio }) => (
+      <div
+        class="author-modal"
+        id={`author-modal-${slug}`}
+        hidden
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`author-modal-title-${slug}`}
+      >
+        <div class="author-modal-heading">
+          <img class="author-modal-image" src={author.data.image} alt={`Foto de ${author.data.name}`} width="72" height="72" />
+          <h2 id={`author-modal-title-${slug}`}>{author.data.name}</h2>
+        </div>
+        <p>{hasBio ? bio : 'Biografía próximamente.'}</p>
+        <button class="author-modal-close" type="button">Cerrar</button>
+      </div>
+    ))}
   </div>
+
+  <script>
+    const modals = Array.from(document.querySelectorAll<HTMLElement>('.author-modal'));
+
+    const closeModals = (except?: HTMLElement) => {
+      for (const modal of modals) {
+        if (modal === except) continue;
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-author-modal]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const modal = document.getElementById(trigger.dataset.authorModal ?? '');
+        if (!modal) return;
+        const opening = modal.hidden;
+        closeModals();
+        modal.hidden = !opening;
+        modal.setAttribute('aria-hidden', String(!opening));
+        if (opening) modal.querySelector<HTMLElement>('.author-modal-close')?.focus();
+      });
+    });
+
+    for (const modal of modals) {
+      modal.querySelector<HTMLElement>('.author-modal-close')?.addEventListener('click', () => {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+      });
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          modal.hidden = true;
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModals();
+    });
+  </script>
+
+  <style>
+    .author-card {
+      align-items: stretch;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .author-card-link {
+      align-items: center;
+      color: inherit;
+      display: flex;
+      gap: 1rem;
+      min-width: 0;
+      text-decoration: none;
+    }
+
+    .author-card-link strong {
+      color: var(--color-primary);
+    }
+
+    .author-card-link:hover strong,
+    .author-card-link:focus-visible strong {
+      color: var(--color-secondary);
+    }
+
+    .author-card-link small {
+      display: -webkit-box;
+      font-size: 0.8rem;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    .author-card-actions {
+      align-items: center;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .author-card-profile {
+      color: var(--color-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .author-card-profile:hover,
+    .author-card-profile:focus-visible {
+      color: var(--color-secondary);
+      text-decoration: underline;
+    }
+
+    .author-bio-trigger {
+      background: transparent;
+      border: 1px solid var(--color-secondary);
+      border-radius: 999px;
+      color: var(--color-secondary);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.3rem 0.8rem;
+    }
+
+    .author-bio-trigger:hover,
+    .author-bio-trigger:focus-visible {
+      background: var(--color-secondary);
+      color: var(--color-on-primary);
+    }
+  </style>
 </Layout>
