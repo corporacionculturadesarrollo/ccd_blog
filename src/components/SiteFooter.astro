@@ -56,6 +56,9 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
   <div class="footer-bottom">
     <p>© {year} Corporación Cultura y Desarrollo · Desarrollo y Webmaster: Rafael Dimitri Guzmán Camacho</p>
   </div>
+
+  {/* Punto más bajo del pie: aquí entra la pestaña «Volver arriba» (slot trasladado desde el Layout) */}
+  <slot name="after-footer" />
 </footer>
 
 <style>

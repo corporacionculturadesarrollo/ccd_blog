@@ -835,7 +835,6 @@ const breadcrumbSchema = {
             postAuthor={entry.data.author}
             postDate={formatDate(entry.data.pubDate)}
         />
-        <BackToTop />
     </div>
 
     {/* SCRIPT CON COMILLAS INVERTIDAS DE JAVASCRIPT */}
@@ -1078,4 +1077,5 @@ const breadcrumbSchema = {
         });
     </script>
 
+    <BackToTop slot="after-footer" />
 </Layout>

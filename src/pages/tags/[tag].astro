@@ -113,6 +113,6 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
                 ))}
             </ul>
         </main>
-        <BackToTop />
     </div>
+    <BackToTop slot="after-footer" />
 </Layout>

@@ -326,7 +326,6 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             )}
         </main>
         <ContactForm postTitle="Consulta general del blog" />
-        <BackToTop />
     </div>
     <script is:inline>
         // ——— Carruseles de la portada: flechas, puntos y altura adaptable ———
@@ -342,6 +341,12 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                 var dotsBox = section.querySelector('.carousel-dots');
                 var slides = Array.prototype.slice.call(carousel.querySelectorAll('.carousel-slide'));
                 var dots = Array.prototype.slice.call(section.querySelectorAll('.carousel-dot'));
+                // Puntos: como máximo se muestran MAX_PUNTOS a la vez; al llegar al
+                // final de la tanda visible se refresca con la siguiente (10, o las
+                // que queden si es la última tanda)
+                var MAX_PUNTOS = 10;
+                var inicio = 0;   // primer punto de la ventana visible
+                var ventana = -1;  // ventana ya pintada (-1 = pintar al iniciar)
                 // Escritorio: bloques de 2 del servidor; móvil: 1 tarjeta por bloque (sin apilar)
                 var porBloque = 2;
                 function porDefecto() { return mqMovil.matches ? 1 : 2; }
@@ -377,6 +382,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                         }
                         dotsBox.replaceChildren(dfrag);
                         dots = Array.prototype.slice.call(dotsBox.querySelectorAll('.carousel-dot'));
+                        inicio = 0;
+                        ventana = -1;
                     }
                 }
                 function offsets() {
@@ -400,8 +407,22 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                     prev.disabled = carousel.scrollLeft <= 2;
                     next.disabled = carousel.scrollLeft >= max;
                     var idx = activeIndex();
+                    recalcularVentana(idx);
+                    pintarVentana();
                     dots.forEach(function (d, i) { d.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
                     fitHeight();
+                }
+                // Ventana de puntos: si el activo llega al último punto visible, se salta
+                // a la siguiente tanda; la última se alinea para no pasar del total.
+                function recalcularVentana(idx) {
+                    if (dots.length <= MAX_PUNTOS) { inicio = 0; return; }
+                    if (idx < inicio) inicio = idx;
+                    else if (idx >= inicio + MAX_PUNTOS - 1) inicio = Math.min(idx, dots.length - MAX_PUNTOS);
+                }
+                function pintarVentana() {
+                    if (ventana === inicio) return;
+                    ventana = inicio;
+                    dots.forEach(function (d, i) { d.hidden = i < inicio || i >= inicio + MAX_PUNTOS; });
                 }
                 function step(dir) { carousel.scrollBy({ left: dir * carousel.clientWidth, behavior: 'smooth' }); }
                 function bindDots() {
@@ -577,4 +598,5 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             }
         });
     </script>
+    <BackToTop slot="after-footer" />
 </Layout>

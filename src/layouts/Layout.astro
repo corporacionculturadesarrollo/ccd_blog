@@ -38,6 +38,8 @@ const { title, description, type = 'website', author, publishedDate } = Astro.pr
 		<a class="skip-link" href="#main-content">Saltar al contenido</a>
 		<BlogNavbar />
 		<main id="main-content"><slot /></main>
-		<SiteFooter />
+		<SiteFooter>
+			<slot name="after-footer" slot="after-footer" />
+		</SiteFooter>
 	</body>
 </html>

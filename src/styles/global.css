@@ -207,7 +207,10 @@ a:hover {
   display: flex;
   box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.16);
   color: var(--color-on-primary);
-  margin: 2.5rem auto 0;
+  /* El botón vive dentro del pie, después del copyright: su margen inferior
+     negativo cancela el relleno inferior del pie (1.5rem) para que su borde
+     plano quede exactamente en el punto más bajo del pie. */
+  margin: 2rem auto -1.5rem;
   height: 3.75rem;
   justify-content: center;
   line-height: 1;
@@ -236,11 +239,8 @@ a:hover {
   transform: translateY(0);
 }
 
-/* La pestaña «Volver arriba» cierra la página pegada al pie: si está presente,
-   el pie no lleva su separador superior (4rem) para que el botón toque su borde. */
-main:has(.back-to-top) + .site-footer {
-  margin-top: 0;
-}
+/* La pestaña «Volver arriba» ya se renderiza dentro del pie (slot after-footer),
+   así que el pie conserva su separador superior normal (4rem). */
 
 .blog-container {
   max-width: 850px;
@@ -880,6 +880,10 @@ main:has(.back-to-top) + .site-footer {
 }
 .carousel-dot:hover {
   border-color: var(--color-secondary);
+}
+/* Solo se muestran máximo 10 puntos a la vez (la ventana salta de tanda en tanda) */
+.carousel-dot[hidden] {
+  display: none;
 }
 .carousel-btn {
   align-items: center;
