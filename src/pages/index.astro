@@ -55,15 +55,21 @@ const sortedPosts = posts
   }))
   .sort((a, b) => getPostSortTimestamp(b) - getPostSortTimestamp(a));
 
-const pagePosts = sortedPosts.slice(0, HOME_PAGE_SIZE);
+// Divide un arreglo en bloques para los carruseles (2 tarjetas por bloque)
+function enBloques<T>(arr: T[], size = 2): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
 const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
-const latestPost = pagePosts[0] ?? null;
-const featuredPosts = pagePosts.filter((post) => post.data.featured && post.id !== latestPost?.id).slice(0, 5);
-const regularPosts = pagePosts.filter((post) => {
-  if (post.id === latestPost?.id) return false;
-  if (!post.data.featured) return true;
-  return !featuredPosts.some((featuredPost) => featuredPost.id === post.id);
-});
+const latestPost = sortedPosts[0] ?? null;
+// Destacados: todos los marcados como featured (aunque estén más allá de la primera página)
+const featuredPosts = sortedPosts.filter((post) => post.data.featured && post.id !== latestPost?.id);
+// Anteriores: lista completa de todo lo anterior al artículo reciente (los destacados se repiten)
+const regularPosts = sortedPosts.filter((post) => post.id !== latestPost?.id);
+const bloquesDestacados = enBloques(featuredPosts);
+const bloquesAnteriores = enBloques(regularPosts);
 const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
 ---
 
@@ -121,7 +127,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <h2 id="latest-heading">Artículo reciente</h2>
                             </div>
                             <div class="featured-grid">
-                                <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author}>
+                                <article class="featured-card latest-card" data-search={latestPost.searchText} data-author={latestPost.data.author} data-post-id={latestPost.id}>
                                     <div class="latest-card-header">
                                         <span class="featured-badge">Reciente</span>
                                         <h3>
@@ -173,12 +179,28 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                             <div class="featured-header">
                                 <h2 id="featured-heading">Artículos destacados</h2>
                                 <p>Temas estratégicos, convocatorias y contenidos de mayor relevancia editorial.</p>
+                                <p class="carousel-hint">Desliza o usa las flechas para ver más artículos</p>
+                                {bloquesDestacados.length > 1 && (
+                                    <div class="carousel-nav">
+                                        <button class="carousel-btn prev" type="button" title="Bloque anterior" aria-label="Artículos destacados: bloque anterior"><span aria-hidden="true">‹</span></button>
+                                        <div class="carousel-dots" aria-label="Artículos destacados: bloques">
+                                            {bloquesDestacados.map((_, i) => (
+                                                <button class="carousel-dot" type="button" aria-label={`Artículos destacados: ir al bloque ${i + 1}`} aria-current={i === 0}></button>
+                                            ))}
+                                        </div>
+                                        <button class="carousel-btn next" type="button" title="Bloque siguiente" aria-label="Artículos destacados: bloque siguiente"><span aria-hidden="true">›</span></button>
+                                    </div>
+                                )}
                             </div>
-                            <ul class="posts-list">
-                                {featuredPosts.map((post) => (
-                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
+                            <div class="carousel" role="region" aria-label="Artículos destacados, carrusel" tabindex="0">
+                                <div class="carousel-track">
+                                    {bloquesDestacados.map((bloque) => (
+                                    <div class="carousel-slide">
+                                    <ul class="posts-list">
+                                {bloque.map((post) => (
+                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author} data-post-id={post.id}>
                                 <div class="older-post-content">
-                                <span class="featured-badge">Destacado</span>
+                                {post.data.featured && <span class="featured-badge">Destacado</span>}
                                 <h2>
                                     <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
                                 </h2>
@@ -206,18 +228,14 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
-                                <div class="author-modal" id={`author-modal-${post.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
-                                    <div class="author-modal-heading">
-                                        <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
-                                        <h2>{post.data.author}</h2>
-                                    </div>
-                                    <p>{getAuthorBio(post)}</p>
-                                    <button class="author-modal-close" type="button">Cerrar</button>
-                                </div>
                                 </div>
                                     </li>
                                 ))}
-                            </ul>
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </section>
                     )}
 
@@ -228,11 +246,28 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                         <section class="older-posts-section" aria-labelledby="older-posts-heading">
                             <div class="featured-header">
                                 <h2 id="older-posts-heading">Artículos anteriores</h2>
+                                <p class="carousel-hint">Desliza o usa las flechas para ver más artículos</p>
+                                {bloquesAnteriores.length > 1 && (
+                                    <div class="carousel-nav">
+                                        <button class="carousel-btn prev" type="button" title="Bloque anterior" aria-label="Artículos anteriores: bloque anterior"><span aria-hidden="true">‹</span></button>
+                                        <div class="carousel-dots" aria-label="Artículos anteriores: bloques">
+                                            {bloquesAnteriores.map((_, i) => (
+                                                <button class="carousel-dot" type="button" aria-label={`Artículos anteriores: ir al bloque ${i + 1}`} aria-current={i === 0}></button>
+                                            ))}
+                                        </div>
+                                        <button class="carousel-btn next" type="button" title="Bloque siguiente" aria-label="Artículos anteriores: bloque siguiente"><span aria-hidden="true">›</span></button>
+                                    </div>
+                                )}
                             </div>
-                            <ul class="posts-list">
-                                {regularPosts.map((post) => (
-                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author}>
+                            <div class="carousel" role="region" aria-label="Artículos anteriores, carrusel" tabindex="0">
+                                <div class="carousel-track">
+                                    {bloquesAnteriores.map((bloque) => (
+                                    <div class="carousel-slide">
+                                    <ul class="posts-list">
+                                {bloque.map((post) => (
+                                    <li class:list={['post-item', { 'post-item-with-image': Boolean(post.data.image) }]} data-search={post.searchText} data-author={post.data.author} data-post-id={post.id}>
                                 <div class="older-post-content">
+                                {post.data.featured && <span class="featured-badge">Destacado</span>}
                                 <h2>
                                     <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
                                 </h2>
@@ -272,6 +307,10 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                     </li>
                                 ))}
                             </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </section>
                     )}
                     {pageCount > 1 && (
@@ -290,12 +329,68 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
         <BackToTop />
     </div>
     <script is:inline>
+        // ——— Carruseles de la portada: flechas, puntos y altura adaptable ———
+        (function () {
+            var fits = [];
+            Array.prototype.forEach.call(document.querySelectorAll('.carousel'), function (carousel) {
+                var section = carousel.closest('section') || document;
+                var prev = section.querySelector('.carousel-btn.prev');
+                var next = section.querySelector('.carousel-btn.next');
+                if (!prev || !next) return;
+                var slides = Array.prototype.slice.call(carousel.querySelectorAll('.carousel-slide'));
+                var dots = Array.prototype.slice.call(section.querySelectorAll('.carousel-dot'));
+                function offsets() {
+                    var base = carousel.getBoundingClientRect().left;
+                    return slides.map(function (s) { return s.getBoundingClientRect().left - base + carousel.scrollLeft; });
+                }
+                function activeIndex() {
+                    var pos = carousel.scrollLeft, best = 0, bestDiff = Infinity;
+                    offsets().forEach(function (o, i) {
+                        var d = Math.abs(o - pos);
+                        if (d < bestDiff) { bestDiff = d; best = i; }
+                    });
+                    return best;
+                }
+                function fitHeight() {
+                    var h = slides[activeIndex()].offsetHeight + 'px';
+                    if (carousel.style.height !== h) carousel.style.height = h;
+                }
+                function update() {
+                    var max = carousel.scrollWidth - carousel.clientWidth - 2;
+                    prev.disabled = carousel.scrollLeft <= 2;
+                    next.disabled = carousel.scrollLeft >= max;
+                    var idx = activeIndex();
+                    dots.forEach(function (d, i) { d.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
+                    fitHeight();
+                }
+                function step(dir) { carousel.scrollBy({ left: dir * carousel.clientWidth, behavior: 'smooth' }); }
+                prev.addEventListener('click', function () { step(-1); });
+                next.addEventListener('click', function () { step(1); });
+                dots.forEach(function (d, i) {
+                    d.addEventListener('click', function () {
+                        carousel.scrollTo({ left: offsets()[i], behavior: 'smooth' });
+                    });
+                });
+                carousel.addEventListener('scroll', update, { passive: true });
+                window.addEventListener('resize', update);
+                carousel.addEventListener('load', fitHeight, true);
+                carousel.addEventListener('keydown', function (e) {
+                    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+                    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+                });
+                fits.push(fitHeight);
+                update();
+            });
+            window.__refitCarousels = function () { fits.forEach(function (f) { f(); }); };
+        })();
+
         const searchInput = document.getElementById('blog-search-input');
         const authorFilter = document.getElementById('blog-author-filter');
         const searchForm = document.getElementById('blog-search-form');
         const posts = Array.from(document.querySelectorAll('.post-item, .featured-card'));
         const emptyState = document.getElementById('blog-empty-state');
         const countEl = document.getElementById('blog-search-count');
+        const countBase = countEl?.textContent || '';
         const globalResults = document.getElementById('global-search-results');
         const searchIndexUrl = searchForm?.dataset.indexUrl || '/search-index.json';
         const siteBaseUrl = searchForm?.dataset.baseUrl || '/';
@@ -339,7 +434,8 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
         const applyFilters = () => {
             const query = (searchInput?.value || '').trim().toLowerCase();
             const selectedAuthor = authorFilter?.value || '';
-            let visibleCount = 0;
+            // Set de posts visibles: cuenta artículos únicos (los destacados se repiten en dos carruseles)
+            const visibles = new Set();
 
             posts.forEach((post) => {
                 const haystack = (post.dataset.search || post.textContent || '').toLowerCase();
@@ -347,21 +443,26 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                 const matchesAuthor = !selectedAuthor || (post.dataset.author || '') === selectedAuthor;
                 const match = matchesQuery && matchesAuthor;
                 post.hidden = !match;
-                if (match) visibleCount += 1;
+                if (match) visibles.add(post.dataset.postId || post);
             });
 
             document.querySelectorAll('.featured-section, .older-posts-section').forEach((section) => {
                 section.hidden = !section.querySelector('.featured-card:not([hidden]), .post-item:not([hidden])');
             });
 
-            if (emptyState) emptyState.hidden = visibleCount !== 0;
+            const filtrando = Boolean(query || selectedAuthor);
+            if (emptyState) emptyState.hidden = visibles.size !== 0;
             if (countEl) {
-                const label = visibleCount === 1 ? 'artículo' : 'artículos';
-                const baseLabel = `${posts.length} ${label}`;
-                countEl.textContent = query || selectedAuthor ? `${visibleCount} ${label} coincidentes` : baseLabel;
+                if (filtrando) {
+                    const label = visibles.size === 1 ? 'artículo' : 'artículos';
+                    countEl.textContent = `${visibles.size} ${label} coincidentes`;
+                } else {
+                    countEl.textContent = countBase;
+                }
             }
             if (query) loadGlobalIndex().then(() => renderGlobalResults(query, selectedAuthor)).catch(() => {});
             else if (globalResults) globalResults.hidden = true;
+            window.__refitCarousels?.();
         };
 
         searchInput?.addEventListener('input', applyFilters);

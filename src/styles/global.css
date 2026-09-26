@@ -838,3 +838,100 @@ a:hover {
   .blog-navbar, .skip-link, .breadcrumbs { display: none !important; }
   .article-content a { color: inherit; text-decoration: none; }
 }
+
+/* ——— Carruseles de la portada: artículos destacados y anteriores ——— */
+.carousel-hint {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin: 0.3rem 0 0;
+}
+.carousel-nav {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-top: 0.9rem;
+  width: 100%;
+}
+.carousel-dots {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+.carousel-dot {
+  background: transparent;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  height: 10px;
+  padding: 0;
+  transition: background 0.15s, border-color 0.15s;
+  width: 10px;
+}
+.carousel-dot[aria-current="true"] {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+.carousel-dot:hover {
+  border-color: var(--color-secondary);
+}
+.carousel-btn {
+  align-items: center;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.5rem;
+  font-weight: 700;
+  height: 2.6rem;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 0 3px;
+  width: 2.6rem;
+}
+.carousel-btn:hover:not(:disabled),
+.carousel-btn:focus-visible:not(:disabled) {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+.carousel-btn:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+.carousel {
+  outline: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  transition: height 0.3s ease;
+}
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+.carousel-track {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+}
+.carousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.carousel-slide .post-item:first-child {
+  grid-column: auto;
+}
+/* Bloque con nº impar de tarjetas: la primera a todo el ancho; el resto, 2 por línea */
+.carousel-slide .posts-list:has(> .post-item:nth-child(odd):last-child) > .post-item:first-child {
+  grid-column: 1 / -1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
