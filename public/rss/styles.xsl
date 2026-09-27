@@ -9,7 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title><xsl:value-of select="rss/channel/title"/> | RSS</title>
         <style>
-          :root { color-scheme: light dark; }
+          :root { color-scheme: light; }
+          :root[data-theme='dark'] { color-scheme: dark; }
           * { box-sizing: border-box; }
           body {
             margin: 0;
@@ -154,29 +155,36 @@
             .bar-inner img { height: 42px; width: 74px; }
           }
 
-          @media (prefers-color-scheme: dark) {
-            body { background: #211816; color: #f3e9e3; }
-            a { color: #e7a27b; }
-            a:hover { color: #f1c8ae; }
-            .bar { background: #211816; border-bottom-color: #59443b; }
-            .bar-inner .navlink { color: #f3e9e3; }
-            .bar-inner .navlink:hover { color: #e7a27b; }
-            .page-heading { border-bottom-color: #59443b; }
-            .eyebrow, .count { color: #e7a27b; }
-            .page-heading h1 { color: #f1c8ae; }
-            .page-heading .lead { color: #d8c4bb; }
-            .note { background: #30231f; border-color: #59443b; color: #f3e9e3; }
-            .post { background: #30231f; border-left-color: #e7a27b; }
-            .post .date { color: #d8c4bb; }
-            .post h2 a { color: #f1c8ae; }
-            .post h2 a:hover { color: #e7a27b; }
-            .post .desc { color: #f3e9e3; }
-            .cats span { background: #211816; border-color: #59443b; color: #e7a27b; }
-            footer { background: #30231f; border-top-color: #59443b; color: #d8c4bb; }
-            footer .tagline { color: #f1c8ae; }
-            footer a { color: #e7a27b; }
-          }
+          :root[data-theme='dark'] body { background: #211816; color: #f3e9e3; }
+          :root[data-theme='dark'] a { color: #e7a27b; }
+          :root[data-theme='dark'] a:hover { color: #f1c8ae; }
+          :root[data-theme='dark'] .bar { background: #211816; border-bottom-color: #59443b; }
+          :root[data-theme='dark'] .bar-inner .navlink { color: #f3e9e3; }
+          :root[data-theme='dark'] .bar-inner .navlink:hover { color: #e7a27b; }
+          :root[data-theme='dark'] .page-heading { border-bottom-color: #59443b; }
+          :root[data-theme='dark'] .eyebrow,
+          :root[data-theme='dark'] .count { color: #e7a27b; }
+          :root[data-theme='dark'] .page-heading h1 { color: #f1c8ae; }
+          :root[data-theme='dark'] .page-heading .lead { color: #d8c4bb; }
+          :root[data-theme='dark'] .note { background: #30231f; border-color: #59443b; color: #f3e9e3; }
+          :root[data-theme='dark'] .post { background: #30231f; border-left-color: #e7a27b; }
+          :root[data-theme='dark'] .post .date { color: #d8c4bb; }
+          :root[data-theme='dark'] .post h2 a { color: #f1c8ae; }
+          :root[data-theme='dark'] .post h2 a:hover { color: #e7a27b; }
+          :root[data-theme='dark'] .post .desc { color: #f3e9e3; }
+          :root[data-theme='dark'] .cats span { background: #211816; border-color: #59443b; color: #e7a27b; }
+          :root[data-theme='dark'] footer { background: #30231f; border-top-color: #59443b; color: #d8c4bb; }
+          :root[data-theme='dark'] footer .tagline { color: #f1c8ae; }
+          :root[data-theme='dark'] footer a { color: #e7a27b; }
         </style>
+        <script type="text/javascript"><![CDATA[
+          try {
+            var t = localStorage.getItem('ccd-theme');
+            if (t === 'dark' || t === 'light') {
+              document.documentElement.setAttribute('data-theme', t);
+            }
+          } catch (e) {}
+        ]]></script>
       </head>
       <body>
         <nav class="bar">
