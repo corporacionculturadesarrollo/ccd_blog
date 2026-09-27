@@ -409,7 +409,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             }
             if (query) loadGlobalIndex().then(() => renderGlobalResults(query, selectedAuthor)).catch(() => {});
             else if (globalResults) globalResults.hidden = true;
-            window.__refitCarousels?.();
+            window.__rebuildCarousels?.();
         };
 
         searchInput?.addEventListener('input', applyFilters);
