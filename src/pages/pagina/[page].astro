@@ -70,12 +70,14 @@ const getAuthorImage = (post: (typeof posts)[number]) =>
               </span>
               <p class="post-description">{post.data.description}</p>
               <div class="author-modal" id={`author-modal-${post.id}`} hidden aria-hidden="true" role="dialog" aria-modal="true">
-                <div class="author-modal-heading">
-                  <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
-                  <h2>{post.data.author}</h2>
+                <div class="author-modal-card">
+                  <div class="author-modal-heading">
+                    <img class="author-modal-image" src={getAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
+                    <h2>{post.data.author}</h2>
+                  </div>
+                  <p>{getAuthorBio(post)}</p>
+                  <button class="author-modal-close" type="button">Cerrar</button>
                 </div>
-                <p>{getAuthorBio(post)}</p>
-                <button class="author-modal-close" type="button">Cerrar</button>
               </div>
             </div>
           </li>

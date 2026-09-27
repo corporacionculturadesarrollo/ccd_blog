@@ -591,17 +591,14 @@ const breadcrumbSchema = {
         .author-trigger:hover img, .author-trigger:focus-visible img {
             transform: none;
         }
-        .author-modal {
+        .author-modal-card {
             border: 0;
             border-radius: 10px;
             box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
             color: var(--color-text);
             max-width: 420px;
             padding: 2rem;
-            width: calc(100% - 2rem);
-        }
-        .author-modal::backdrop {
-            background: rgba(36, 19, 15, 0.45);
+            width: 100%;
         }
         .author-modal h2 {
             color: var(--color-primary);
@@ -754,12 +751,14 @@ const breadcrumbSchema = {
         </article>
 
         <div class="author-modal" id="author-modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
-            <div class="author-modal-heading">
-                <img class="author-modal-image" src={authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
-                <h2>{entry.data.author}</h2>
+            <div class="author-modal-card">
+                <div class="author-modal-heading">
+                    <img class="author-modal-image" src={authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
+                    <h2>{entry.data.author}</h2>
+                </div>
+                <p>{authorBio}</p>
+                <button class="author-modal-close" type="button">Cerrar</button>
             </div>
-            <p>{authorBio}</p>
-            <button class="author-modal-close" type="button">Cerrar</button>
         </div>
 
         <dialog class="disclaimer-modal" id="disclaimer-modal">

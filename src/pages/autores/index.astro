@@ -66,12 +66,14 @@ const items = authors.map((author) => {
         aria-modal="true"
         aria-labelledby={`author-modal-title-${slug}`}
       >
-        <div class="author-modal-heading">
-          <img class="author-modal-image" src={author.data.image} alt={`Foto de ${author.data.name}`} width="72" height="72" />
-          <h2 id={`author-modal-title-${slug}`}>{author.data.name}</h2>
+        <div class="author-modal-card">
+          <div class="author-modal-heading">
+            <img class="author-modal-image" src={author.data.image} alt={`Foto de ${author.data.name}`} width="72" height="72" />
+            <h2 id={`author-modal-title-${slug}`}>{author.data.name}</h2>
+          </div>
+          <p>{hasBio ? bio : 'Biografía próximamente.'}</p>
+          <button class="author-modal-close" type="button">Cerrar</button>
         </div>
-        <p>{hasBio ? bio : 'Biografía próximamente.'}</p>
-        <button class="author-modal-close" type="button">Cerrar</button>
       </div>
     ))}
   </div>
