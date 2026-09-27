@@ -331,6 +331,18 @@ a:hover {
   width: 100%;
 }
 
+/* REGLA ARTÍCULO: el video se ajusta al contenedor. */
+.article-content video,
+.article-content figure video {
+  aspect-ratio: auto 4 / 3;
+  background: #000;
+  border-radius: 6px;
+  display: block;
+  height: auto;
+  object-fit: contain;
+  width: 100%;
+}
+
 .latest-card {
   display: grid;
   gap: 0.9rem;
