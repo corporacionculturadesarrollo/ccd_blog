@@ -2,17 +2,6 @@
 /* Pie de página institucional del blog */
 const year = new Date().getFullYear();
 
-const navLinks = [
-  { href: '/', label: 'Inicio' },
-  { href: '/categorias/', label: 'Categorías' },
-  { href: '/tags/', label: 'Etiquetas' },
-  { href: '/archivo/', label: 'Archivo' },
-  { href: '/autores/', label: 'Autores' },
-  { href: '/acerca/', label: 'Acerca de' },
-  { href: '/#contacto', label: 'Contacto' },
-  { href: '/rss.xml', label: 'RSS' },
-];
-
 const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
 ---
 
@@ -27,10 +16,6 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
       <p class="footer-tagline">Cultura · Memoria · Comunidad · Territorio</p>
       <p class="footer-place">Tolima · Colombia</p>
     </div>
-
-    <nav class="footer-nav" aria-label="Navegación del pie de página">
-      {navLinks.map(({ href, label }) => <a href={href}>{label}</a>)}
-    </nav>
 
     <div class="footer-social">
       <p class="footer-social-title">Síguenos</p>
@@ -108,25 +93,6 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
     color: var(--color-muted);
   }
 
-  .footer-nav {
-    flex: 1 1 320px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    align-items: center;
-  }
-
-  .footer-nav a {
-    color: var(--color-text);
-    text-decoration: none;
-    font-size: 0.95rem;
-  }
-
-  .footer-nav a:hover {
-    color: var(--color-secondary);
-    text-decoration: underline;
-  }
-
   .footer-social {
     flex: 0 1 auto;
   }
@@ -178,8 +144,7 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
       gap: 1.5rem;
     }
 
-    .footer-brand,
-    .footer-nav {
+    .footer-brand {
       flex-basis: auto;
       min-width: 0;
     }

@@ -9,6 +9,7 @@ import { slugify } from '../lib/slugify';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { resolveAuthor, resolveAuthorImage } from '../lib/author';
+import { getPostImage } from '../lib/postImage';
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
@@ -68,6 +69,23 @@ const fallbackRelated = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 const finalRelatedPosts = [...relatedPosts, ...fallbackRelated].slice(0, 3);
+
+// Bloques del carrusel «Artículos relacionados» (2 tarjetas por bloque en
+// escritorio; el script los reagrupa a 1 por bloque en móvil)
+function enBloques<T>(arr: T[], size = 2): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+const bloquesRelacionados = enBloques(finalRelatedPosts, 2);
+const minutesOf = (body?: string) => Math.max(1, Math.ceil((body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
+const relatedImage = (post: (typeof allPosts)[number]) => getPostImage(post);
+const relatedAuthorImage = (post: (typeof allPosts)[number]) =>
+  resolveAuthorImage(authors, {
+    authorSlug: post.data.authorSlug,
+    author: post.data.author,
+    authorImage: post.data.authorImage,
+  });
 const readingMinutes = Math.max(1, Math.ceil((entry.body?.split(/\s+/).filter(Boolean).length ?? 0) / 200));
 
 const articleUrl = new URL(`/${entry.id}/`, Astro.site ?? Astro.url).href;
@@ -534,25 +552,6 @@ const breadcrumbSchema = {
             padding-top: 2rem;
             border-top: 2px solid var(--color-border);
         }
-        .related-grid {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-        .related-card {
-            background: var(--color-bg-alt);
-            border-radius: 6px;
-            border-top: 3px solid var(--color-secondary);
-            padding: 1.25rem;
-        }
-        .related-card h3 {
-            font-size: 1.1rem;
-            margin: 0 0 0.5rem;
-        }
-        .related-card p {
-            font-size: 0.9rem;
-            margin: 0 0 0.75rem;
-        }
         .author-trigger {
             align-items: center;
             background: transparent;
@@ -814,18 +813,62 @@ const breadcrumbSchema = {
             )}
         </nav>
 
-        <!-- RECOMENDACIONES -->
+        <!-- RECOMENDACIONES: carrusel de artículos relacionados -->
         {finalRelatedPosts.length > 0 && (
-            <section class="related-section">
-                <h2 style="color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem;">Artículos relacionados</h2>
-                <div class="related-grid">
-                    {finalRelatedPosts.map(post => (
-                        <div class="related-card">
-                            <h3><a href={`/${post.id}/`}>{post.data.title}</a></h3>
-                            <p>{post.data.description}</p>
-                            <a href={`/${post.id}/`} style="font-size: 0.85rem; font-weight: 600;">Leer más →</a>
+            <section class="related-section" aria-labelledby="related-heading">
+                <div class="featured-header">
+                    <h2 id="related-heading">Artículos relacionados</h2>
+                    <p class="carousel-hint">Desliza o usa las flechas para ver más artículos</p>
+                    {bloquesRelacionados.length > 1 && (
+                        <div class="carousel-nav">
+                            <button class="carousel-btn prev" type="button" title="Bloque anterior" aria-label="Artículos relacionados: bloque anterior"><span aria-hidden="true">‹</span></button>
+                            <div class="carousel-dots" aria-label="Artículos relacionados: bloques">
+                                {bloquesRelacionados.map((_, i) => (
+                                    <button class="carousel-dot" type="button" aria-label={`Artículos relacionados: ir al bloque ${i + 1}`} aria-current={i === 0}></button>
+                                ))}
+                            </div>
+                            <button class="carousel-btn next" type="button" title="Bloque siguiente" aria-label="Artículos relacionados: bloque siguiente"><span aria-hidden="true">›</span></button>
                         </div>
-                    ))}
+                    )}
+                </div>
+                <div class="carousel" role="region" aria-label="Artículos relacionados, carrusel" tabindex="0">
+                    <div class="carousel-track">
+                        {bloquesRelacionados.map((bloque) => (
+                            <div class="carousel-slide">
+                                <ul class="posts-list">
+                                    {bloque.map((post) => (
+                                        <li class:list={['post-item', { 'post-item-with-image': Boolean(relatedImage(post)) }]}>
+                                            <div class="older-post-content">
+                                                <h2>
+                                                    <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
+                                                </h2>
+                                                <div class="post-meta-inline">
+                                                    <span class="post-author-line">
+                                                        <img class="post-author-avatar" src={relatedAuthorImage(post)} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
+                                                        <span>Por {post.data.author}</span>
+                                                    </span>
+                                                    <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)} · {minutesOf(post.body)} min de lectura</time>
+                                                </div>
+                                                <span class="post-category-list">
+                                                    {post.data.category.map((category, index) => (
+                                                        <span>
+                                                            {index > 0 && <span aria-hidden="true"> / </span>}
+                                                            <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                                        </span>
+                                                    ))}
+                                                </span>
+                                                {relatedImage(post) && (
+                                                    <img class="older-post-image" src={relatedImage(post)} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
+                                                )}
+                                                <p class="post-description">{post.data.description}</p>
+                                                <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
         )}
@@ -836,6 +879,10 @@ const breadcrumbSchema = {
             postDate={formatDate(entry.data.pubDate)}
         />
     </div>
+
+    <script>
+        import '../scripts/carrusel.js';
+    </script>
 
     {/* SCRIPT CON COMILLAS INVERTIDAS DE JAVASCRIPT */}
     <script is:inline>

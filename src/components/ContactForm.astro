@@ -27,25 +27,31 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
       <input id="website" name="website" type="text" autocomplete="off" tabindex="-1" />
     </div>
 
-    <label for="contact-name">Nombre</label>
-    <input id="contact-name" name="name" type="text" autocomplete="off" required minlength="2" aria-describedby="contact-name-help contact-name-error" />
-    <small id="contact-name-help" class="field-help">Escribe tu nombre o la organización que representas.</small>
-    <small id="contact-name-error" class="field-error" aria-live="polite"></small>
+    <div class="contact-row">
+      <div class="contact-field">
+        <label for="contact-name">Nombre</label>
+        <input id="contact-name" name="name" type="text" autocomplete="off" required minlength="2" aria-describedby="contact-name-error" placeholder="Escribe tu nombre o la organización que representas." />
+        <small id="contact-name-error" class="field-error" aria-live="polite"></small>
+      </div>
 
-    <label for="contact-email">Correo electrónico</label>
-    <input id="contact-email" name="email" type="email" autocomplete="off" required aria-describedby="contact-email-help contact-email-error" />
-    <small id="contact-email-help" class="field-help">Usaremos este correo solo para responder tu mensaje.</small>
-    <small id="contact-email-error" class="field-error" aria-live="polite"></small>
+      <div class="contact-field">
+        <label for="contact-email">Correo electrónico</label>
+        <input id="contact-email" name="email" type="email" autocomplete="off" required aria-describedby="contact-email-error" placeholder="Usaremos este correo solo para responder tu mensaje." />
+        <small id="contact-email-error" class="field-error" aria-live="polite"></small>
+      </div>
+    </div>
 
-    <label for="contact-message">Mensaje</label>
-    {messageHeader && (
-      <small id="contact-context" class="message-context" data-base={messageHeader} aria-label="Referencia del artículo">
-        Referencia: {postTitle} · {postAuthor} · {postDate}
-      </small>
-    )}
-    <textarea id="contact-message" name="message" rows="5" required minlength="20" autocomplete="off" aria-describedby="contact-message-help contact-message-error" placeholder="Escribe aquí tu comentario o pregunta..."></textarea>
-    <small id="contact-message-help" class="field-help">Escribe al menos 20 caracteres para enviar tu mensaje.</small>
-    <small id="contact-message-error" class="field-error" aria-live="polite"></small>
+    <div class="contact-field">
+      <label for="contact-message">Mensaje</label>
+      {messageHeader && (
+        <small id="contact-context" class="message-context" data-base={messageHeader} aria-label="Referencia del artículo">
+          Referencia: {postTitle} · {postAuthor} · {postDate}
+        </small>
+      )}
+      <textarea id="contact-message" name="message" rows="4" required minlength="20" autocomplete="off" aria-describedby="contact-message-help contact-message-error" placeholder="Escribe aquí tu comentario o pregunta..."></textarea>
+      <small id="contact-message-help" class="field-help">Escribe al menos 20 caracteres para enviar tu mensaje.</small>
+      <small id="contact-message-error" class="field-error" aria-live="polite"></small>
+    </div>
 
     <button type="submit">enviar mensaje</button>
 
@@ -82,17 +88,35 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     margin: 0 0 1.25rem;
   }
 
+  /* Marco claro: reúne todo el módulo de correo en una sola pieza */
   .contact-form {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
     display: grid;
-    gap: 0.55rem;
-    max-width: 620px;
+    gap: 0.5rem;
+    max-width: 560px;
+    padding: 1rem 1.1rem 1.15rem;
+  }
+
+  /* Nombre y correo en paralelo: campos más estrechos */
+  .contact-row {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-field {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 0;
   }
 
   .contact-form label {
     color: var(--color-primary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    margin-top: 0.45rem;
+    margin-top: 0;
   }
 
   .contact-form input,
@@ -102,8 +126,14 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     border-radius: 4px;
     color: var(--color-text);
     font: inherit;
-    padding: 0.7rem 0.8rem;
+    line-height: 1.4;
+    padding: 0.55rem 0.7rem;
     width: 100%;
+  }
+
+  .contact-form ::placeholder {
+    color: #98a2b3;
+    opacity: 1;
   }
 
   .contact-form input:focus,
@@ -121,7 +151,7 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
   .field-help {
     color: #667085;
     font-size: 0.8rem;
-    margin-top: -0.2rem;
+    margin-top: -0.1rem;
   }
 
   .field-error {
@@ -129,14 +159,14 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     display: block;
     font-size: 0.78rem;
     min-height: 1rem;
-    margin-top: -0.2rem;
+    margin-top: -0.15rem;
   }
 
   .message-context {
     color: #667085;
     font-size: 0.78rem;
     line-height: 1.4;
-    margin-top: -0.2rem;
+    margin-top: -0.1rem;
   }
 
   .contact-form textarea {
@@ -145,12 +175,12 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
   }
 
   .form-privacy {
-    background: var(--color-bg-alt);
+    background: var(--color-bg);
     border-left: 3px solid var(--color-secondary);
     color: var(--color-text);
     font-size: 0.82rem;
     line-height: 1.6;
-    margin: 0.35rem 0 0;
+    margin: 0.15rem 0 0;
     padding: 0.7rem 0.85rem;
   }
 
@@ -158,7 +188,7 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     color: var(--color-primary);
     font-size: 0.9rem;
     min-height: 1.25rem;
-    margin: 0.25rem 0 0;
+    margin: 0.15rem 0 0;
   }
 
   .form-status.success {
@@ -264,14 +294,25 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     font-size: 0.8rem;
     font-weight: 700;
     margin-left: auto;
-    margin-top: -0.3rem;
-    padding: 0.45rem 0.7rem;
+    margin-top: 0.15rem;
+    padding: 0.5rem 0.9rem;
     width: fit-content;
   }
 
   .contact-form button:hover,
   .contact-form button:focus-visible {
     background: var(--color-secondary);
+  }
+
+  @media (max-width: 560px) {
+    .contact-row {
+      grid-template-columns: 1fr;
+    }
+
+    /* En móvil nombre y correo se apilan pero quedan estrechos */
+    .contact-row input {
+      max-width: min(100%, 340px);
+    }
   }
 
   .visually-hidden {
