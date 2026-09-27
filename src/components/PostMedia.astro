@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  image?: string;
+  video?: { src: string; poster?: string };
+  variant?: 'latest' | 'older';
+}
+
+const { title, image, video, variant = 'older' } = Astro.props;
+const imageClass = variant === 'latest' ? 'latest-card-image' : 'older-post-image';
+const videoClass = variant === 'latest' ? 'latest-card-video' : 'older-post-video';
+---
+
+{video ? (
+  <video
+    class={videoClass}
+    src={video.src}
+    poster={video.poster}
+    controls
+    autoplay
+    muted
+    playsinline
+    onended="this.currentTime=0;this.pause()"
+    aria-label={`Video de ${title}`}
+  ></video>
+) : image ? (
+  <img class={imageClass} src={image} alt={`Imagen destacada de ${title}`} loading="lazy" decoding="async" />
+) : null}

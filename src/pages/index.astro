@@ -2,11 +2,12 @@
 import { getCollection } from 'astro:content';
 import ContactForm from '../components/ContactForm.astro';
 import BackToTop from '../components/BackToTop.astro';
+import PostMedia from '../components/PostMedia.astro';
 import Layout from '../layouts/Layout.astro';
 import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
 import { HOME_PAGE_SIZE } from '../lib/pagination';
-import { getPostImage } from '../lib/postImage';
+import { getPostImage, getPostVideo } from '../lib/postImage';
 import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
@@ -39,6 +40,7 @@ const sortedPosts = posts
       ...post.data,
       image: getPostImage(post),
     },
+    video: getPostVideo(post),
     readingMinutes: getReadingMinutes(post.body),
     searchText: [
       post.data.title,
@@ -145,9 +147,12 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </div>
                                     </div>
                                     <div class="latest-card-body">
-                                        {latestPost.data.image && (
-                                            <img class="latest-card-image" src={latestPost.data.image} alt={`Imagen destacada de ${latestPost.data.title}`} loading="lazy" decoding="async" />
-                                        )}
+                                        <PostMedia
+                                            title={latestPost.data.title}
+                                            image={latestPost.data.image}
+                                            video={latestPost.video}
+                                            variant="latest"
+                                        />
                                         <div class="latest-card-content">
                                             <span class="post-category-list">
                                                 {latestPost.data.category.map((category, index) => (
@@ -224,9 +229,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                     ))}
                                 </span>
-                                {post.data.image && (
-                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                )}
+                                <PostMedia title={post.data.title} image={post.data.image} video={post.video} />
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
@@ -291,9 +294,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
                                         </span>
                                     ))}
                                 </span>
-                                {post.data.image && (
-                                    <img class="older-post-image" src={post.data.image} alt={`Imagen destacada de ${post.data.title}`} loading="lazy" decoding="async" />
-                                )}
+                                <PostMedia title={post.data.title} image={post.data.image} video={post.video} />
                                 <p class="post-description">{post.data.description}</p>
                                 
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>

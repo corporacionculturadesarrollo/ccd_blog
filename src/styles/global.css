@@ -318,6 +318,19 @@ a:hover {
   width: 100%;
 }
 
+/* REGLA TARJETAS: el video se ajusta al contenedor igual que la imagen. */
+.latest-card-video,
+.older-post-video {
+  aspect-ratio: auto 4 / 3;
+  background: #000;
+  border-radius: 6px;
+  display: block;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+}
+
 /* REGLA ARTÍCULO: imagen completa sin recortes. */
 .featured-image,
 .article-inline-image img,
@@ -369,7 +382,8 @@ a:hover {
   margin-bottom: 0;
 }
 
-.latest-card-image {
+.latest-card-image,
+.latest-card-video {
   max-height: 320px;
 }
 
@@ -546,7 +560,8 @@ a:hover {
   gap: 1.25rem;
 }
 
-.older-post-image {
+.older-post-image,
+.older-post-video {
   border-radius: 6px;
   height: auto;
   margin-bottom: 1rem;
@@ -763,7 +778,8 @@ a:hover {
     order: 2;
   }
 
-  .latest-card-image {
+  .latest-card-image,
+  .latest-card-video {
     display: block;
     height: auto;
     margin-bottom: 0;
@@ -803,18 +819,21 @@ a:hover {
     display: block;
   }
 
-  .older-post-image {
+  .older-post-image,
+  .older-post-video {
     height: auto;
     margin-bottom: 1rem;
     max-height: none;
   }
 
-  .latest-card:has(.latest-card-image) {
+  .latest-card:has(.latest-card-image),
+  .latest-card:has(.latest-card-video) {
     display: flex;
     flex-direction: column;
   }
 
-  .latest-card-image {
+  .latest-card-image,
+  .latest-card-video {
     height: auto;
     margin-bottom: 0;
     max-height: none;
