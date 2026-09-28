@@ -358,8 +358,7 @@ const breadcrumbSchema = {
             margin: 0 auto 1.5rem;
             max-width: 720px;
         }
-        :global(.article-video iframe),
-        :global(.article-video video) {
+        :global(.article-video iframe) {
             aspect-ratio: 16 / 9;
             border: 0;
             border-radius: 8px;
@@ -368,8 +367,14 @@ const breadcrumbSchema = {
             width: 100%;
         }
         :global(.article-video video) {
+            aspect-ratio: auto 4 / 3;
             background: #1f2933;
+            border: 0;
+            border-radius: 8px;
+            display: block;
+            height: auto;
             object-fit: contain;
+            width: 100%;
         }
         :global(.article-video figcaption) {
             color: var(--color-muted);
