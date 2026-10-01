@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ContactForm from '../components/ContactForm.astro';
+import SubscribeWidget from '../components/SubscribeWidget.astro';
 import BackToTop from '../components/BackToTop.astro';
 import PostMedia from '../components/PostMedia.astro';
 import Layout from '../layouts/Layout.astro';
@@ -331,6 +332,7 @@ const pageCount = Math.ceil(sortedPosts.length / HOME_PAGE_SIZE);
             )}
         </main>
         <ContactForm postTitle="Consulta general del blog" />
+        <SubscribeWidget />
     </div>
     <script>
         import '../scripts/carrusel.js';

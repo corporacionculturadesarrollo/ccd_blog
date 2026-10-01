@@ -5,7 +5,10 @@ const messageHeader = postAuthor && postDate
   : '';
 const isGeneralContact = postTitle === 'Consulta general del blog';
 const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID || 'mkoearok';
-const formAction = `https://formspree.io/f/${formspreeId}`;
+// Fase 3 (ccd-infra): si hay API propia configurada, el formulario va a ella;
+// si no, se conserva Formspree como respaldo (estado actual de producción).
+const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
+const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/${formspreeId}`;
 ---
 
 <section class="contact-section" id="contacto" aria-labelledby="contact-title">
@@ -17,7 +20,7 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
     <span>Mensaje enviado correctamente.</span>
   </div>
 
-  <form id="contact-form" class="contact-form" action={formAction || undefined} method="POST" novalidate>
+  <form id="contact-form" class="contact-form" action={formAction || undefined} method="POST" data-api={apiBase} novalidate>
     <input type="hidden" name="_subject" value={`Mensaje sobre: ${postTitle}`} />
     <input type="hidden" name="article" value={postTitle} />
     {messageHeader && <input type="hidden" name="article_context" value={messageHeader} data-base={messageHeader} />}
@@ -442,6 +445,8 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
         showStatus('El servicio de correo no está configurado. Contacta al administrador para habilitar los mensajes.');
       });
     } else {
+      const apiBase = form.dataset.api || '';
+
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const honeypotValue = honeypot ? honeypot.value.trim() : '';
@@ -462,6 +467,46 @@ const formAction = `https://formspree.io/f/${formspreeId}`;
 
         if (submitButton) submitButton.disabled = true;
         showStatus('Enviando mensaje…');
+
+        // Fase 3 (ccd-infra): con API propia se envía JSON y la referencia
+        // del artículo y la valoración se pliegan dentro del mensaje.
+        if (apiBase) {
+          try {
+            const fields = new FormData(form);
+            const partes = [];
+            const contexto = String(fields.get('article_context') || '').trim();
+            const valoracion = String(fields.get('rating') || '').trim();
+            if (contexto) partes.push(contexto);
+            if (valoracion && valoracion !== 'Sin valoración') partes.push(`Valoración: ${valoracion}`);
+            partes.push(String(fields.get('message') || '').trim());
+            const cuerpo = partes.join('\n\n');
+            if (cuerpo.length > 2000) {
+              showStatus('El mensaje es demasiado largo: máximo 2000 caracteres.');
+              return;
+            }
+
+            const response = await fetch(form.action, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({
+                nombre: String(fields.get('name') || '').trim(),
+                email: String(fields.get('email') || '').trim(),
+                mensaje: cuerpo,
+                origen: 'blog',
+                website: '',
+              }),
+            });
+            if (!response.ok) throw new Error(`API ${response.status}`);
+            showStatus('Mensaje enviado correctamente. Gracias por escribirnos.', true);
+            showSuccessToast();
+            form.reset();
+          } catch {
+            showStatus('No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.');
+          } finally {
+            if (submitButton) submitButton.disabled = false;
+          }
+          return;
+        }
 
         try {
           const response = await fetch(form.action, {
