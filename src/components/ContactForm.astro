@@ -11,14 +11,9 @@ const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
 const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/${formspreeId}`;
 ---
 
-<section class="contact-section" id="contacto" aria-labelledby="contact-title">
+<dialog class="contact-dialog" id="contacto" aria-labelledby="contact-title">
   <h2 id="contact-title">{isGeneralContact ? 'Ponte en contacto con nosotros' : 'Escríbenos sobre este artículo'}</h2>
   <p class="contact-intro">Envíanos tus comentarios, preguntas o propuestas relacionadas con este contenido.</p>
-
-  <div id="contact-success-toast" class="contact-success-toast" role="status" aria-live="polite" hidden>
-    <span class="contact-success-toast-icon" aria-hidden="true">✓</span>
-    <span>Mensaje enviado correctamente.</span>
-  </div>
 
   <form id="contact-form" class="contact-form" action={formAction || undefined} method="POST" data-api={apiBase} novalidate>
     <input type="hidden" name="_subject" value={`Mensaje sobre: ${postTitle}`} />
@@ -33,7 +28,7 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
     <div class="contact-row">
       <div class="contact-field">
         <label for="contact-name">Nombre</label>
-        <input id="contact-name" name="name" type="text" autocomplete="off" required minlength="2" aria-describedby="contact-name-error" placeholder="Escribe tu nombre o la organización que representas." />
+        <input id="contact-name" name="name" type="text" autocomplete="off" autofocus required minlength="2" aria-describedby="contact-name-error" placeholder="Escribe tu nombre o la organización que representas." />
         <small id="contact-name-error" class="field-error" aria-live="polite"></small>
       </div>
 
@@ -71,19 +66,74 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
       <button type="button" class="contact-success-close">Cerrar</button>
     </div>
   </dialog>
-</section>
+
+  <a href="#top" class="contact-dialog-close">Cerrar</a>
+</dialog>
+
+{/* Confirmación fuera del <dialog>: el top layer del modal la taparía */}
+<div id="contact-success-toast" class="contact-success-toast" role="status" aria-live="polite" hidden>
+  <span class="contact-success-toast-icon" aria-hidden="true">✓</span>
+  <span>Mensaje enviado correctamente.</span>
+</div>
 
 <style>
-  .contact-section {
-    border-top: 2px solid var(--color-border);
-    margin-top: 3rem;
-    padding-top: 2rem;
+  /* Modal: el formulario solo se ve como <dialog> */
+  .contact-dialog {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
+    color: var(--color-text);
+    margin: auto;
+    max-height: min(86vh, 760px);
+    overflow: auto;
+    padding: 1.5rem 1.6rem 1.4rem;
+    width: min(640px, calc(100vw - 2rem));
   }
 
-  .contact-section h2 {
+  .contact-dialog::backdrop {
+    background: rgba(36, 19, 15, 0.45);
+  }
+
+  /* Sin JavaScript, el hash #contacto muestra el formulario centrado */
+  .contact-dialog:not([open]):target {
+    display: block;
+    left: 50%;
+    max-height: 86vh;
+    position: fixed;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+  }
+
+  .contact-dialog h2 {
     color: var(--color-primary);
     font-size: 1.5rem;
     margin: 0 0 0.5rem;
+  }
+
+  /* Es un <a href="#top"> para poder cerrar también sin JavaScript:
+     quita el hash y con él el fallback :target */
+  .contact-dialog-close {
+    background: var(--color-primary);
+    border: 0;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    display: block;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 1.2rem auto 0;
+    padding: 0.65rem 1.4rem;
+    text-align: center;
+    text-decoration: none;
+    width: fit-content;
+  }
+
+  .contact-dialog-close:hover,
+  .contact-dialog-close:focus-visible {
+    background: var(--color-secondary);
   }
 
   .contact-intro {
@@ -227,7 +277,9 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
     position: fixed;
     right: 1rem;
     top: 1rem;
-    z-index: 1000;
+    /* Por encima de la barra fija (1000), por debajo de .skip-link
+       y .author-modal (2000) */
+    z-index: 1100;
     background: rgba(20, 128, 71, 0.97);
     border-radius: 10px;
     box-shadow: 0 12px 24px rgba(18, 53, 36, 0.25);
@@ -248,6 +300,11 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
   .contact-success-toast.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* Sin esta regla, display:flex anula el atributo hidden */
+  .contact-success-toast[hidden] {
+    display: none;
   }
 
   .contact-success-toast-icon {
@@ -332,6 +389,82 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
 </style>
 
 <script>
+  // --- Modal de contacto: apertura por enlaces y cierre -------------------
+  const contactDialog = document.getElementById('contacto');
+  const dialogAvailable = contactDialog instanceof HTMLDialogElement;
+
+  // Con el hash puesto, el fallback :target re-aparecería como caja fija
+  // al cerrar el modal: se limpia en cuanto se abre con JavaScript.
+  const clearContactHash = () => {
+    if (window.location.hash === '#contacto') {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
+  const openContactDialog = () => {
+    // Limpiar el hash primero: si se llega con #contacto, el fallback
+    // :target re-aparecería como caja fija cuando se cierre el modal.
+    clearContactHash();
+    if (!dialogAvailable || contactDialog.open) return;
+    const statusEl = document.querySelector('form.contact-form .form-status');
+    if (statusEl && statusEl.classList.contains('success')) {
+      statusEl.textContent = '';
+      statusEl.classList.remove('success');
+    }
+    contactDialog.showModal();
+  };
+
+  if (dialogAvailable) {
+    // Cerrar como <a href="#top">: con JavaScript se cierra el modal; sin él,
+    // quita el hash y con él el fallback :target (caja fija).
+    contactDialog
+      .querySelector('.contact-dialog-close')
+      ?.addEventListener('click', (event) => {
+        event.preventDefault();
+        contactDialog.close();
+      });
+
+    // Cierre con el fondo (backdrop): el click llega con target === dialog,
+    // pero solo cuenta si las coordenadas caen fuera de la caja.
+    contactDialog.addEventListener('click', (event) => {
+      if (event.target !== contactDialog) return;
+      const rect = contactDialog.getBoundingClientRect();
+      const inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!inside) contactDialog.close();
+    });
+    // El Escape lo cierra el navegador de forma nativa.
+  }
+
+  // Enlaces "Contacto" (#contacto y /#contacto): si el modal existe en esta
+  // página se abre sin navegar; si no (p. ej. /acerca), se navega y allí
+  // el hash dispare la apertura al cargar.
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const anchor = target.closest('a[href]');
+    if (!anchor) return;
+    const href = anchor.getAttribute('href') || '';
+    if (href !== '#contacto' && href !== '/#contacto') return;
+    if (!dialogAvailable) return;
+    // Ctrl/Cmd+click sigue abriendo la pestaña nueva.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    openContactDialog();
+  });
+
+  if (window.location.hash === '#contacto') {
+    openContactDialog();
+  }
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash !== '#contacto') return;
+    openContactDialog();
+  });
+
+  // --- Formulario ---------------------------------------------------------
   const form = document.querySelector('form.contact-form');
   if (form && form instanceof HTMLFormElement) {
     const status = form.querySelector('.form-status');
@@ -415,6 +548,9 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
     const showSuccessToast = () => {
       if (!successToast) return;
       successToast.hidden = false;
+      // Reflow forzado: sin él, display y opacity cambian en el mismo
+      // recálculo de estilos y el toast aparecería sin transición.
+      void successToast.offsetWidth;
       successToast.classList.add('visible');
       window.clearTimeout(toastTimer);
       toastTimer = window.setTimeout(() => {
@@ -432,6 +568,44 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
         successToast.hidden = true;
       }, 220);
     };
+
+    // Confirmación → formulario vaciado → cierre del modal. El toast vive
+    // fuera del <dialog> para que, al cerrarlo, siga visible en la página.
+    // Solo se vacían los campos visibles: los hidden (referencia y
+    // valoración) conservan el estado de las estrellas.
+    let closeTimer = null;
+    let awaitingClose = false;
+    const finishSuccessfulSend = () => {
+      showStatus('Mensaje enviado correctamente. Gracias por escribirnos.', true);
+      form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((field) => {
+        field.value = '';
+      });
+      awaitingClose = true;
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => {
+        closeTimer = null;
+        // Se marca antes de cerrar: el evento "close" de este cierre
+        // automático no debe confundirse con un cierre manual del usuario.
+        awaitingClose = false;
+        if (dialogAvailable && contactDialog.open) contactDialog.close();
+        if (submitButton) submitButton.disabled = false;
+        showSuccessToast();
+      }, 1500);
+    };
+
+    // Cierre manual (botón, backdrop o Esc) dentro de la ventana de espera:
+    // se cancela el cierre automático pendiente para que el modal no se vuelva
+    // a cerrar solo si el usuario lo reabre, y la confirmación pasa al toast.
+    if (dialogAvailable) {
+      contactDialog.addEventListener('close', () => {
+        if (!awaitingClose) return;
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+        awaitingClose = false;
+        if (submitButton) submitButton.disabled = false;
+        showSuccessToast();
+      });
+    }
 
     inputs.forEach((input) => {
       input.addEventListener('input', () => validateField(input));
@@ -497,13 +671,11 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
               }),
             });
             if (!response.ok) throw new Error(`API ${response.status}`);
-            showStatus('Mensaje enviado correctamente. Gracias por escribirnos.', true);
-            showSuccessToast();
-            form.reset();
+            finishSuccessfulSend();
           } catch {
             showStatus('No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.');
           } finally {
-            if (submitButton) submitButton.disabled = false;
+            if (submitButton && !awaitingClose) submitButton.disabled = false;
           }
           return;
         }
@@ -522,9 +694,7 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
             return;
           }
           if (!response.ok) throw new Error('Formspree error');
-          showStatus('Mensaje enviado correctamente. Gracias por escribirnos.', true);
-          showSuccessToast();
-          form.reset();
+          finishSuccessfulSend();
         } catch (error) {
           // Si el fetch ni siquiera salió (red), intentar envío nativo
           // como antes; si ya veníamos de un fallo, mostrar el error.
@@ -535,7 +705,7 @@ const formAction = apiBase ? `${apiBase}/api/contact` : `https://formspree.io/f/
           }
           showStatus('No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.');
         } finally {
-          if (submitButton) submitButton.disabled = false;
+          if (submitButton && !awaitingClose) submitButton.disabled = false;
         }
       });
     }

@@ -1,8 +1,10 @@
 ---
 /**
  * Sección de comentarios por artículo (Fase 4.5 de ccd-infra).
- * Solo se emite si el blog se construye con PUBLIC_API_URL definida;
- * sin esa variable la página queda exactamente igual que hoy.
+ * La sección SIEMPRE se emite: el CTA «Comenta este artículo» apunta a
+ * #comentarios en todos los artículos, nunca al formulario de correo.
+ * Sin PUBLIC_API_URL se muestra un aviso de espera (sin formulario);
+ * con API, lista y formulario como hasta ahora.
  *
  * El modo de publicación (directa / con aprobación) lo decide el servidor;
  * aquí solo se refleja el resultado en el mensaje de estado.
@@ -15,15 +17,16 @@ const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
 const api = apiBase ? `${apiBase}/api/articles/${articleId}` : '';
 ---
 
-{apiBase && (
-  <section class="comments-section" id="comentarios" aria-labelledby="comments-heading" data-api={api}>
-    <h2 id="comments-heading">Comentarios <span class="comments-count"></span></h2>
+<section class="comments-section" id="comentarios" aria-labelledby="comments-heading" data-api={api || undefined}>
+  <h2 id="comments-heading">Comentarios <span class="comments-count"></span></h2>
 
-    <div class="comments-list" aria-live="polite">
-      <p class="comments-muted">Cargando comentarios…</p>
-    </div>
+  {apiBase ? (
+    <>
+      <div class="comments-list" aria-live="polite">
+        <p class="comments-muted">Cargando comentarios…</p>
+      </div>
 
-    <form class="comments-form" novalidate>
+      <form class="comments-form" novalidate>
       <div class="visually-hidden">
         <label for={`comment-website-${articleId}`}>No rellenes este campo si eres humano</label>
         <input id={`comment-website-${articleId}`} name="website" type="text" autocomplete="off" tabindex="-1" />
@@ -44,9 +47,12 @@ const api = apiBase ? `${apiBase}/api/articles/${articleId}` : '';
         <button type="submit">Publicar comentario</button>
       </div>
       <p class="comments-status" role="status" aria-live="polite"></p>
-    </form>
-  </section>
-)}
+      </form>
+    </>
+  ) : (
+    <p class="comments-pending">Los comentarios estarán disponibles próximamente.</p>
+  )}
+</section>
 
 <style>
   .comments-section {
@@ -69,10 +75,15 @@ const api = apiBase ? `${apiBase}/api/articles/${articleId}` : '';
     opacity: 0.75;
   }
 
-  .comments-list :global(.comments-muted) {
+  .comments-list :global(.comments-muted),
+  .comments-pending {
     color: var(--color-text);
     font-size: 0.92rem;
     opacity: 0.75;
+  }
+
+  .comments-pending {
+    margin: 0;
   }
 
   .comments-list :global(.comment) {
