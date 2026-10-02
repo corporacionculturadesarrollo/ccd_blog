@@ -31,6 +31,10 @@ jobs:
 
       - name: Ejecutar validaciones de contenido y compilación
         run: npm run validate
+        env:
+          # URL pública de la API propia (Fase 5 de ccd-infra). Sin definir en
+          # Actions queda vacía y el sitio publica sin comentarios/métricas.
+          PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
 
       - name: Inyectar CNAME institucional
         run: echo "blog.culturaydesarrollo.org" > ./dist/CNAME
