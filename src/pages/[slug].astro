@@ -48,6 +48,12 @@ const featuredImageCaption = entry.id === 'curaduria-img-pat'
   ? 'Identidad visual San Juan en Purificación 2012 - Declaratoria de Patrimonio Cultural Inmaterial'
   : undefined;
 
+// Fase 4.6 (ccd-infra): con API propia la valoración en estrellas se envía
+// como métrica anónima (una por navegador); sin PUBLIC_API_URL el widget
+// sigue igual que hoy (solo localStorage y plegado en el correo de contacto).
+const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
+const rateUrl = apiBase ? `${apiBase}/api/articles/${entry.id}/rate` : '';
+
 // 2. SOLUCIÓN COMPATIBLE CON ASTRO v5: Renderizado externo y asíncrono
 const { Content, headings } = await render(entry);
 
@@ -739,7 +745,7 @@ const breadcrumbSchema = {
                 <a href="#comentarios">Comenta este artículo...</a>
             </p>
 
-            <section class="rating-wrap" aria-label="Valoración del artículo">
+            <section class="rating-wrap" aria-label="Valoración del artículo" data-rate-url={rateUrl || undefined}>
                 <div class="rating-head">
                     <h2 class="rating-title">¿Te resultó útil este artículo?</h2>
                     <span class="rating-summary" id="rating-summary">Tu valoración</span>
@@ -751,7 +757,7 @@ const breadcrumbSchema = {
                         </button>
                     ))}
                 </div>
-                <p class="rating-note" id="rating-note">Tu valoración se incluye en tu mensaje, no es pública.</p>
+                <p class="rating-note" id="rating-note">{rateUrl ? 'Tu valoración es anónima: se promedia con la de otros lectores y se incluye en tu mensaje.' : 'Tu valoración se incluye en tu mensaje, no es pública.'}</p>
             </section>
 
             <div class="article-post-share" id="post-share" aria-label="Compartir post"></div>
@@ -904,6 +910,29 @@ const breadcrumbSchema = {
         const contactRating = document.getElementById('contact-rating');
         const stars = Array.from(document.querySelectorAll('.star-button'));
         const storageKey = `ccd-rating-${articleId}`;
+        // Con API (Fase 4.6): URL de valoración y marca de «ya enviada»;
+        // sin API ambas quedan vacías y el widget no hace peticiones.
+        const rateUrl = document.querySelector('.rating-wrap')?.dataset.rateUrl || '';
+        const sentKey = `ccd-rating-sent-${articleId}`;
+
+        const notaValorada = (value) => rateUrl
+            ? `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}. Es anónima: se promedia con la de otros lectores y se incluye en tu mensaje.`
+            : `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}. Se incluye en tu mensaje, no es pública.`;
+
+        // Envía la valoración a la API: una por navegador (si falla, sin marca
+        // y se reintenta en la próxima interacción o visita).
+        const enviarValoracion = (value) => {
+            if (!rateUrl || window.localStorage.getItem(sentKey)) return;
+            fetch(rateUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ rating: value }),
+            })
+                .then((res) => {
+                    if (res.ok) window.localStorage.setItem(sentKey, '1');
+                })
+                .catch(() => {});
+        };
 
         const setContactRating = (value) => {
             const starsValue = `${'★'.repeat(value)}${'☆'.repeat(5 - value)} (${value}/5)`;
@@ -925,7 +954,9 @@ const breadcrumbSchema = {
             if (saved > 0) {
                 setActiveStars(saved);
                 setContactRating(saved);
-                if (ratingNote) ratingNote.textContent = `Gracias por valorar este artículo con ${saved} estrella${saved > 1 ? 's' : ''}. Se incluye en tu mensaje, no es pública.`;
+                if (ratingNote) ratingNote.textContent = notaValorada(saved);
+                // Valoración guardada de una visita anterior y aún no enviada.
+                enviarValoracion(saved);
             }
         };
 
@@ -939,11 +970,12 @@ const breadcrumbSchema = {
                 window.localStorage.setItem(storageKey, String(value));
                 setActiveStars(value);
                 setContactRating(value);
+                enviarValoracion(value);
                 if (ratingSummary) {
                     ratingSummary.textContent = `${value}/5 · gracias por tu valoración`;
                 }
                 if (ratingNote) {
-                    ratingNote.textContent = `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}. Se incluye en tu mensaje, no es pública.`;
+                    ratingNote.textContent = notaValorada(value);
                 }
             });
         });
