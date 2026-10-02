@@ -1,0 +1,333 @@
+---
+/**
+ * Sección de comentarios por artículo (Fase 4.5 de ccd-infra).
+ * Solo se emite si el blog se construye con PUBLIC_API_URL definida;
+ * sin esa variable la página queda exactamente igual que hoy.
+ *
+ * El modo de publicación (directa / con aprobación) lo decide el servidor;
+ * aquí solo se refleja el resultado en el mensaje de estado.
+ */
+interface Props {
+  articleId: string;
+}
+const { articleId } = Astro.props;
+const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
+const api = apiBase ? `${apiBase}/api/articles/${articleId}` : '';
+---
+
+{apiBase && (
+  <section class="comments-section" id="comentarios" aria-labelledby="comments-heading" data-api={api}>
+    <h2 id="comments-heading">Comentarios <span class="comments-count"></span></h2>
+
+    <div class="comments-list" aria-live="polite">
+      <p class="comments-muted">Cargando comentarios…</p>
+    </div>
+
+    <form class="comments-form" novalidate>
+      <div class="visually-hidden">
+        <label for={`comment-website-${articleId}`}>No rellenes este campo si eres humano</label>
+        <input id={`comment-website-${articleId}`} name="website" type="text" autocomplete="off" tabindex="-1" />
+      </div>
+      <div class="comments-row">
+        <label for={`comment-nombre-${articleId}`}>Nombre</label>
+        <input id={`comment-nombre-${articleId}`} name="nombre" type="text" autocomplete="name" maxlength="120" required />
+      </div>
+      <div class="comments-row">
+        <label for={`comment-email-${articleId}`}>Correo electrónico (no se publica)</label>
+        <input id={`comment-email-${articleId}`} name="email" type="email" autocomplete="email" maxlength="255" required />
+      </div>
+      <div class="comments-row">
+        <label for={`comment-mensaje-${articleId}`}>Comentario</label>
+        <textarea id={`comment-mensaje-${articleId}`} name="mensaje" rows="4" maxlength="2000" required></textarea>
+      </div>
+      <div class="comments-actions">
+        <button type="submit">Publicar comentario</button>
+      </div>
+      <p class="comments-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+)}
+
+<style>
+  .comments-section {
+    border-top: 2px solid var(--color-border);
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .comments-section h2 {
+    color: var(--color-primary);
+    font-size: 1.35rem;
+    margin: 0 0 0.9rem;
+  }
+
+  .comments-count {
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.75;
+  }
+
+  .comments-list :global(.comments-muted) {
+    color: var(--color-text);
+    font-size: 0.92rem;
+    opacity: 0.75;
+  }
+
+  .comments-list :global(.comment) {
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.85rem 0;
+  }
+
+  .comments-list :global(.comment:last-child) {
+    border-bottom: none;
+  }
+
+  .comments-list :global(.comment-head) {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0 0 0.3rem;
+  }
+
+  .comments-list :global(.comment-head time) {
+    color: var(--color-text);
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  .comments-list :global(.comment-body) {
+    color: var(--color-text);
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .comments-form {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    max-width: 640px;
+  }
+
+  .comments-row {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .comments-row label {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .comments-row input,
+  .comments-row textarea {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text);
+    font: inherit;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .comments-row textarea {
+    resize: vertical;
+  }
+
+  .comments-row input:focus,
+  .comments-row textarea:focus {
+    border-color: var(--color-secondary);
+    outline: 2px solid color-mix(in srgb, var(--color-secondary) 25%, transparent);
+  }
+
+  .comments-actions button {
+    background: var(--color-primary);
+    border: 0;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.55rem 0.95rem;
+  }
+
+  .comments-actions button:hover,
+  .comments-actions button:focus-visible {
+    background: var(--color-secondary);
+  }
+
+  .comments-actions button:disabled {
+    cursor: progress;
+    opacity: 0.65;
+  }
+
+  .comments-status {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    margin: 0;
+    min-height: 1.1rem;
+  }
+
+  .comments-status :global(.ok),
+  .comments-status.ok {
+    color: #147a3c;
+    font-weight: 700;
+  }
+
+  .comments-status.error {
+    color: #b42318;
+  }
+
+  .visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+</style>
+
+<script>
+  const seccion = document.querySelector<HTMLElement>('#comentarios[data-api]');
+  const api = seccion?.dataset.api;
+
+  if (seccion && api) {
+    const lista = seccion.querySelector<HTMLElement>('.comments-list');
+    const form = seccion.querySelector<HTMLFormElement>('.comments-form');
+    const status = seccion.querySelector<HTMLElement>('.comments-status');
+    const countEl = seccion.querySelector<HTMLElement>('.comments-count');
+    const boton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    interface Comentario {
+      id: number;
+      nombre: string;
+      mensaje: string;
+      creadoEn: string;
+    }
+
+    const mensaje = (texto: string, clase = '') => {
+      if (status) {
+        status.textContent = texto;
+        status.className = `comments-status${clase ? ` ${clase}` : ''}`;
+      }
+    };
+
+    // Se pinta con textContent (nunca innerHTML): los comentarios son
+    // contenido de terceros y no deben interpretarse como marcado.
+    const pintar = (items: Comentario[]) => {
+      if (!lista) return;
+      lista.replaceChildren();
+      if (countEl) countEl.textContent = items.length > 0 ? `(${items.length})` : '';
+
+      if (items.length === 0) {
+        const vacio = document.createElement('p');
+        vacio.className = 'comments-muted';
+        vacio.textContent = 'Sé el primero en comentar este artículo.';
+        lista.append(vacio);
+        return;
+      }
+
+      for (const c of items) {
+        const art = document.createElement('article');
+        art.className = 'comment';
+
+        const head = document.createElement('header');
+        head.className = 'comment-head';
+        const autor = document.createElement('strong');
+        autor.textContent = c.nombre;
+        const fecha = document.createElement('time');
+        fecha.dateTime = c.creadoEn;
+        fecha.textContent = new Date(c.creadoEn).toLocaleDateString('es-CO', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        head.append(autor, fecha);
+
+        const cuerpo = document.createElement('p');
+        cuerpo.className = 'comment-body';
+        cuerpo.textContent = c.mensaje;
+
+        art.append(head, cuerpo);
+        lista.append(art);
+      }
+    };
+
+    const cargar = async () => {
+      try {
+        const res = await fetch(`${api}/comments`);
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const data = (await res.json()) as { total: number; items: Comentario[] };
+        pintar(data.items);
+      } catch {
+        if (lista) {
+          const p = document.createElement('p');
+          p.className = 'comments-muted';
+          p.textContent = 'No se pudieron cargar los comentarios.';
+          lista.replaceChildren(p);
+        }
+      }
+    };
+
+    await cargar();
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const nombre = (form.elements.namedItem('nombre') as HTMLInputElement).value.trim();
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+      const texto = (form.elements.namedItem('mensaje') as HTMLTextAreaElement).value.trim();
+      const trampa =
+        (form.elements.namedItem('website') as HTMLInputElement | null)?.value.trim() ?? '';
+
+      if (nombre.length < 2) {
+        mensaje('Escribe tu nombre (mínimo 2 letras).', 'error');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        mensaje('Escribe un correo electrónico válido.', 'error');
+        return;
+      }
+      if (texto.length < 5) {
+        mensaje('El comentario es demasiado corto.', 'error');
+        return;
+      }
+
+      if (boton) boton.disabled = true;
+      mensaje('Enviando…');
+
+      try {
+        const res = await fetch(`${api}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ nombre, email, mensaje: texto, website: trampa }),
+        });
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const data = (await res.json()) as { ok: boolean; estado?: string };
+        form.reset();
+
+        if (data.estado === 'pendiente') {
+          mensaje('¡Gracias! Tu comentario será publicado tras la revisión.', 'ok');
+        } else if (data.estado === 'aprobado') {
+          mensaje('¡Comentario publicado!', 'ok');
+          await cargar();
+        } else {
+          // Éxito simulado (cebo anti-bots) o respuesta sin estado.
+          mensaje('¡Gracias por tu comentario!', 'ok');
+        }
+      } catch {
+        mensaje('No se pudo enviar el comentario. Inténtalo de nuevo más tarde.', 'error');
+      } finally {
+        if (boton) boton.disabled = false;
+      }
+    });
+  }
+</script>

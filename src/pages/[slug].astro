@@ -2,6 +2,8 @@
 // src/pages/[slug].astro - Forzar compilación limpia Astro v5
 import { getCollection, render } from 'astro:content';
 import ContactForm from '../components/ContactForm.astro';
+import ArticleMetrics from '../components/ArticleMetrics.astro';
+import ArticleComments from '../components/ArticleComments.astro';
 import BackToTop from '../components/BackToTop.astro';
 import Layout from '../layouts/Layout.astro';
 import { formatDate } from '../lib/formatDate';
@@ -10,6 +12,10 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 import { getPostImage } from '../lib/postImage';
+
+// API propia (Fase 4.5): si no está definida, la página queda igual que hoy
+// y el CTA de comentarios sigue apuntando al formulario de contacto.
+const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
@@ -734,7 +740,7 @@ const breadcrumbSchema = {
             </div>
 
             <p class="article-comment-cta">
-                <a href="#contacto">Comenta este artículo...</a>
+                <a href={apiBase ? '#comentarios' : '#contacto'}>Comenta este artículo...</a>
             </p>
 
             <section class="rating-wrap" aria-label="Valoración del artículo">
@@ -753,6 +759,8 @@ const breadcrumbSchema = {
             </section>
 
             <div class="article-post-share" id="post-share" aria-label="Compartir post"></div>
+
+            <ArticleMetrics articleId={entry.id} />
         </article>
 
         <div class="author-modal" id="author-modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
@@ -876,6 +884,8 @@ const breadcrumbSchema = {
                 </div>
             </section>
         )}
+
+        <ArticleComments articleId={entry.id} />
 
         <ContactForm
             postTitle={entry.data.title}

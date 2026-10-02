@@ -31,14 +31,16 @@ archivos `.mdx`.
 
 ### (B) Posterior, con servicios externos
 
-1. **Analítica privacy-friendly:** Umami o Plausible para visitas por post; definir consentimiento, retención, eventos mínimos y panel editorial.
-2. **Comentarios y respuestas:** Giscus + GitHub Discussions como opción de bajo mantenimiento; Supabase si se necesitan respuestas propias, identidad y moderación dentro del sitio.
-3. **Datos y antiabuso:** Supabase Free para valoraciones 1–5, visitas agregadas y suscripciones, con RLS, deduplicación, rate limiting y borrado. La valoración debe limitar repeticiones por post y periodo, validar en servidor y permitir recalcular o desactivar resultados.
-4. **Suscripciones:** Buttondown para newsletter sin backend propio o Supabase para listas globales/por autor; ambos deben cubrir double opt-in, baja inmediata, preferencias y privacidad.
+1. **Métricas por artículo:** ✅ resuelto con la API propia `ccd-infra` (Fase 4.5): visitas, lecturas y likes por post, con panel propio y cifras públicas bajo umbral. Analítica externa (Umami/Plausible) solo si algún día se necesita más de lo propio.
+2. **Comentarios y respuestas:** ✅ resuelto con la API propia `ccd-infra` (Fase 4.5): comentarios por artículo con moderación conmutable desde el panel; descartados Giscus y Supabase por ser software de terceros.
+3. **Datos y antiabuso:** ✅ en lo esencial con la API propia (cebo anti-bots, límite de tasa, validación en servidor, almacenamiento propio); la valoración 1–5 se guarda en `localStorage` y viaja dentro del mensaje de contacto (no es pública ni se agrega en servidor). Queda decidir exportación/borrado de datos de lectores.
+4. **Suscripciones:** ✅ el alta en el boletín ya va a la API propia (Fase 3, idempotente y con cebo anti-bots); siguen pendientes la doble confirmación (double opt-in), la página de baja y las preferencias.
 5. **PWA/offline:** service worker solo si se confirma la necesidad de lectura offline y se define invalidación de caché.
 6. **Gobernanza:** documentar revisión, licencias, autoría, correcciones, moderación, exportación/borrado y responsables.
 
 ### Comparativa breve
+
+> **Histórico:** opciones evaluadas antes de decidir la infraestructura propia `ccd-infra` (2026-10-01); hoy descartadas por ser software de terceros.
 
 | Opción | Coste/capacidad | Limitaciones y encaje |
 | --- | --- | --- |
@@ -47,12 +49,12 @@ archivos `.mdx`.
 | **Umami / Plausible** | Analítica privacy-friendly, ligera y orientada a métricas agregadas por post sin cookies invasivas. | Son servicios separados con límites/coste y menor control de datos que una solución propia; validar residencia, exportación y retención. |
 | **Buttondown** | Newsletter, double opt-in, bajas y entregabilidad sin construir backend. | Dependencia de tercero, límites/precios cambiantes y menos control sobre el modelo de suscripciones por autor. |
 
-La arquitectura recomendada es **Supabase Free para datos + Giscus para comentarios**. Si se necesitan respuestas propias, perfiles, suscripciones por autor dentro del producto o reglas de moderación integradas, usar Supabase también para comentarios. GitHub Pages no ofrece backend: nunca exponer claves privilegiadas; usar solo `anon key` con RLS o un endpoint/proxy seguro.
+**Decisión (2026-10-01): infraestructura propia `ccd-infra`** (API + PostgreSQL + panel) para datos, comentarios, métricas y suscripciones — sin servicios SaaS. GitHub Pages sigue sirviendo el HTML estático; el navegador solo habla con la API propia, que valida y limita en servidor. La tabla anterior queda como registro de las alternativas evaluadas y descartadas.
 
 ### Criterios de aceptación del roadmap
 
 - Funciona con HTML estático y build reproducible en GitHub Pages.
-- No requiere claves privilegiadas en el navegador; solo `anon key` con RLS o un endpoint/proxy seguro.
+- No requiere claves privilegiadas en el navegador: el navegador solo consume la API propia (`ccd-infra`), que valida y limita en servidor.
 - Cada función externa tiene consentimiento, política de privacidad, retención y alternativa accesible.
 - Las métricas no identifican innecesariamente a lectores ni degradan Core Web Vitals.
 - Las cuotas/precios se verifican en las páginas oficiales antes de contratar y no se fijan como promesas en esta documentación.
@@ -62,7 +64,7 @@ La arquitectura recomendada es **Supabase Free para datos + Giscus para comentar
 - El índice global es estático y se carga bajo demanda desde la portada; no registra consultas ni depende de una API.
 - La paginación y el archivo usan constantes centralizadas en `src/lib/pagination.ts`; las rutas vacías no se generan.
 - Los componentes MDX deben limitarse a mejoras semánticas y mantener una alternativa legible si JavaScript no está disponible.
-- Antes de añadir analítica, comentarios o suscripciones siguen siendo necesarias decisiones de proveedor, privacidad, moderación y credenciales.
+- Comentarios, métricas básicas y suscripciones ya son software propio (`ccd-infra`); siguen por decidir la analítica externa (solo si se necesita), la privacidad/retención y la gobernanza.
 
 ### Validación actual
 
