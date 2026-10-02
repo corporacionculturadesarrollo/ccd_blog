@@ -45,6 +45,10 @@ jobs:
           path: ./dist
 
   deploy:
+    # El sitio sale solo del repo de produccion; en el repo de desarrollo
+    # (culturaydesarrollo/ccd_blog-fase45) el job se salta: sin Pages en
+    # repos privados y con el CNAME ya apuntando al sitio oficial.
+    if: github.repository == 'corporacionculturadesarrollo/ccd_blog'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
