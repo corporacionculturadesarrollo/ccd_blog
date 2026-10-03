@@ -35,6 +35,9 @@ jobs:
           # URL pública de la API propia (Fase 5 de ccd-infra). Sin definir en
           # Actions queda vacía y el sitio publica sin comentarios/métricas.
           PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
+          # URL del panel para el enlace «Entrar» del menú. Sin definirla el
+          # componente usa el subdominio previsto (panel.culturaydesarrollo.org).
+          PUBLIC_PANEL_URL: ${{ vars.PUBLIC_PANEL_URL }}
 
       - name: Inyectar CNAME institucional
         run: echo "blog.culturaydesarrollo.org" > ./dist/CNAME

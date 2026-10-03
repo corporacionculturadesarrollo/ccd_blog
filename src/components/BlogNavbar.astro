@@ -1,6 +1,14 @@
 ---
 /* src/components/BlogNavbar.astro */
 const { contactHref = '/#contacto' } = Astro.props;
+
+// Ingreso al panel propio (ccd-infra). Sin PUBLIC_PANEL_URL se enlaza el
+// dominio de producción previsto (runbook: panel.<dominio>); en local:
+// PUBLIC_PANEL_URL=http://localhost:4321
+const panelBase = (
+  import.meta.env.PUBLIC_PANEL_URL || 'https://panel.culturaydesarrollo.org'
+).replace(/\/+$/, '');
+const entrarHref = `${panelBase}/login`;
 ---
 <nav class="blog-navbar">
   <div class="navbar-container">
@@ -17,17 +25,30 @@ const { contactHref = '/#contacto' } = Astro.props;
     <!-- Enlaces directos y simplificados -->
 <ul class="navbar-links" id="primary-navigation">
   <li><a href="https://blog.culturaydesarrollo.org">Inicio</a></li>
-  <li><a href="/categorias/">Categorías</a></li>
-  <li><a href="/tags/">Etiquetas</a></li>
-  <li><a href="/archivo/">Archivo</a></li>
-  <li><a href="/autores/">Autores</a></li>
+  <li class="nav-item-desplegable">
+    <button
+      class="nav-desplegable-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-explorar"
+    >
+      Explorar <span aria-hidden="true" class="flecha">▾</span>
+    </button>
+    <ul class="nav-desplegable" id="nav-explorar" hidden>
+      <li><a href="/categorias/">Categorías</a></li>
+      <li><a href="/tags/">Etiquetas</a></li>
+      <li><a href="/archivo/">Archivo</a></li>
+      <li><a href="/autores/">Autores</a></li>
+      <li><a href="/rss.xml">RSS</a></li>
+    </ul>
+  </li>
   <li><a href="/acerca/">Acerca de</a></li>
   <li>
     <a href={contactHref} class="nav-btn">
       Contacto
     </a>
   </li>
-  <li><a href="/rss.xml">RSS</a></li>
+  <li><a href={entrarHref} class="nav-entrar">Entrar</a></li>
   <li><button class="theme-toggle" type="button" aria-pressed="false">Tema</button></li>
   <li class="text-size-controls" aria-label="Tamaño de texto">
     <button type="button" data-text-size="smaller" aria-label="Reducir tamaño de texto">A−</button>
@@ -133,6 +154,78 @@ const { contactHref = '/#contacto' } = Astro.props;
     color: var(--color-secondary, #9a5f3f);
   }
 
+  /* Desplegable «Explorar» */
+  .nav-item-desplegable {
+    position: relative;
+  }
+
+  .nav-desplegable-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: var(--color-text, #3f302b);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    gap: 0.25rem;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+
+  .nav-desplegable-toggle:hover,
+  .nav-desplegable-toggle[aria-expanded='true'] {
+    color: var(--color-secondary, #9a5f3f);
+  }
+
+  .nav-desplegable-toggle .flecha {
+    font-size: 0.65rem;
+    transition: transform 0.2s ease;
+  }
+
+  .nav-desplegable-toggle[aria-expanded='true'] .flecha {
+    transform: rotate(180deg);
+  }
+
+  .nav-desplegable {
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #e4d7cf);
+    border-radius: 6px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    min-width: 11rem;
+    padding: 0.4rem;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    z-index: 1001;
+  }
+
+  .nav-desplegable[hidden] {
+    display: none;
+  }
+
+  .nav-desplegable a {
+    border-radius: 4px;
+    display: block;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .nav-desplegable a:hover {
+    background-color: var(--color-bg-alt, #f8f1ec);
+  }
+
+  .nav-desplegable-toggle:focus-visible,
+  .nav-entrar:focus-visible {
+    outline: 3px solid var(--color-secondary, #9a5f3f);
+    outline-offset: 3px;
+  }
+
   /* Botón de Contacto */
   .navbar-links .nav-btn {
     background-color: var(--color-primary, #24130f);
@@ -162,6 +255,21 @@ const { contactHref = '/#contacto' } = Astro.props;
     background-color: var(--color-secondary, #9a5f3f);
     color: var(--color-on-primary, #ffffff);
     text-decoration: none;
+  }
+
+  /* Ingreso al panel: enlace sobrio con borde, no compite con Contacto */
+  .navbar-links .nav-entrar {
+    border: 1px solid var(--color-primary, #24130f);
+    border-radius: 4px;
+    color: var(--color-primary, #24130f);
+    font-size: 0.78rem;
+    padding: 0.24rem 0.6rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .navbar-links .nav-entrar:hover {
+    background-color: var(--color-primary, #24130f);
+    color: var(--color-on-primary, #ffffff);
   }
 
   @media (max-width: 560px) {
@@ -215,6 +323,30 @@ const { contactHref = '/#contacto' } = Astro.props;
       text-align: center;
       width: fit-content;
     }
+
+    /* En el menú móvil el desplegable se despliega en línea */
+    .nav-desplegable {
+      background: transparent;
+      border: 0;
+      border-left: 2px solid var(--color-border, #e4d7cf);
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0.1rem 0 0.3rem 0.75rem;
+      min-width: 0;
+      padding: 0 0 0 0.6rem;
+      position: static;
+    }
+
+    .nav-desplegable a {
+      font-size: 0.85rem;
+      padding: 0.5rem 0.25rem;
+    }
+
+    .navbar-links .nav-entrar {
+      align-self: flex-start;
+      text-align: center;
+      width: fit-content;
+    }
   }
 </style>
 <script is:inline>
@@ -250,8 +382,45 @@ const { contactHref = '/#contacto' } = Astro.props;
     }
   });
 
+  /* Desplegable «Explorar»: clic, teclado, clic fuera y Escape */
+  const explorarToggle = document.querySelector('.nav-desplegable-toggle');
+  const explorarMenu = document.querySelector('#nav-explorar');
+  const explorarItem = explorarToggle?.closest('.nav-item-desplegable');
+  const openExplorar = () => {
+    explorarMenu?.removeAttribute('hidden');
+    explorarToggle?.setAttribute('aria-expanded', 'true');
+  };
+  const closeExplorar = () => {
+    explorarMenu?.setAttribute('hidden', '');
+    explorarToggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  explorarToggle?.addEventListener('click', () => {
+    const isOpen = explorarToggle.getAttribute('aria-expanded') === 'true';
+    if (isOpen) closeExplorar();
+    else openExplorar();
+  });
+
+  explorarMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeExplorar);
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (
+      explorarToggle?.getAttribute('aria-expanded') === 'true' &&
+      explorarItem &&
+      event.target instanceof Node &&
+      !explorarItem.contains(event.target)
+    ) {
+      closeExplorar();
+    }
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
+    if (event.key === 'Escape') {
+      closeMenu();
+      closeExplorar();
+    }
   });
 
   navigation?.querySelectorAll('a').forEach((link) => {

@@ -20,6 +20,7 @@ archivos `.mdx`.
 ### (A) Implementado ahora, sin servicios externos
 
 - Portada editorial con destacados, búsqueda, filtro por autor y estados vacíos.
+- Menú compacto: «Explorar» desplegable (categorías, etiquetas, archivo, autores y RSS) y enlace «Entrar» al panel propio (`PUBLIC_PANEL_URL`, por defecto `panel.culturaydesarrollo.org`).
 - Navegación de descubrimiento: categorías, etiquetas, autores y archivo agrupado por año.
 - Artículos con breadcrumbs, TOC automático desde headings MDX, lectura estimada, navegación cronológica y relacionados con fallback reciente.
 - Modo oscuro persistente y control de tamaño de texto persistente.
