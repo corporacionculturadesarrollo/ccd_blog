@@ -3,6 +3,13 @@
 const year = new Date().getFullYear();
 
 const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
+
+// Documentos legales (normas y manifiesto): viven en el panel propio
+// (ccd-infra). Mismo patrón que BlogNavbar; en local:
+// PUBLIC_PANEL_URL=http://localhost:4321
+const panelBase = (
+  import.meta.env.PUBLIC_PANEL_URL || 'https://panel.culturaydesarrollo.org'
+).replace(/\/+$/, '');
 ---
 
 <footer class="site-footer">
@@ -36,6 +43,13 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
         <span>Instagram</span>
       </a>
     </div>
+  </div>
+
+  {/* Documentos legales: accesibles para los lectores desde cualquier página */}
+  <div class="footer-legal">
+    <a href={`${panelBase}/normas-de-uso`}>Normas de uso</a>
+    <span aria-hidden="true">·</span>
+    <a href={`${panelBase}/manifiesto`}>Manifiesto de autores</a>
   </div>
 
   <div class="footer-bottom">
@@ -122,6 +136,31 @@ const instagramUrl = 'https://www.instagram.com/corporacioncyd/';
   .footer-social-link:hover {
     color: var(--color-secondary);
     border-color: var(--color-secondary);
+  }
+
+  .footer-legal {
+    max-width: 1100px;
+    margin: 1.75rem auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .footer-legal a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .footer-legal a:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+  }
+
+  .footer-legal span {
+    color: var(--color-border);
   }
 
   .footer-bottom {
