@@ -16,10 +16,20 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
   <section class="subscribe-section" aria-labelledby="subscribe-title">
     <div class="subscribe-inner">
       <div class="subscribe-copy">
-        <h2 id="subscribe-title">Suscríbete al boletín</h2>
+        <h2 id="subscribe-title">
+          <a class="subscribe-trigger" href="#suscribete">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 2v12h16V6H4Zm0 1.6 8 4.8 8-4.8v1.8l-8 4.8-8-4.8V7.6Z"
+              />
+            </svg>
+            Suscríbete al boletín
+          </a>
+        </h2>
         <p>Recibe los nuevos artículos del blog directamente en tu correo.</p>
       </div>
-      <a class="subscribe-trigger" href="#suscribete">Suscribirme</a>
     </div>
   </section>
 )}
@@ -50,13 +60,12 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
   }
 
   .subscribe-inner {
-    align-items: center;
     background: var(--color-bg-alt);
     border: 1px solid var(--color-border);
     border-radius: 10px;
     display: grid;
-    gap: 0.75rem 1.5rem;
-    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr);
     max-width: 720px;
     padding: 1.1rem 1.25rem;
   }
@@ -73,22 +82,25 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
     margin: 0;
   }
 
-  /* Disparador del modal: mismo aspecto que el botón de envío */
+  /* Disparador del modal: el propio título, en cursiva y con icono */
   .subscribe-trigger {
-    background: var(--color-primary);
-    border-radius: 4px;
-    color: #ffffff;
-    font-size: 0.85rem;
-    font-weight: 700;
-    padding: 0.55rem 0.95rem;
-    text-align: center;
-    text-decoration: none;
-    width: fit-content;
+    align-items: center;
+    color: var(--color-primary);
+    display: inline-flex;
+    font-style: italic;
+    gap: 0.45rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
   }
 
   .subscribe-trigger:hover,
   .subscribe-trigger:focus-visible {
-    background: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+
+  .subscribe-trigger svg {
+    flex: none;
   }
 
   /* Modal: el formulario solo se ve como <dialog> */
@@ -234,11 +246,7 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
 
   @media (max-width: 640px) {
     .subscribe-inner {
-      grid-template-columns: 1fr;
-    }
-
-    .subscribe-trigger {
-      justify-self: start;
+      padding: 1rem 1.1rem;
     }
   }
 </style>
