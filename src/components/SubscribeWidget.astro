@@ -4,6 +4,9 @@
  * Solo se emite si el blog se construye con PUBLIC_API_URL definida;
  * sin esa variable (estado actual de producción) la portada no lo muestra
  * y no hay formularios muertos mientras la API no sea pública.
+ * El formulario va en un <dialog> con el mismo patrón que ContactForm:
+ * la tarjeta de la portada dispara la apertura (#suscribete), hay
+ * fallback :target sin JavaScript y el cierre es por botón, fondo o Escape.
  */
 const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/+$/, '');
 const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
@@ -16,18 +19,27 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
         <h2 id="subscribe-title">Suscríbete al boletín</h2>
         <p>Recibe los nuevos artículos del blog directamente en tu correo.</p>
       </div>
-      <form class="subscribe-form" action={endpoint} method="POST" data-endpoint={endpoint} novalidate>
-        <div class="visually-hidden">
-          <label for="subscribe-website">No rellenes este campo si eres humano</label>
-          <input id="subscribe-website" name="website" type="text" autocomplete="off" tabindex="-1" />
-        </div>
-        <label class="visually-hidden" for="subscribe-email">Correo electrónico</label>
-        <input id="subscribe-email" name="email" type="email" autocomplete="email" required placeholder="tu@correo.com" aria-describedby="subscribe-status" />
-        <button type="submit">Suscribirme</button>
-      </form>
-      <p class="subscribe-status" id="subscribe-status" role="status" aria-live="polite"></p>
+      <a class="subscribe-trigger" href="#suscribete">Suscribirme</a>
     </div>
   </section>
+)}
+
+{apiBase && (
+  <dialog class="subscribe-dialog" id="suscribete" aria-labelledby="subscribe-dialog-title">
+    <h2 id="subscribe-dialog-title">Suscríbete al boletín</h2>
+    <p class="subscribe-intro">Recibe los nuevos artículos del blog directamente en tu correo.</p>
+    <form class="subscribe-form" action={endpoint} method="POST" data-endpoint={endpoint} novalidate>
+      <div class="visually-hidden">
+        <label for="subscribe-website">No rellenes este campo si eres humano</label>
+        <input id="subscribe-website" name="website" type="text" autocomplete="off" tabindex="-1" />
+      </div>
+      <label class="visually-hidden" for="subscribe-email">Correo electrónico</label>
+      <input id="subscribe-email" name="email" type="email" autocomplete="email" required placeholder="tu@correo.com" aria-describedby="subscribe-status" />
+      <button type="submit">Suscribirme</button>
+    </form>
+    <p class="subscribe-status" id="subscribe-status" role="status" aria-live="polite"></p>
+    <a href="#top" class="subscribe-dialog-close">Cerrar</a>
+  </dialog>
 )}
 
 <style>
@@ -59,6 +71,64 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
     color: var(--color-text);
     font-size: 0.9rem;
     margin: 0;
+  }
+
+  /* Disparador del modal: mismo aspecto que el botón de envío */
+  .subscribe-trigger {
+    background: var(--color-primary);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.55rem 0.95rem;
+    text-align: center;
+    text-decoration: none;
+    width: fit-content;
+  }
+
+  .subscribe-trigger:hover,
+  .subscribe-trigger:focus-visible {
+    background: var(--color-secondary);
+  }
+
+  /* Modal: el formulario solo se ve como <dialog> */
+  .subscribe-dialog {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
+    color: var(--color-text);
+    margin: auto;
+    max-height: min(86vh, 760px);
+    overflow: auto;
+    padding: 1.5rem 1.6rem 1.4rem;
+    width: min(560px, calc(100vw - 2rem));
+  }
+
+  .subscribe-dialog::backdrop {
+    background: rgba(36, 19, 15, 0.45);
+  }
+
+  /* Sin JavaScript, el hash #suscribete muestra el formulario centrado */
+  .subscribe-dialog:not([open]):target {
+    display: block;
+    left: 50%;
+    max-height: 86vh;
+    position: fixed;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+  }
+
+  .subscribe-dialog h2 {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .subscribe-intro {
+    color: var(--color-text);
+    margin: 0 0 1rem;
   }
 
   .subscribe-form {
@@ -110,11 +180,34 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
     opacity: 0.65;
   }
 
+  /* Es un <a href="#top"> para poder cerrar también sin JavaScript:
+     quita el hash y con él el fallback :target */
+  .subscribe-dialog-close {
+    background: var(--color-primary);
+    border: 0;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    display: block;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 1.2rem auto 0;
+    padding: 0.65rem 1.4rem;
+    text-align: center;
+    text-decoration: none;
+    width: fit-content;
+  }
+
+  .subscribe-dialog-close:hover,
+  .subscribe-dialog-close:focus-visible {
+    background: var(--color-secondary);
+  }
+
   .subscribe-status {
     color: var(--color-text);
     font-size: 0.88rem;
-    grid-column: 1 / -1;
-    margin: 0;
+    margin: 0.75rem 0 0;
     min-height: 1.1rem;
   }
 
@@ -143,15 +236,96 @@ const endpoint = apiBase ? `${apiBase}/api/subscribe` : '';
     .subscribe-inner {
       grid-template-columns: 1fr;
     }
+
+    .subscribe-trigger {
+      justify-self: start;
+    }
   }
 </style>
 
 <script>
+  // --- Modal del boletín: apertura por enlaces y cierre -------------------
+  // Mismo patrón que el modal de contacto (#contacto), con su propio id.
+  const subscribeDialog = document.getElementById('suscribete');
+  const subscribeAvailable = subscribeDialog instanceof HTMLDialogElement;
+  const subscribeStatus = document.querySelector('.subscribe-status');
+
+  // Con el hash puesto, el fallback :target re-aparecería como caja fija
+  // al cerrar el modal: se limpia en cuanto se abre con JavaScript.
+  const clearSubscribeHash = () => {
+    if (window.location.hash === '#suscribete') {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
+  const openSubscribeDialog = () => {
+    // Limpiar el hash primero: si se llega con #suscribete, el fallback
+    // :target re-aparecería como caja fija cuando se cierre el modal.
+    clearSubscribeHash();
+    if (!subscribeAvailable || subscribeDialog.open) return;
+    // Un reintento previo no debe mostrar su estado al reabrir.
+    if (subscribeStatus && subscribeStatus.textContent) {
+      subscribeStatus.textContent = '';
+      subscribeStatus.className = 'subscribe-status';
+    }
+    subscribeDialog.showModal();
+  };
+
+  if (subscribeAvailable) {
+    // Cerrar como <a href="#top">: con JavaScript se cierra el modal; sin él,
+    // quita el hash y con él el fallback :target (caja fija).
+    subscribeDialog
+      .querySelector('.subscribe-dialog-close')
+      ?.addEventListener('click', (event) => {
+        event.preventDefault();
+        subscribeDialog.close();
+      });
+
+    // Cierre con el fondo (backdrop): el click llega con target === dialog,
+    // pero solo cuenta si las coordenadas caen fuera de la caja.
+    subscribeDialog.addEventListener('click', (event) => {
+      if (event.target !== subscribeDialog) return;
+      const rect = subscribeDialog.getBoundingClientRect();
+      const inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!inside) subscribeDialog.close();
+    });
+    // El Escape lo cierra el navegador de forma nativa.
+  }
+
+  // Enlaces "#suscribete": si el modal existe en esta página se abre sin
+  // navegar; si no, se navega y allí el hash dispare la apertura al cargar.
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const anchor = target.closest('a[href]');
+    if (!anchor) return;
+    const href = anchor.getAttribute('href') || '';
+    if (href !== '#suscribete' && href !== '/#suscribete') return;
+    if (!subscribeAvailable) return;
+    // Ctrl/Cmd+click sigue abriendo la pestaña nueva.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    openSubscribeDialog();
+  });
+
+  if (window.location.hash === '#suscribete') {
+    openSubscribeDialog();
+  }
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash !== '#suscribete') return;
+    openSubscribeDialog();
+  });
+
+  // --- Formulario ---------------------------------------------------------
   const form = document.querySelector('form.subscribe-form');
   if (form instanceof HTMLFormElement) {
-    // El estado está fuera del <form> (hermano en la rejilla), por eso se
-    // busca en el documento y no con form.querySelector.
-    const status = document.querySelector('.subscribe-status');
+    // El estado queda fuera del <form>, dentro del diálogo: se busca en el
+    // documento y no con form.querySelector.
+    const status = subscribeStatus;
     const honeypot = form.querySelector('input[name="website"]');
     const button = form.querySelector('button[type="submit"]');
     const endpoint = form.dataset.endpoint || form.action;
