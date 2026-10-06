@@ -7,7 +7,7 @@ import { postBelongsToAuthor } from '../../lib/author';
 
 export async function getStaticPaths() {
   const authors = await getCollection('autores');
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', (entry) => !entry.data.draft);
   return authors.map((author) => ({
     params: { slug: author.data.slug ?? author.id },
     props: { author, posts: posts.filter((post) => postBelongsToAuthor(post, author)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) },

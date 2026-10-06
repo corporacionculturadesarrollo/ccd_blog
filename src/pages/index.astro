@@ -12,7 +12,7 @@ import { getPostImage, getPostVideo } from '../lib/postImage';
 import { resolveAuthor, resolveAuthorImage } from '../lib/author';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
-const posts = await getCollection('blog');
+const posts = await getCollection('blog', (entry) => !entry.data.draft);
 const authors = await getCollection('autores');
 const getAuthorBio = (post: (typeof posts)[number]) =>
   resolveAuthor(authors, post.data.authorSlug, post.data.author)?.body ||

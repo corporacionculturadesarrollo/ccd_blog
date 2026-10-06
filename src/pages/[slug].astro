@@ -15,7 +15,7 @@ import { getPostImage } from '../lib/postImage';
 
 // 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('blog');
+  const blogEntries = await getCollection('blog', (entry) => !entry.data.draft);
   
   // Ordenar cronológicamente (más recientes primero: prev = más reciente, next = más antiguo)
   const sortedEntries = blogEntries.sort(
@@ -58,7 +58,7 @@ const rateUrl = apiBase ? `${apiBase}/api/articles/${entry.id}/rate` : '';
 const { Content, headings } = await render(entry);
 
 // 3. Algoritmo de artículos relacionados libre de colapsos
-const allPosts = await getCollection('blog');
+const allPosts = await getCollection('blog', (entry) => !entry.data.draft);
 const relatedPosts = allPosts
   .filter(post => post.id !== entry.id)
   .map(post => {

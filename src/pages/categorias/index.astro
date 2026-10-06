@@ -4,7 +4,7 @@ import BackToTop from '../../components/BackToTop.astro';
 import Layout from '../../layouts/Layout.astro';
 import { slugify } from '../../lib/slugify';
 
-const posts = await getCollection('blog');
+const posts = await getCollection('blog', (entry) => !entry.data.draft);
 const categories = [...new Map(
   posts
     .flatMap((post) => post.data.category)

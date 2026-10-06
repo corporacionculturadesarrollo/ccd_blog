@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { formatDate } from '../../lib/formatDate';
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('blog', (entry) => !entry.data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))].sort((a, b) => b - a);
 const monthName = new Intl.DateTimeFormat('es-CO', { month: 'long' });

@@ -6,7 +6,7 @@ import { formatDate } from '../../lib/formatDate';
 import { slugify } from '../../lib/slugify';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('blog');
+  const allPosts = await getCollection('blog', (entry) => !entry.data.draft);
   const categories = [...new Map(
     allPosts
       .flatMap((post) => post.data.category)

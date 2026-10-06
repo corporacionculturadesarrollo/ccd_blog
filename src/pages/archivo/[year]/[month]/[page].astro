@@ -6,7 +6,7 @@ import { formatDate } from '../../../../lib/formatDate';
 import { MONTH_PAGE_SIZE } from '../../../../lib/pagination';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', (entry) => !entry.data.draft);
   const groups = new Map<string, typeof posts>();
   for (const post of posts) {
     const key = `${post.data.pubDate.getFullYear()}-${String(post.data.pubDate.getMonth() + 1).padStart(2, '0')}`;

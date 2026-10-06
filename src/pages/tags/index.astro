@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { slugify } from '../../lib/slugify';
 
-const posts = await getCollection('blog');
+const posts = await getCollection('blog', (entry) => !entry.data.draft);
 const tags = [...new Map(posts.flatMap((post) => post.data.tags).map((tag) => [slugify(tag), tag]))].sort(([, a], [, b]) => a.localeCompare(b, 'es'));
 ---
 

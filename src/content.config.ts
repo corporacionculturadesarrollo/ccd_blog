@@ -15,6 +15,7 @@ const blog = defineCollection({
     authorImage: z.string().default('/images/author-default.svg'),
     authorBio: z.string().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
     category: z.array(z.string()),
     tags: z.array(z.string()).default([]),
   }),

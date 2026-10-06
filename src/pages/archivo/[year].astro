@@ -5,7 +5,7 @@ import { formatDate } from '../../lib/formatDate';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', (entry) => !entry.data.draft);
   const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))];
   return years.map((year) => ({ params: { year: String(year) }, props: { posts: posts.filter((post) => post.data.pubDate.getFullYear() === year).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()) } }));
 }

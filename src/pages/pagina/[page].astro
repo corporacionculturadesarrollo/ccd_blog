@@ -8,7 +8,7 @@ import { HOME_PAGE_SIZE } from '../../lib/pagination';
 import { resolveAuthor, resolveAuthorImage } from '../../lib/author';
 
 export async function getStaticPaths() {
-  const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const posts = (await getCollection('blog', (entry) => !entry.data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
   const pageCount = Math.ceil(posts.length / HOME_PAGE_SIZE);
   return Array.from({ length: Math.max(pageCount - 1, 0) }, (_, index) => {
     const page = index + 2;

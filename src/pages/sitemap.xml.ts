@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ site }) => {
   const baseUrl = site ?? new URL('https://blog.culturaydesarrollo.org');
-  const posts = await getCollection('blog');
+  const posts = (await getCollection('blog')).filter((entry: { data: { draft: boolean } }) => !entry.data.draft);
   const typedPosts = posts as Array<{ data: { category: string[]; tags: string[]; pubDate: Date; } }>; 
   const categories = [...new Set(typedPosts.flatMap((post) => post.data.category))] as string[];
   const tags = [...new Set(typedPosts.flatMap((post) => post.data.tags))] as string[];

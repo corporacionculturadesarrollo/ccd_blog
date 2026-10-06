@@ -8,7 +8,7 @@ import { slugify } from '../../lib/slugify';
 
 // 1. Generar las rutas dinámicas para cada etiqueta existente en los artículos
 export async function getStaticPaths() {
-  const allPosts = await getCollection('blog');
+  const allPosts = await getCollection('blog', (entry) => !entry.data.draft);
   
   // Extraer todas las etiquetas únicas del blog, convirtiéndolas a minúsculas para consistencia
     const uniqueTags = [...new Map(
